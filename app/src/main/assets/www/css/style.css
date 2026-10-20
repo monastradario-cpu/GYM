@@ -214,7 +214,7 @@ h3.sec{margin:20px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:
 .plate span{writing-mode:vertical-rl;font-size:10px;font-weight:800;color:#111;background:rgba(255,255,255,.65);border-radius:3px;padding:2px 0}
 
 /* chat */
-.chat{display:flex;flex-direction:column;gap:10px;padding-bottom:12px}
+.chat{display:flex;flex-direction:column;gap:10px;padding-bottom:12px;min-height:calc(100vh - 150px)}
 .msg{max-width:88%;padding:10px 14px;border-radius:16px;background:var(--card)}
 .msg.user{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
 .msg.assistant{align-self:flex-start;border-bottom-left-radius:4px}
