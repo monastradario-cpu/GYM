@@ -125,7 +125,7 @@ VIEWS.coach = () => {
     '<button class="btn wide big" data-act="coachGo"' + (c.muscles.length ? '' : ' disabled') + '>' + ic('sparkle') + 'Proponimi gli allenamenti</button>';
   if (c.result) {
     const R = c.result, o = R.options[R.sel];
-    out += '<div class="card" id="proposal"><div class="card-h"><h3>Le mie proposte · ' + c.dur + ' min</h3><button class="btn sm ghost" data-act="coachGo">' + ic('swap', 'inline') + 'Altre</button></div>' +
+    out += '<div class="card" id="proposal"><div class="card-h"><h3>Le mie proposte · ' + (c.dur || 60) + ' min</h3><button class="btn sm ghost" data-act="coachGo">' + ic('swap', 'inline') + 'Altre</button></div>' +
       '<div class="opts">' + R.options.map((x, i) => '<button class="optcard ' + (i === R.sel ? 'on' : '') + '" data-act="coachOpt" data-i="' + i + '">' + (i === R.rec ? '<span class="rec">Consigliato</span>' : '') + '<b>' + x.n + '</b><small>circa ' + x.min + ' min</small><small>' + (x.circuit ? x.circuit.items.length + ' stazioni × ' + x.circuit.rounds + ' giri' : x.items.length + ' esercizi') + '</small></button>').join('') + '</div>' +
       '<p class="small muted">' + o.d + '</p>' +
       '<div class="note small">' + ic('timer', 'inline') + WARMUP_TEXT + '</div>';
