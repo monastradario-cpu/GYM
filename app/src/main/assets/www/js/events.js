@@ -90,7 +90,22 @@ const ACT = {
   },
   addSet: d => { const it = S.active.items[+d.n], l = it.sets.filter(s => !s.wu).pop() || {}; it.sets.push({ kg: '', reps: '', done: false, pk: l.kg !== '' && l.kg != null ? num(l.kg) : (l.pk || ''), pr: l.reps !== '' && l.reps != null ? num(l.reps) : (l.pr || it.rmax) }); save(); render(); },
   delSet: d => { const it = S.active.items[+d.n]; it.sets.pop(); save(); closeSheet(); render(); },
-  warmup: d => { const it = S.active.items[+d.n]; it.sets = warmupSets(it.ex, num(d.kg)).map(s => Object.assign(s, { pk: s.kg, pr: s.reps, kg: '', reps: '' })).concat(it.sets); save(); render(); toast('Serie di riscaldamento aggiunte (R)'); },
+  warmup: d => {
+    const it = S.active.items[+d.n], kg = num(d.kg);
+    const auto = kg ? warmupSets(it.ex, kg) : [];
+    if (auto.length) { it.sets = auto.map(s => Object.assign(s, { pk: s.kg, pr: s.reps, kg: '', reps: '' })).concat(it.sets); toast('Riscaldamento calcolato sul carico di lavoro (R)'); }
+    else {
+      // una serie di riscaldamento in più, leggera (circa metà carico, 12 ripetizioni)
+      const wus = it.sets.filter(s => s.wu), lastW = wus[wus.length - 1], work = it.sets.find(s => !s.wu) || {};
+      const base = num(work.kg) || num(work.pk), step = stepFor(it.ex);
+      const pk = lastW ? (num(lastW.kg) || num(lastW.pk)) : (base ? Math.max(0, Math.round(base * 0.5 / step) * step) : '');
+      const pk2 = lastW && base ? Math.min(base, Math.round(((num(lastW.kg) || num(lastW.pk)) + base) / 2 / step) * step) : pk;
+      it.sets.splice(wus.length, 0, { kg: '', reps: '', done: false, wu: true, pk: pk2 === 0 ? '' : pk2, pr: lastW ? 8 : 12 });
+      toast('Serie di riscaldamento aggiunta (R): carico leggero');
+    }
+    save(); render();
+  },
+  toggleWu: d => { const s = S.active.items[+d.n].sets[+d.k]; s.wu = !s.wu; const it = S.active.items[+d.n]; it.sets.sort((a, b) => (b.wu ? 1 : 0) - (a.wu ? 1 : 0)); save(); render(); toast(s.wu ? 'Segnata come riscaldamento (non conta nei record)' : 'Segnata come serie di lavoro'); },
   exMenu: d => openSheet(() => exMenuSheet(+d.n)),
   woMove: d => { const a = S.active.items, n = +d.n, m = n + (+d.d); if (m < 0 || m >= a.length) return; [a[n], a[m]] = [a[m], a[n]]; save(); closeSheet(); render(); },
   woDel: d => { S.active.items.splice(+d.n, 1); save(); closeSheet(); render(); },
@@ -168,6 +183,12 @@ const ACT = {
     const n = +d.n; if (c.phase !== 'work') c.phase = 'work';
     stopRest(true); c.workUntil = 0; c.idx = n; save(); render(); window.scrollTo(0, 0); document.getElementById('view').scrollTo({ top: 0, behavior: 'smooth' });
   },
+  muscleDist: () => openSheet(muscleDistSheet),
+  restPick: d => { const it = S.active.items[+d.n]; openSheet(() => '<h3>Recupero per ' + esc((EX[it.ex] || {}).n || '') + '</h3><p class="small muted">Il timer parte da solo quando segni una serie.</p><div class="grid3">' + REST_OPTS.map(s => '<button class="btn ' + (it.rest === s ? '' : 'ghost') + '" data-act="restSet" data-n="' + d.n + '" data-s="' + s + '">' + restLabel(s) + '</button>').join('') + '</div>'); },
+  restSet: d => { S.active.items[+d.n].rest = +d.s; save(); closeSheet(); render(); },
+  exNote: d => { const it = S.active.items[+d.n]; UI.noteN = +d.n; openSheet(() => '<h3>Nota</h3><p class="small muted">Es. regolazione del sedile, presa, sensazioni. La ritrovi la prossima volta.</p><textarea rows="4" id="note-in" placeholder="Scrivi una nota…">' + esc(it.note || '') + '</textarea><button class="btn wide" data-act="noteSave">Salva nota</button>'); setTimeout(() => { const t = document.getElementById('note-in'); if (t) t.focus(); }, 60); },
+  noteSave: () => { const it = S.active.items[UI.noteN]; it.note = (document.getElementById('note-in').value || '').trim(); S.exNotes = S.exNotes || {}; if (it.note) S.exNotes[it.ex] = it.note; else delete S.exNotes[it.ex]; save(); closeSheet(); render(); },
+  usePrev: d => { if (!d.kg) return; const s = S.active.items[+d.n].sets[+d.k]; s.kg = num(d.kg); s.reps = num(d.r); save(); render(); },
   coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
   goFood: () => { UI.coachTab = 'food'; go('coach'); },
   setSex: d => { S.profile.sex = d.k; save(); render(); },

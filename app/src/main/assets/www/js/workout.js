@@ -3,7 +3,7 @@
 
 function newItem(src, kind) {
   const e = EX[src.ex] || {};
-  const it = { ex: src.ex, ss: src.ss || null, role: src.role || defaultRole(src.ex), rmin: src.rmin || 8, rmax: src.rmax || 12, rest: src.rest || 90, secs: src.secs || 0, reps: src.reps || 0, sets: [] };
+  const it = { ex: src.ex, note: (S.exNotes || {})[src.ex] || '', ss: src.ss || null, role: src.role || defaultRole(src.ex), rmin: src.rmin || 8, rmax: src.rmax || 12, rest: src.rest || 90, secs: src.secs || 0, reps: src.reps || 0, sets: [] };
   const last = lastPerformance(src.ex);
   const n = kind === 'circuito' ? 0 : (src.sets || 3);
   for (let i = 0; i < n; i++) {
@@ -72,26 +72,45 @@ VIEWS.workout = () => {
   const a = S.active;
   if (!a) return header('Allenamento', { back: true }) + '<div class="pad empty">Nessun allenamento in corso.</div>';
   if (a.circ) return circuitView(a);
-  const doneSets = a.items.reduce((s, i) => s + workSets(i).length, 0), totalSets = a.items.reduce((s, i) => s + i.sets.filter(x => !x.wu).length, 0);
-  return '<header class="top workout-top"><button class="icon-btn" data-act="minimize">' + ic('down') + '</button><div class="top-title"><h1>' + esc(a.name) + '</h1><div class="sub"><span data-clock="elapsed"></span> · ' + doneSets + '/' + totalSets + ' serie</div></div><button class="btn sm" data-act="finish">Termina</button></header>' +
-    restBar(a) +
+  const doneSets = a.items.reduce((s, i) => s + workSets(i).length, 0);
+  const vol = a.items.reduce((s, i) => s + workSets(i).reduce((x, st) => x + num(st.kg === '' ? st.pk : st.kg) * num(st.reps === '' ? st.pr : st.reps), 0), 0);
+  return '<header class="top workout-top"><button class="icon-btn" data-act="minimize">' + ic('down') + '</button><div class="top-title"><h1>' + esc(a.name) + '</h1></div><button class="icon-btn" data-act="manualRest">' + ic('timer') + '</button><button class="btn sm" data-act="finish">Termina</button></header>' +
+    '<div class="wo-stats"><div><small>Durata</small><b class="accent-t" data-clock="elapsed"></b></div><div><small>Volume</small><b>' + Math.round(vol) + ' kg</b></div><div><small>Serie</small><b>' + doneSets + '</b></div>' +
+      '<button class="mini-body" data-act="muscleDist" aria-label="Distribuzione dei muscoli">' + heatBody(activeMuscleLoad(), true) + '</button></div>' +
     '<div class="pad">' +
     (a.items.length ? '' : emptyWorkoutCard()) +
     a.items.map((it, n) => exerciseCard(it, n)).join('') +
     (a.cardio.length ? '<div class="card"><h3>' + ic('run', 'inline') + 'Cardio</h3>' + a.cardio.map((c, n) => '<div class="list-item flat"><div><b>' + esc(c.type) + '</b><small>' + c.min + ' min' + (c.km ? ' · ' + fmtKg(c.km) + ' km' : '') + (c.lvl ? ' · livello ' + esc(c.lvl) : '') + '</small></div><button class="icon-btn sm" data-act="delCardio" data-n="' + n + '">' + ic('trash') + '</button></div>').join('') + '</div>' : '') +
-    '<div class="grid2"><button class="btn ghost" data-act="woAdd">' + ic('plus') + 'Esercizio</button><button class="btn ghost" data-act="cardio">' + ic('run') + 'Cardio</button></div>' +
-    (a.items.length > 1 ? '<button class="btn ghost wide" data-act="reorder" data-k="wo">' + ic('list') + 'Riordina gli esercizi</button>' : '') +
-    '<div class="grid2"><button class="btn ghost" data-act="plates" data-kg="">' + ic('calc') + 'Calcola dischi</button><button class="btn ghost" data-act="manualRest">' + ic('timer') + 'Timer</button></div>' +
-    '<button class="btn wide big" data-act="finish">' + ic('check') + 'Termina allenamento</button>' +
+    '<button class="btn wide big" data-act="woAdd">' + ic('plus') + 'Aggiungi esercizio</button>' +
+    '<div class="grid2"><button class="btn ghost" data-act="cardio">' + ic('run') + 'Cardio</button>' + (a.items.length > 1 ? '<button class="btn ghost" data-act="reorder" data-k="wo">' + ic('list') + 'Riordina</button>' : '<button class="btn ghost" data-act="plates" data-kg="">' + ic('calc') + 'Calcola dischi</button>') + '</div>' +
+    (a.items.length > 1 ? '<button class="btn ghost wide" data-act="plates" data-kg="">' + ic('calc') + 'Calcola dischi</button>' : '') +
+    '<button class="btn wide" data-act="finish">' + ic('check') + 'Termina allenamento</button>' +
     '<button class="btn danger ghost wide" data-act="discard">Annulla senza salvare</button>' +
-    '</div>';
+    '</div>' + restBar(a);
 };
+
+/* serie fatte per muscolo nell'allenamento in corso */
+function activeMuscleLoad() {
+  const m = {}; if (!S.active) return m;
+  S.active.items.forEach(it => { const e = EX[it.ex], n = workSets(it).length; if (!e || !n) return; m[e.m] = (m[e.m] || 0) + n; e.s.forEach(x => { m[x] = (m[x] || 0) + n * 0.5; }); });
+  return m;
+}
+function muscleDistSheet() {
+  const load = activeMuscleLoad(), keys = Object.keys(MUSCLES).filter(k => load[k]).sort((a, b) => load[b] - load[a]), max = Math.max(1, ...keys.map(k => load[k]));
+  return '<h3 class="center">Distribuzione dei muscoli</h3><div class="dist-body">' + heatBody(load) + '</div>' +
+    '<div class="dist-h"><span>Muscolo</span><span>Serie completate</span></div>' +
+    (keys.length ? keys.map(k => '<div class="mbar"><span>' + MUSCLES[k] + '</span><div><i style="width:' + (100 * load[k] / max) + '%"></i></div><b>' + fmtKg(Math.round(load[k] * 10) / 10) + '</b></div>').join('') : '<p class="muted small center">Segna le serie fatte per vedere i muscoli lavorati. I secondari contano metà.</p>');
+}
+
+const REST_OPTS = [0, 30, 45, 60, 75, 90, 120, 150, 180, 240, 300];
+const restLabel = s => !s ? 'No' : s < 60 ? s + 's' : Math.floor(s / 60) + 'min' + (s % 60 ? ' ' + (s % 60) + 's' : '');
 
 function restBar(a) {
   if (!a.rest) return '';
-  return '<div class="restbar"><div class="restbar-fill" data-clock="restbar"></div><div class="restbar-in">' + ic('timer') +
-    '<div><small>' + esc(a.rest.label || 'Recupero') + '</small><b data-clock="rest">' + fmtClock((a.rest.until - Date.now()) / 1000) + '</b></div>' +
-    '<button class="btn sm ghost" data-act="restAdd" data-s="-15">−15</button><button class="btn sm ghost" data-act="restAdd" data-s="15">+15</button><button class="btn sm" data-act="restSkip">Salta</button></div></div>';
+  return '<div class="restbar"><div class="restbar-fill" data-clock="restbar"></div><div class="restbar-in">' +
+    '<button class="btn sm ghost" data-act="restAdd" data-s="-15">−15</button>' +
+    '<div class="rest-mid"><small>' + esc(a.rest.label || 'Recupero') + '</small><b data-clock="rest">' + fmtClock((a.rest.until - Date.now()) / 1000) + '</b></div>' +
+    '<button class="btn sm ghost" data-act="restAdd" data-s="15">+15</button><button class="btn sm" data-act="restSkip">Salta</button></div></div>';
 }
 
 function exerciseCard(it, n) {
@@ -100,28 +119,37 @@ function exerciseCard(it, n) {
   const curKg = Math.max(0, ...it.sets.filter(s => !s.wu).map(s => num(s.kg)));
   const wkKg = curKg || prog.kg || (last ? Math.max(...last.sets.map(s => num(s.kg))) : 0);
   const hasWu = it.sets.some(s => s.wu);
-  let wsN = 0;
+  const prevWork = last ? last.sets : [], prevWu = last ? (last.item.sets || []).filter(s => s.wu) : [];
+  let wsN = 0, wuN = 0;
   const items = S.active.items, prevSS = n > 0 && items[n - 1].ss === it.ss;
   return (it.ss && !prevSS ? '<div class="ss-head">Superserie ' + it.ss + ': fai una serie di ciascun esercizio senza pausa, poi recupera</div>' : '') +
     '<div class="card ex-card' + (it.ss ? ' ss' : '') + (it.sets.length && it.sets.every(s => s.done) ? ' done' : '') + '">' +
-    '<div class="card-h"><button class="link" data-act="exInfo" data-id="' + it.ex + '"><h3>' + esc(e.n) + ' <span class="role ' + (it.role || '') + '">' + (ROLE_N[it.role] || '') + '</span></h3><small class="muted">' + muscleName(e.m) + ' · ' + (EQUIP[e.eq] || '') + ' · ' + (timed ? (it.secs || 40) + ' sec' : it.rmin + '–' + it.rmax + ' rip.') + ' · rec. ' + it.rest + 's</small></button>' +
+    '<div class="card-h"><button class="link ex-title" data-act="exInfo" data-id="' + it.ex + '"><span class="ex-thumb">' + exerciseThumb(it.ex) + '</span><span><h3>' + esc(e.n) + '</h3><small class="muted">' + muscleName(e.m) + ' · ' + (EQUIP[e.eq] || '') + ' · ' + (timed ? (it.secs || 40) + ' sec' : it.rmin + '–' + it.rmax + ' rip.') + ' <span class="role ' + (it.role || '') + '">' + (ROLE_N[it.role] || '') + '</span></small></span></button>' +
       '<button class="icon-btn sm" data-act="exMenu" data-n="' + n + '">' + ic('more') + '</button></div>' +
-    '<div class="last">' + (last ? 'Ultima volta (' + fmtDate(last.date) + '): <b>' + last.sets.map(s => fmtKg(num(s.kg)) + '×' + num(s.reps)).join('  ') + '</b>' : 'Prima volta con questo esercizio') + '</div>' +
+    '<div class="row gap wrap ex-chips"><button class="pill" data-act="restPick" data-n="' + n + '">' + ic('timer', 'inline') + 'Recupero: ' + restLabel(it.rest) + '</button><button class="pill" data-act="exNote" data-n="' + n + '">' + ic('edit', 'inline') + (it.note ? 'Nota' : 'Aggiungi nota') + '</button></div>' +
+    (it.note ? '<div class="ex-note">' + esc(it.note) + '</div>' : '') +
     '<div class="tip ' + prog.kind + '">' + ic(prog.kind === 'up' ? 'up' : prog.kind === 'down' ? 'down' : 'info', 'inline') + esc(prog.text) + '</div>' +
-    '<div class="tnote">' + ic('coach', 'inline') + esc(trainerNote(it)) + '</div>' +
-    '<div class="sets"><div class="set-h"><span>Serie</span><span>kg</span><span>' + (timed ? 'sec' : 'rip.') + '</span><span></span></div>' +
+    '<div class="sets"><div class="set-h"><span>Serie</span><span>Precedente</span><span>kg</span><span>' + (timed ? 'sec' : 'rip.') + '</span><span>' + ic('check', 'inline') + '</span></div>' +
     it.sets.map((s, k) => {
       const label = s.wu ? 'R' : String(++wsN);
-      return '<div class="set ' + (s.done ? 'done ' : '') + (s.wu ? 'wu' : '') + '"><span class="set-n">' + label + '</span>' +
+      const pv = s.wu ? prevWu[wuN++] : prevWork[wsN - 1];
+      return '<div class="set ' + (s.done ? 'done ' : '') + (s.wu ? 'wu' : '') + '"><button class="set-n" data-act="toggleWu" data-n="' + n + '" data-k="' + k + '">' + label + '</button>' +
+        '<button class="prev" data-act="usePrev" data-n="' + n + '" data-k="' + k + '"' + (pv ? ' data-kg="' + num(pv.kg) + '" data-r="' + num(pv.reps) + '"' : '') + '>' + (pv ? fmtKg(num(pv.kg)) + 'kg × ' + num(pv.reps) : '—') + '</button>' +
         numIn(s.kg, 'data-in="setKg" data-n="' + n + '" data-k="' + k + '"', s.pk === '' ? '0' : fmtKg(s.pk)) +
         numIn(s.reps, 'data-in="setReps" data-n="' + n + '" data-k="' + k + '"', s.pr === '' ? '' : s.pr) +
         '<button class="chk ' + (s.done ? 'on' : '') + '" data-act="setDone" data-n="' + n + '" data-k="' + k + '">' + ic('check') + '</button></div>';
     }).join('') + '</div>' +
-    '<div class="row gap wrap"><button class="btn sm ghost" data-act="addSet" data-n="' + n + '">+ Serie</button>' +
-      (!hasWu && wkKg && !timed ? '<button class="btn sm ghost" data-act="warmup" data-n="' + n + '" data-kg="' + wkKg + '">Riscaldamento</button>' : '') +
-      '<button class="btn sm ghost" data-act="swapEx" data-n="' + n + '">' + ic('swap', 'inline') + 'Occupato?</button>' +
+    '<div class="set-actions"><button class="btn ghost" data-act="addSet" data-n="' + n + '">+ Aggiungi serie</button>' +
+      (!timed ? '<button class="btn ghost wu-btn" data-act="warmup" data-n="' + n + '" data-kg="' + (hasWu ? '' : (wkKg || '')) + '">+ Riscaldamento</button>' : '') + '</div>' +
+    '<div class="row gap wrap"><button class="btn sm ghost" data-act="swapEx" data-n="' + n + '">' + ic('swap', 'inline') + 'Occupato?</button>' +
       (e.eq === 'bilanciere' ? '<button class="btn sm ghost" data-act="plates" data-kg="' + (wkKg || '') + '">Dischi</button>' : '') +
+      '<span class="small muted grow tn">' + esc(trainerNote(it)) + '</span>' +
     '</div></div>';
+}
+
+/* miniatura animata ferma dell'esercizio */
+function exerciseThumb(id) {
+  try { const def = animDef(id), k = def.seq ? 1 : 1; return '<svg viewBox="40 -10 240 220">' + frameSvg(def, EX[id], k, k, 0) + '</svg>'; } catch (e) { return ''; }
 }
 
 /* ---------- Circuito guidato ---------- */
