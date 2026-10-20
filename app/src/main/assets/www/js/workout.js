@@ -247,12 +247,6 @@ function exMenuSheet(n) {
     '<button class="list-item btnlike danger" data-act="woDel" data-n="' + n + '"><div><b>Rimuovi esercizio</b></div>' + ic('trash') + '</button>';
 }
 
-function swapSheet(n) {
-  const it = S.active ? S.active.items[n] : null; if (!it) return '';
-  const e = EX[it.ex], alts = alternatives(it.ex).slice(0, 8);
-  return '<h3>Alternative a ' + esc(e.n) + '</h3><p class="muted small">Stesso muscolo, attrezzo diverso o movimento simile.</p>' +
-    alts.map(x => '<button class="list-item btnlike" data-act="doSwap" data-n="' + n + '" data-id="' + x.id + '"><div><b>' + esc(x.n) + '</b><small>' + EQUIP[x.eq] + (x.pat === e.pat ? ' · stesso movimento' : '') + '</small></div>' + ic('swap') + '</button>').join('');
-}
 
 /* allenamento libero: il trainer consiglia cosa allenare */
 function emptyWorkoutCard() {

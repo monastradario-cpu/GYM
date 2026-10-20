@@ -131,7 +131,7 @@ VIEWS.coach = () => {
       '<div class="note small">' + ic('timer', 'inline') + WARMUP_TEXT + '</div>';
     if (o.circuit) {
       out += '<p class="small"><b>' + o.circuit.rounds + ' giri</b> · ' + o.circuit.work + ' s di lavoro per stazione · ' + o.circuit.restEx + ' s di pausa tra le stazioni · ' + o.circuit.restRound + ' s tra i giri</p>' +
-        o.circuit.items.map((i, n) => { const e = EX[i.ex]; return '<div class="coach-ex"><button class="link grow" data-act="exInfo" data-id="' + i.ex + '"><b>' + (n + 1) + '. ' + esc(e.n) + '</b><small>' + muscleName(e.m) + ' · ' + EQUIP[e.eq] + ' · ' + (i.secs ? i.secs + ' sec' : i.reps + ' ripetizioni') + '</small></button></div>'; }).join('');
+        o.circuit.items.map((i, n) => { const e = EX[i.ex]; return '<div class="coach-ex"><button class="link grow" data-act="exInfo" data-id="' + i.ex + '"><b>' + (n + 1) + '. ' + esc(e.n) + '</b><small>' + muscleName(e.m) + ' · ' + EQUIP[e.eq] + ' · ' + (i.secs ? i.secs + ' sec' : i.reps + ' ripetizioni') + '</small></button><button class="icon-btn sm" data-act="coachSwap" data-n="' + n + '">' + ic('swap') + '</button></div>'; }).join('');
     } else {
       let lastSS = null;
       out += o.items.map((i, n) => {
@@ -187,11 +187,6 @@ function bodyDataFields() {
     (S.weights.length ? '' : '<button class="btn ghost wide" data-act="addWeight">Registra il peso</button>');
 }
 
-function coachSwapSheet(n) {
-  const items = UI.coach.result.options[UI.coach.result.sel].items, i = items[n], e = EX[i.ex];
-  const alts = alternatives(i.ex).filter(x => !items.some(y => y.ex === x.id)).slice(0, 8);
-  return '<h3>Cambia ' + esc(e.n) + '</h3>' + alts.map(x => '<button class="list-item btnlike" data-act="coachDoSwap" data-n="' + n + '" data-id="' + x.id + '"><div><b>' + esc(x.n) + '</b><small>' + EQUIP[x.eq] + '</small></div>' + ic('swap') + '</button>').join('');
-}
 
 /* =================== LIBRERIA =================== */
 VIEWS.library = () => {

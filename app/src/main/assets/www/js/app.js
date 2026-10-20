@@ -389,3 +389,22 @@ function aiStatusBox() {
   if (ai.key) return '<div class="note">Chiave salvata. Premi "Prova la connessione".</div>';
   return '';
 }
+
+/* ---------- Sostituzione esercizio: tutti gli esercizi del gruppo muscolare ---------- */
+function openSwap(cur, act, n, opts) {
+  UI.swap = Object.assign({ cur, act, n, m: (EX[cur] || {}).m, used: [] }, opts || {});
+  openSheet(swapListSheet);
+}
+function swapListSheet() {
+  const w = UI.swap, e = EX[w.cur] || {}, pref = w.eqs || null;
+  const list = EXERCISES.filter(x => x.m === w.m && x.id !== w.cur)
+    .map(x => ({ x, s: (x.pat === e.pat ? 4 : 0) + (pref && pref.includes(x.eq) ? 6 : 0) + (x.eq === 'corpo' && !bodyweightOn() ? -5 : 0) + (x.comp === e.comp ? 1 : 0) }))
+    .sort((a, b) => b.s - a.s).map(a => a.x);
+  return '<h3>Sostituisci ' + esc(e.n || '') + '</h3>' +
+    '<p class="small muted">Tutti gli esercizi per ' + MUSCLES[w.m] + '. In alto quelli più simili' + (pref ? ' e con gli attrezzi che hai scelto' : '') + '. Puoi anche cambiare gruppo muscolare.</p>' +
+    '<div class="chips scroll">' + Object.keys(MUSCLES).map(m => chip(MUSCLES[m], w.m === m, 'swapM', 'data-m="' + m + '"')).join('') + '</div>' +
+    (list.length ? list.map(x => {
+      const used = w.used.includes(x.id);
+      return '<button class="list-item btnlike" data-act="swapPick" data-id="' + x.id + '"><div><b>' + esc(x.n) + (used ? ' <span class="role">già presente</span>' : '') + '</b><small>' + EQUIP[x.eq] + (x.pat === e.pat ? ' · stesso movimento' : '') + (x.comp ? ' · multiarticolare' : ' · isolamento') + '</small></div>' + ic('swap') + '</button>';
+    }).join('') : '<div class="empty small">Nessun altro esercizio</div>');
+}

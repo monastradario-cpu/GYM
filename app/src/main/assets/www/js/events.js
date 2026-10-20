@@ -54,7 +54,8 @@ const ACT = {
   editDay: d => { const t = UI.edit, x = +d.d; t.days = t.days.includes(x) ? t.days.filter(y => y !== x) : t.days.concat(x); render(); },
   editMove: d => { const a = UI.edit.items, n = +d.n, m = n + (+d.d); if (m < 0 || m >= a.length) return; [a[n], a[m]] = [a[m], a[n]]; render(); },
   editDel: d => { UI.edit.items.splice(+d.n, 1); render(); },
-  editSwap: d => pickExercise(id => { const it = UI.edit.items[+d.n]; it.ex = id; if (EX[id].type === 'time' && !it.secs) it.secs = 40; render(); }, { m: EX[UI.edit.items[+d.n].ex].m }),
+  editSwap: d => openSwap(UI.edit.items[+d.n].ex, 'editDoSwap', +d.n, { used: UI.edit.items.map(x => x.ex) }),
+  editDoSwap: d => { const it = UI.edit.items[+d.n], timed = EX[d.id].type === 'time'; it.ex = d.id; if (timed && !it.secs) it.secs = 40; if (UI.edit.kind === 'circuito') { if (timed) it.reps = 0; else { it.secs = 0; it.reps = it.reps || 12; } } closeSheet(); render(); },
   editAdd: () => pickExercise(id => { const t = UI.edit; t.items.push(t.kind === 'circuito' ? { ex: id, reps: EX[id].type === 'time' ? 0 : 12, secs: EX[id].type === 'time' ? 40 : 0 } : prescribe(id)); render(); }),
   saveTemplate: () => {
     const t = UI.edit; if (!t.items.length) { toast('Aggiungi almeno un esercizio'); return; }
@@ -95,7 +96,7 @@ const ACT = {
   woDel: d => { S.active.items.splice(+d.n, 1); save(); closeSheet(); render(); },
   woAdd: () => pickExercise(id => { S.active.items.push(newItem(prescribe(id), 'scheda')); save(); render(); setTimeout(() => { const v = $('#view'); v.scrollTop = v.scrollHeight; }, 30); }),
   addToActive: d => { S.active.items.push(newItem(prescribe(d.id), 'scheda')); save(); go('workout'); toast('Aggiunto'); },
-  swapEx: d => openSheet(() => swapSheet(+d.n)),
+  swapEx: d => openSwap(S.active.items[+d.n].ex, 'doSwap', +d.n, { used: S.active.items.map(x => x.ex) }),
   doSwap: d => {
     const a = S.active, it = a.items[+d.n];
     if (a.circ) { it.ex = d.id; const l = lastPerformance(d.id); it.sets.forEach(s => { if (!s.done) s.pk = l ? num(l.sets[0].kg) : ''; }); }
@@ -130,8 +131,15 @@ const ACT = {
   coachGo: () => { if (!UI.coach.muscles.length) { toast('Scegli almeno un muscolo'); return; } coachGenerate(Date.now()); render(); setTimeout(() => { const el = document.getElementById('proposal'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30); },
   coachDur: d => { UI.coach.dur = +d.d; if (UI.coach.result) coachGenerate(UI.coach.result.seed); render(); },
   coachOpt: d => { UI.coach.result.sel = +d.i; render(); },
-  coachSwap: d => openSheet(() => coachSwapSheet(+d.n)),
-  coachDoSwap: d => { const items = UI.coach.result.options[UI.coach.result.sel].items, old = items[+d.n]; items[+d.n] = Object.assign(prescribe(d.id, old.role), { sets: old.sets, ss: old.ss, rest: old.rest }); closeSheet(); render(); },
+  coachSwap: d => { const items = UI.coach.result.options[UI.coach.result.sel].items; openSwap(items[+d.n].ex, 'coachDoSwap', +d.n, { eqs: coachEquip(), used: items.map(x => x.ex) }); },
+  coachDoSwap: d => {
+    const o = UI.coach.result.options[UI.coach.result.sel], items = o.items, old = items[+d.n], timed = EX[d.id].type === 'time';
+    if (o.circuit) items[+d.n] = { ex: d.id, reps: timed ? 0 : (old.reps || 12), secs: timed ? 40 : 0 };
+    else items[+d.n] = Object.assign(prescribe(d.id, old.role), { sets: old.sets, ss: old.ss });
+    closeSheet(); render(); toast('Esercizio sostituito');
+  },
+  swapM: d => { UI.swap.m = d.m; rerenderSheet(); },
+  swapPick: d => { const w = UI.swap; ACT[w.act]({ n: String(w.n), id: d.id }); },
   coachStart: () => {
     const o = UI.coach.result.options[UI.coach.result.sel], name = (o.k === 'classico' ? 'Allenamento ' : o.n + ' ') + UI.coach.muscles.map(m => MUSCLES[m]).join(', ');
     if (o.circuit) startWorkout(Object.assign({ id: null }, JSON.parse(JSON.stringify(o.circuit)), { name }));
