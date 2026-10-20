@@ -63,25 +63,58 @@ const MUSCLES_BACK = [
   ['x', [[46.5, 280], [44.5, 292], [49, 292], [49.5, 280]]]
 ];
 
+/* tratteggio delle fibre: linee parallele all'asse principale del muscolo, ritagliate sulla sua forma */
+let _bodyN = 0;
+function hatch(pts, d, gap) {
+  const n = pts.length, cx = pts.reduce((a, p) => a + p[0], 0) / n, cy = pts.reduce((a, p) => a + p[1], 0) / n;
+  let sxx = 0, syy = 0, sxy = 0; pts.forEach(p => { const x = p[0] - cx, y = p[1] - cy; sxx += x * x; syy += y * y; sxy += x * y; });
+  const th = 0.5 * Math.atan2(2 * sxy, sxx - syy), dx = Math.cos(th), dy = Math.sin(th), nx = -dy, ny = dx;
+  let dmin = 1e9, dmax = -1e9, nmin = 1e9, nmax = -1e9;
+  pts.forEach(p => { const x = p[0] - cx, y = p[1] - cy, a = x * dx + y * dy, b = x * nx + y * ny; dmin = Math.min(dmin, a); dmax = Math.max(dmax, a); nmin = Math.min(nmin, b); nmax = Math.max(nmax, b); });
+  const id = 'mc' + (++_bodyN); let lines = '';
+  const g = gap || 2.3;
+  for (let t = nmin + g * 0.6; t < nmax - g * 0.3; t += g) {
+    const bend = (t - (nmin + nmax) / 2) * 0.08;
+    const x1 = cx + nx * t + dx * (dmin - 2), y1 = cy + ny * t + dy * (dmin - 2), x2 = cx + nx * t + dx * (dmax + 2), y2 = cy + ny * t + dy * (dmax + 2);
+    const mx = (x1 + x2) / 2 + nx * bend * 4, my = (y1 + y2) / 2 + ny * bend * 4;
+    lines += 'M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Q' + mx.toFixed(1) + ' ' + my.toFixed(1) + ' ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + ' ';
+  }
+  return '<clipPath id="' + id + '"><path d="' + d + '"/></clipPath><path d="' + lines + '" class="fib" clip-path="url(#' + id + ')"/>';
+}
+
 function bodySvg(fill, opts) {
   opts = opts || {};
-  const f = m => { const r = fill(m) || {}; return r.color ? 'fill="' + r.color + '" fill-opacity="' + (r.op == null ? 1 : r.op) + '"' : 'fill="var(--muscle)"'; };
-  const fiber = (lines, x) => (lines || []).map(l => '<path d="M' + l.map(p => (x ? 120 - p[0] : p[0]) + ' ' + p[1]).join(' L') + '" class="fib"/>').join('');
+  const f = m => { const r = fill(m) || {}; return r.color ? 'fill="' + r.color + '" fill-opacity="' + (r.op == null ? 1 : r.op) + '"' : 'fill="var(--paper)"'; };
   const figure = (ox, list, back) => {
     let g = '<g transform="translate(' + ox + ',0)">';
     g += '<path d="' + SILHOUETTE + '" class="sil"/><path d="' + HEAD + '" class="sil"/>';
-    if (back) g += '<path d="M48 14 C52 6 68 6 72 14 C70 9 50 9 48 14Z" class="hair"/>';
-    else g += '<path d="M54 22 h3 M63 22 h3 M58 31 h4" class="face"/>';
-    list.forEach(([m, pts, fib]) => {
-      const sel = m !== 'x', dm = sel ? ' data-m="' + m + '"' : '', attr = sel ? f(m) : 'fill="var(--muscle)"';
-      g += '<path' + dm + ' d="' + smoothPath(pts, true) + '" ' + attr + ' class="mu"/>' + fiber(fib, false);
-      g += '<path' + dm + ' d="' + smoothPath(mirrorPts(pts), true) + '" ' + attr + ' class="mu"/>' + fiber(fib, true);
+    // orecchie
+    g += '<path d="M46.5 18 C43.5 17 43 24 46.5 27 M73.5 18 C76.5 17 77 24 73.5 27" class="ink"/>';
+    if (back) {
+      g += '<path d="M51 33 C55 38 65 38 69 33" class="ink thin"/>';
+    } else {
+      g += '<path d="M52 21 q3 -1.6 6 0 M62 21 q3 -1.6 6 0 M60 23 L59 28.5 L61 28.5 M56.5 32.5 q3.5 1.8 7 0 M57.5 33.6 q2.5 1.2 5 0" class="ink thin"/>';
+      g += '<path d="M54 41 L53 50 M66 41 L67 50 M57 47 L60 55 L63 47" class="ink thin"/>';
+    }
+    list.forEach(([m, pts]) => {
+      const sel = m !== 'x', dm = sel ? ' data-m="' + m + '"' : '', attr = sel ? f(m) : 'fill="var(--paper)"';
+      [pts, mirrorPts(pts)].forEach(P => {
+        const d = smoothPath(P, true);
+        g += '<path' + dm + ' d="' + d + '" ' + attr + ' class="mu"/>';
+        if (!opts.mini) g += hatch(P, d, m === 'addome' && P.length === 4 ? 3.2 : 2.3);
+      });
     });
-    g += back ? '<path d="M60 112 L60 150" class="mid"/>' : '<path d="M60 95 L60 162" class="mid"/>';
+    if (!back) {
+      // rotule e dita
+      g += '<ellipse cx="47" cy="235" rx="4" ry="5" class="ink thin" fill="none"/><ellipse cx="73" cy="235" rx="4" ry="5" class="ink thin" fill="none"/>';
+      g += '<path d="M60 95 L60 162" class="ink"/>';
+    } else { for (let y = 47; y <= 146; y += 7.5) g += '<circle cx="60" cy="' + y + '" r="' + (y < 100 ? 0.9 : 1.1) + '" class="dot"/>'; }
+    g += '<path d="M12 184 L11.5 193 M14.5 186 L14.5 197 M17.5 186 L17.8 197 M108 184 L108.5 193 M105.5 186 L105.5 197 M102.5 186 L102.2 197" class="ink thin"/>';
+    g += '<path d="M44 308 L44.5 311 M47.5 309 L47.8 312 M76 308 L75.5 311 M72.5 309 L72.2 312" class="ink thin"/>';
     return g + '</g>';
   };
   const lbl = (x, t) => opts.mini ? '' : '<text x="' + x + '" y="330" text-anchor="middle" class="svg-lbl">' + t + '</text>';
-  return '<svg class="body-svg' + (opts.click ? ' clickable' : '') + (opts.mini ? ' mini' : '') + '" viewBox="0 0 262 ' + (opts.mini ? 316 : 338) + '" xmlns="http://www.w3.org/2000/svg">' +
+  return '<svg class="body-svg lineart' + (opts.click ? ' clickable' : '') + (opts.mini ? ' mini' : '') + '" viewBox="-6 -4 274 ' + (opts.mini ? 322 : 344) + '" xmlns="http://www.w3.org/2000/svg">' +
     figure(0, MUSCLES_FRONT, false) + figure(142, MUSCLES_BACK, true) + lbl(60, 'Fronte') + lbl(202, 'Retro') + '</svg>';
 }
 

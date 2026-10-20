@@ -396,3 +396,14 @@ span.set-n{text-align:center;font-weight:800;color:var(--muted)}
 .menu-r{display:flex;justify-content:space-between;font-size:14px;padding:4px 0;border-bottom:1px dashed var(--line)}
 .menu-r span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}
 .sub{text-transform:none}.sub::first-letter{text-transform:uppercase}
+/* figura a china (stile tavola anatomica) */
+:root{--paper:#f5f7f8;--ink:#3e5866}
+.body-svg.lineart{background:var(--paper);border-radius:14px}
+.body-svg.lineart .sil{fill:var(--paper);stroke:var(--ink);stroke-width:1.1;stroke-linejoin:round}
+.body-svg.lineart .mu{stroke:var(--ink);stroke-width:.75}
+.body-svg.lineart .fib{fill:none;stroke:var(--ink);stroke-width:.32;opacity:.6;pointer-events:none}
+.body-svg.lineart .ink{fill:none;stroke:var(--ink);stroke-width:.8;stroke-linecap:round}
+.body-svg.lineart .ink.thin{stroke-width:.55}
+.body-svg.lineart .dot{fill:none;stroke:var(--ink);stroke-width:.6}
+.body-svg.lineart .svg-lbl{fill:var(--ink)}
+.body-svg.lineart.mini{border-radius:8px}
