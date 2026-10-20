@@ -250,6 +250,7 @@ const ACT = {
   },
   deloadOn: () => { S.deloadUntil = Date.now() + 7 * 864e5; S.lastDeload = Date.now(); save(); render(); toast('Settimana di scarico attiva: serie dimezzate per 7 giorni'); },
   deloadOff: () => { S.deloadUntil = 0; save(); render(); toast('Scarico terminato'); },
+  setBodyStyle: d => { S.settings.bodyStyle = d.k; save(); render(); },
   coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
   goFood: () => { UI.coachTab = 'food'; go('coach'); },
   setSex: d => { S.profile.sex = d.k; save(); render(); },

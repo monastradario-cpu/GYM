@@ -82,40 +82,62 @@ function hatch(pts, d, gap) {
   return '<clipPath id="' + id + '"><path d="' + d + '"/></clipPath><path d="' + lines + '" class="fib" clip-path="url(#' + id + ')"/>';
 }
 
+/* ingrandisce leggermente un muscolo attorno al suo centro: i muscoli si toccano come in un corpo vero */
+function grow(pts, k) {
+  const cx = pts.reduce((a, p) => a + p[0], 0) / pts.length, cy = pts.reduce((a, p) => a + p[1], 0) / pts.length;
+  return pts.map(p => [cx + (p[0] - cx) * k, cy + (p[1] - cy) * k]);
+}
+const BODY_STYLES = {
+  ibrido: { n: 'Rilievo pulito', d: 'Muscoli in rilievo con ombre, forme pulite senza linee.' },
+  atlante: { n: 'Atlante a china', d: 'Tavola anatomica disegnata: fondo chiaro, contorni e fibre a inchiostro.' },
+  realistico: { n: 'Realistico', d: 'Muscoli in rilievo con ombre, effetto 3D su fondo scuro.' },
+  minimal: { n: 'Minimal', d: 'Forme piatte e pulite, colori pieni, senza linee.' },
+  neon: { n: 'Neon', d: 'Contorni sottili al buio, il muscolo allenato si illumina.' }
+};
+function bodyStyle() { return (typeof S !== 'undefined' && S.settings && S.settings.bodyStyle) || 'ibrido'; }
+
 function bodySvg(fill, opts) {
   opts = opts || {};
-  const f = m => { const r = fill(m) || {}; return r.color ? 'fill="' + r.color + '" fill-opacity="' + (r.op == null ? 1 : r.op) + '"' : 'fill="var(--paper)"'; };
-  const figure = (ox, list, back) => {
-    let g = '<g transform="translate(' + ox + ',0)">';
-    g += '<path d="' + SILHOUETTE + '" class="sil"/><path d="' + HEAD + '" class="sil"/>';
-    // orecchie
-    g += '<path d="M46.5 18 C43.5 17 43 24 46.5 27 M73.5 18 C76.5 17 77 24 73.5 27" class="ink"/>';
-    if (back) {
-      g += '<path d="M51 33 C55 38 65 38 69 33" class="ink thin"/>';
-    } else {
-      g += '<path d="M52 21 q3 -1.6 6 0 M62 21 q3 -1.6 6 0 M60 23 L59 28.5 L61 28.5 M56.5 32.5 q3.5 1.8 7 0 M57.5 33.6 q2.5 1.2 5 0" class="ink thin"/>';
-      g += '<path d="M54 41 L53 50 M66 41 L67 50 M57 47 L60 55 L63 47" class="ink thin"/>';
-    }
+  const st = opts.style || bodyStyle(), uid0 = ++_bodyN;
+  const sel = m => fill(m) || null;
+  const K = st === 'minimal' ? 1.04 : st === 'ibrido' ? 1.12 : 1.13;
+  const real = st === 'realistico' || st === 'ibrido';
+  let defs = '';
+  if (real) {
+    defs += '<radialGradient id="rg' + uid0 + '" cx="45%" cy="40%" r="70%"><stop offset="0" stop-color="var(--mu-hi)"/><stop offset="1" stop-color="var(--mu-lo)"/></radialGradient>' +
+      '<radialGradient id="ra' + uid0 + '" cx="45%" cy="40%" r="70%"><stop offset="0" stop-color="var(--acc-hi)"/><stop offset="1" stop-color="var(--accent)"/></radialGradient>' +
+      '<linearGradient id="rs' + uid0 + '" x1="0" x2="1"><stop offset="0" stop-color="var(--sk-lo)"/><stop offset=".5" stop-color="var(--sk-hi)"/><stop offset="1" stop-color="var(--sk-lo)"/></linearGradient>';
+  }
+  if (st === 'neon') defs += '<filter id="gl' + uid0 + '" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  const figure = (ox, list, back, fid) => {
+    const clip = 'cl' + uid0 + fid;
+    // corpo più atletico: un po' più largo
+    let g = '<g transform="translate(' + (ox + 60) + ',0) scale(1.14,1) translate(-60,0)"><clipPath id="' + clip + '"><path d="' + SILHOUETTE + '"/></clipPath>';
+    g += '<path d="' + SILHOUETTE + '" class="sil"' + (real ? ' fill="url(#rs' + uid0 + ')"' : '') + '/><path d="' + HEAD + '" class="sil head"' + (real ? ' fill="url(#rs' + uid0 + ')"' : '') + '/>';
+    g += '<g clip-path="url(#' + clip + ')">';
     list.forEach(([m, pts]) => {
-      const sel = m !== 'x', dm = sel ? ' data-m="' + m + '"' : '', attr = sel ? f(m) : 'fill="var(--paper)"';
-      [pts, mirrorPts(pts)].forEach(P => {
-        const d = smoothPath(P, true);
-        g += '<path' + dm + ' d="' + d + '" ' + attr + ' class="mu"/>';
-        if (!opts.mini) g += hatch(P, d, m === 'addome' && P.length === 4 ? 3.2 : 2.3);
+      const r = m !== 'x' ? sel(m) : null, dm = m !== 'x' ? ' data-m="' + m + '"' : '';
+      [pts, mirrorPts(pts)].forEach(P0 => {
+        const P = grow(P0, K), d = smoothPath(P, true);
+        let fillA;
+        if (r) fillA = real ? 'fill="url(#ra' + uid0 + ')" fill-opacity="' + (r.op == null ? 1 : r.op) + '"' : 'fill="' + (r.color || 'var(--accent)') + '" fill-opacity="' + (r.op == null ? 1 : r.op) + '"';
+        else fillA = real ? 'fill="url(#rg' + uid0 + ')"' : st === 'neon' ? 'fill="transparent"' : '';
+        g += '<path' + dm + ' d="' + d + '" ' + fillA + ' class="mu' + (r ? ' on' : '') + '"' + (st === 'neon' && r ? ' filter="url(#gl' + uid0 + ')"' : '') + '/>';
+        if (!opts.mini && (st === 'atlante' || st === 'realistico')) g += hatch(P, d, st === 'atlante' ? 2.3 : 3.2);
       });
     });
-    if (!back) {
-      // rotule e dita
-      g += '<ellipse cx="47" cy="235" rx="4" ry="5" class="ink thin" fill="none"/><ellipse cx="73" cy="235" rx="4" ry="5" class="ink thin" fill="none"/>';
-      g += '<path d="M60 95 L60 162" class="ink"/>';
-    } else { for (let y = 47; y <= 146; y += 7.5) g += '<circle cx="60" cy="' + y + '" r="' + (y < 100 ? 0.9 : 1.1) + '" class="dot"/>'; }
-    g += '<path d="M12 184 L11.5 193 M14.5 186 L14.5 197 M17.5 186 L17.8 197 M108 184 L108.5 193 M105.5 186 L105.5 197 M102.5 186 L102.2 197" class="ink thin"/>';
-    g += '<path d="M44 308 L44.5 311 M47.5 309 L47.8 312 M76 308 L75.5 311 M72.5 309 L72.2 312" class="ink thin"/>';
+    g += '</g>';
+    if (!opts.mini && st !== 'minimal' && st !== 'ibrido') {
+      if (back) { for (let y = 47; y <= 146; y += 7.5) g += '<circle cx="60" cy="' + y + '" r="0.9" class="dot"/>'; }
+      else g += '<path d="M52 21 q3 -1.6 6 0 M62 21 q3 -1.6 6 0 M60 23 L59 28.5 L61 28.5 M56.5 32.5 q3.5 1.8 7 0" class="ink thin"/>';
+      g += '<path d="M12 184 L11.5 193 M14.5 186 L14.5 197 M17.5 186 L17.8 197 M108 184 L108.5 193 M105.5 186 L105.5 197 M102.5 186 L102.2 197" class="ink thin"/>';
+    }
+    g += '<path d="' + SILHOUETTE + '" class="outline"/><path d="' + HEAD + '" class="outline"/>';
     return g + '</g>';
   };
   const lbl = (x, t) => opts.mini ? '' : '<text x="' + x + '" y="330" text-anchor="middle" class="svg-lbl">' + t + '</text>';
-  return '<svg class="body-svg lineart' + (opts.click ? ' clickable' : '') + (opts.mini ? ' mini' : '') + '" viewBox="-6 -4 274 ' + (opts.mini ? 322 : 344) + '" xmlns="http://www.w3.org/2000/svg">' +
-    figure(0, MUSCLES_FRONT, false) + figure(142, MUSCLES_BACK, true) + lbl(60, 'Fronte') + lbl(202, 'Retro') + '</svg>';
+  return '<svg class="body-svg bs-' + st + (opts.click ? ' clickable' : '') + (opts.mini ? ' mini' : '') + '" viewBox="' + (opts.mini ? '-14 -2 290 318' : '-14 -2 290 340') + '" xmlns="http://www.w3.org/2000/svg"><defs>' + defs + '</defs>' +
+    figure(0, MUSCLES_FRONT, false, 'f') + figure(142, MUSCLES_BACK, true, 'b') + lbl(60, 'Fronte') + lbl(202, 'Retro') + '</svg>';
 }
 
 /* evidenzia muscoli di un esercizio */
