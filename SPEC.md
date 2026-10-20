@@ -105,3 +105,15 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 
 ## Circuito in corso (stile tabella)
 - Ogni stazione è una scheda con una riga per giro (precedente, kg, ripetizioni/secondi, ✓), prossima serie evidenziata, pausa automatica tra stazioni e tra giri, stazioni a tempo con conto alla rovescia nella riga.
+
+## Storico progressioni (Progressi → Andamento)
+- Per ogni esercizio: sedute recenti con miglior serie, variazione (+kg, +rip) e massimale stimato; stato complessivo (in progressione, stabile, in calo).
+- Consiglio "Prossima volta" con doppia progressione: +1 ripetizione per serie fino al massimo del range, poi aumento di carico (2 kg manubri, 2,5–5 kg bilanciere, 5–10 kg macchine); range dell'obiettivo diverso da quello usato → carico adattato; stallo da 3 sedute → cambio di stimolo; forza in calo per due sedute → settimana di scarico (−10%).
+- Gli obiettivi serie per serie vengono precompilati nell'allenamento.
+
+## Piano dimagrimento (basato sugli studi)
+- Si attiva con l'obiettivo Dimagrimento: ritmo 0,25/0,5/0,75/1% del peso a settimana (predefinito 0,5%; 0,25% se c'è anche massa/forza), deficit = peso × ritmo × 7700/7, massimo 25% del consumo e mai sotto il metabolismo a riposo.
+- Proteine 2,2 g/kg; grassi 25–30% (minimo 0,6 g/kg); carboidrati il resto (low-carb: 100 g).
+- Diete: mediterranea ipocalorica, alta proteina, pochi carboidrati, digiuno 16:8; esempio di giornata scalato sulle calorie, copiabile nel diario.
+- Controllo settimanale sulla media del peso: correzione ±150 kcal.
+- Fonti: ISSN 2017, Helms 2014, DIETFITS 2018, Liu 2022, PREDIMED-Plus.

@@ -97,6 +97,7 @@ VIEWS.food = () => {
         '<div class="ring-t"><b>' + (target ? Math.abs(Math.round(left)) : Math.round(tot.kcal)) + '</b><small>' + (target ? (left >= 0 ? 'kcal rimaste' : 'kcal in più') : 'kcal mangiate') + '</small></div></div>' +
       '<div class="kcal-side"><div><small>Obiettivo</small><b>' + (target || '—') + '</b></div><div><small>Mangiate</small><b>' + Math.round(tot.kcal) + '</b></div><div><small>Palestra (stima)</small><b>' + (burn ? '−' + burn : '0') + '</b></div></div>' +
     '</div>' +
+    dietMiniCard(n) +
     (target ? '' : '<div class="note">Per l\'obiettivo di calorie completa peso, sesso, età e altezza: <button class="link-inline" data-act="goFood">apri i tuoi dati</button>.</div>') +
     '<div class="card">' + macro('Proteine', tot.p, n.protein, 'pro') + macro('Carboidrati', tot.c, n.carbs, 'carb') + macro('Grassi', tot.f, n.fat, 'fat') + '</div>' +
     '<div class="grid2 add-quick"><button class="btn" data-act="foodScan">' + ic('camera') + 'Scansiona codice</button><button class="btn ghost" data-act="foodPhoto">' + ic('sparkle') + 'Foto del cibo</button></div>' +
@@ -171,4 +172,10 @@ async function foodLookup(code) {
     if (p) openQty(p);
     else { toast('Prodotto non trovato: inserisci i valori dall\'etichetta'); openQty({ id: 'man:' + code, code, name: 'Prodotto ' + code, kcal: 0, p: 0, c: 0, f: 0, serving: 100, src: 'man' }, { edit: true }); }
   } catch (e) { UI.fadd.busy = 'Errore di connessione: ' + e.message; rerenderSheet(); }
+}
+
+function dietMiniCard(n) {
+  if (!dietActive()) return '<button class="card diet-mini" data-act="go" data-v="diet"><div class="eyebrow">' + ic('flame', 'inline') + 'Piano alimentare</div><small class="muted">Diete, esempi di giornata e fonti scientifiche</small></button>';
+  const D = dietState(), r = DIET_RATES.find(x => x.r === D.rate) || DIET_RATES[1];
+  return '<button class="card diet-mini" data-act="go" data-v="diet"><div class="eyebrow">' + ic('flame', 'inline') + 'Piano dimagrimento</div><b>' + r.n + ' · ' + (n.deficit != null ? '−' + n.deficit + ' kcal/giorno' : fmtKg(D.rate) + '% a settimana') + '</b><small class="muted">' + DIETS[D.style].n + (n.kgWeek ? ' · ≈ ' + fmtKg(n.kgWeek) + ' kg a settimana' : '') + ' · tocca per modificare</small></button>';
 }

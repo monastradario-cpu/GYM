@@ -23,7 +23,7 @@ function nutritionTargets() {
     out.fat = Math.round(w * 0.9);
     out.carbs = Math.max(0, Math.round((out.kcal - out.protein * 4 - out.fat * 9) / 4));
   }
-  return out;
+  return typeof applyDietPlan === 'function' ? applyDietPlan(out, p) : out;
 }
 
 const MEALS = {

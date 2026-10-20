@@ -6,9 +6,12 @@ function newItem(src, kind) {
   const it = { ex: src.ex, note: (S.exNotes || {})[src.ex] || '', ss: src.ss || null, role: src.role || defaultRole(src.ex), rmin: src.rmin || 8, rmax: src.rmax || 12, rest: src.rest || 90, secs: src.secs || 0, reps: src.reps || 0, sets: [] };
   const last = lastPerformance(src.ex);
   const n = kind === 'circuito' ? 0 : (src.sets || 3);
+  // obiettivi di oggi dal trainer (doppia progressione)
+  const tg = kind === 'circuito' ? null : (progression(src.ex, it.rmin, it.rmax).targets || null);
   for (let i = 0; i < n; i++) {
     const ls = last && (last.sets[i] || last.sets[last.sets.length - 1]);
-    it.sets.push({ kg: '', reps: '', done: false, pk: ls ? num(ls.kg) : '', pr: ls ? num(ls.reps) : (e.type === 'time' ? (src.secs || 40) : (src.rmax || '')) });
+    const t = tg && (tg[i] || tg[tg.length - 1]);
+    it.sets.push({ kg: '', reps: '', done: false, pk: t ? (t.kg || '') : ls ? num(ls.kg) : '', pr: t ? t.reps : ls ? num(ls.reps) : (e.type === 'time' ? (src.secs || 40) : (src.rmax || '')) });
   }
   return it;
 }

@@ -239,6 +239,15 @@ const ACT = {
   },
   foodEdit: d => { const x = foodDay()[+d.i]; openQty(Object.assign({ id: x.pid || 'x', serving: x.g }, x), { i: +d.i, g: x.g }); },
   foodDel: () => { const k = UI.foodDay || todayKey(); S.food[k].splice(UI.fprod.i, 1); save(true); closeSheet(); render(); },
+  dietRate: d => { dietState().rate = +d.r; S.diet.adj = 0; S.diet.since = Date.now(); save(); render(); },
+  dietStyle: d => { dietState().style = d.k; save(); render(); },
+  dietAdj: d => { dietState().adj += +d.a; S.diet.since = Date.now(); save(); render(); toast('Piano aggiornato'); },
+  dietToDiary: () => {
+    const n = nutritionTargets(), sd = sampleDay(dietState().style, n.kcal), k = todayKey();
+    S.food = S.food || {}; S.food[k] = S.food[k] || [];
+    sd.rows.forEach(r => S.food[k].push({ name: r.f.name, g: r.g, kcal: r.f.kcal, p: r.f.p, c: r.f.c, f: r.f.f, meal: r.m, t: Date.now(), pid: r.f.id }));
+    save(true); UI.foodDay = k; go('food'); toast('Giornata copiata: modifica ciò che mangi davvero');
+  },
   coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
   goFood: () => { UI.coachTab = 'food'; go('coach'); },
   setSex: d => { S.profile.sex = d.k; save(); render(); },
@@ -307,7 +316,9 @@ const ACT = {
   obPrev: () => { UI.ob.step = Math.max(0, UI.ob.step - 1); render(); },
   obFinish: () => {
     const w = num(UI.ob.weight); if (w >= 20 && w <= 400) S.weights.push({ d: Date.now(), kg: w });
-    S.templates = buildDefaultTemplates(); S.onboarded = true; save(true);
+    S.templates = buildDefaultTemplates(); S.onboarded = true;
+    if (goalsOf().includes('dimagrimento')) { dietState(); setTimeout(() => toast('Ho impostato un deficit calorico: trovi il piano in Calorie'), 2600); }
+    save(true);
     Native.askNotifications(); syncReminders();
     UI.stack = [{ v: 'home' }]; render(true); toast('Tutto pronto! Le tue schede sono in "Schede"');
   }

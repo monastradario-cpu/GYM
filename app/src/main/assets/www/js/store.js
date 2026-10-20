@@ -162,32 +162,94 @@ function allRecords() {
 }
 
 /* passo di incremento in base all'attrezzo */
-function stepFor(exId) { const e = EX[exId]; if (!e) return 2.5; return e.eq === 'manubri' ? 2 : e.eq === 'macchinari' ? 5 : 2.5; }
+function stepFor(exId) {
+  const e = EX[exId]; if (!e) return 2.5;
+  if (e.eq === 'manubri') return 2;
+  if (e.eq === 'macchinari') return e.comp && ['quadricipiti', 'glutei', 'femorali'].includes(e.m) ? 10 : 5;
+  if (e.eq === 'bilanciere') return e.comp && ['quadricipiti', 'glutei', 'femorali', 'dorso'].includes(e.m) ? 5 : 2.5;
+  return 2.5;
+}
+const bestE1 = sets => Math.max(0, ...sets.map(s => e1rm(num(s.kg), num(s.reps))));
 
-/* consiglio di progressione */
+/* consiglio di progressione (doppia progressione: prima le ripetizioni, poi il carico)
+   ritorna anche gli obiettivi serie per serie per l'allenamento di oggi */
 function progression(exId, rmin, rmax) {
-  const hist = exerciseHistory(exId);
-  const e = EX[exId];
-  if (e && e.type === 'time') return { kind: 'info', text: 'Prova ad aumentare la durata di 5–10 secondi quando ti senti a tuo agio.' };
-  if (!hist.length) return { kind: 'info', text: 'Prima volta: scegli un carico con cui arrivi a ' + (rmax || 10) + ' ripetizioni lasciandone 2 di scorta.' };
+  const hist = exerciseHistory(exId), e = EX[exId] || {};
+  const per = e.eq === 'manubri' ? ' (per manubrio)' : '';
+  rmin = rmin || 8; rmax = rmax || 12;
+  if (e.type === 'time') {
+    const last = hist[0], secs = last ? Math.max(...last.sets.map(s => num(s.reps))) : 0;
+    return { kind: 'info', text: secs ? 'L\'ultima volta ' + secs + ' s: oggi prova ' + (secs + 5) + ' s mantenendo la forma perfetta.' : 'Tieni la posizione con forma perfetta, poi aggiungi 5 s alla volta.', targets: secs ? [{ kg: 0, reps: secs + 5 }] : null };
+  }
+  if (!hist.length) return { kind: 'info', text: 'Prima volta: scegli un carico con cui arrivi a ' + rmax + ' ripetizioni lasciandone 2 di scorta. Annota bene: sarà il tuo punto di partenza.' };
   const last = hist[0], step = stepFor(exId);
   const kg = Math.max(...last.sets.map(s => num(s.kg)));
-  const top = last.sets.filter(s => num(s.kg) === kg);
-  rmin = rmin || 8; rmax = rmax || 12;
-  if (kg === 0) return { kind: 'info', text: 'Aumenta le ripetizioni o aggiungi un carico.' };
-  if (top.every(s => num(s.reps) >= rmax)) {
-    return { kind: 'up', kg: kg + step, text: 'Ottimo! L\'ultima volta hai fatto tutte le serie a ' + rmax + '+ ripetizioni con ' + fmtKg(kg) + ' kg. Oggi prova con ' + fmtKg(kg + step) + ' kg' + (e && e.eq === 'manubri' ? ' (per manubrio)' : '') + '.' };
+  if (kg === 0) {
+    const r = Math.max(...last.sets.map(s => num(s.reps)));
+    return { kind: r >= rmax + 5 ? 'up' : 'keep', text: r >= rmax + 5 ? 'Arrivi a ' + r + ' ripetizioni: aggiungi un carico (zavorra o manubrio) o passa a una variante più difficile.' : 'Oggi prova a fare 1–2 ripetizioni in più per serie (l\'ultima volta max ' + r + ').', targets: last.sets.map(s => ({ kg: 0, reps: num(s.reps) + 1 })) };
   }
-  const low = top.filter(s => num(s.reps) < rmin).length;
-  if (low > 0 && hist[1]) {
-    const prevKg = Math.max(...hist[1].sets.map(s => num(s.kg)));
-    const prevLow = hist[1].sets.filter(s => num(s.kg) === prevKg && num(s.reps) < rmin).length;
-    if (prevKg === kg && prevLow > 0) {
+  const work = last.sets.filter(s => num(s.kg) === kg);
+  const nSets = last.sets.length;
+  // 1) tutte le serie al massimo delle ripetizioni -> aumenta il carico
+  if (work.every(s => num(s.reps) >= rmax)) {
+    const nk = kg + step;
+    return { kind: 'up', kg: nk, text: 'Obiettivo raggiunto: ' + work.length + '×' + rmax + '+ con ' + fmtKg(kg) + ' kg. Oggi aumenta a ' + fmtKg(nk) + ' kg' + per + ' e riparti da ' + rmin + ' ripetizioni.', targets: Array.from({ length: nSets }, () => ({ kg: nk, reps: rmin })) };
+  }
+  // 2) due sedute di fila sotto il minimo con lo stesso carico e forza in calo -> scarico
+  const low = work.filter(s => num(s.reps) < rmin).length;
+  const dropping = hist[1] && bestE1(last.sets) < bestE1(hist[1].sets) * 0.98;
+  if (low > 0 && hist[1] && dropping) {
+    const pk = Math.max(...hist[1].sets.map(s => num(s.kg)));
+    if (pk === kg && hist[1].sets.some(s => num(s.kg) === pk && num(s.reps) < rmin)) {
       const down = Math.max(0, Math.round(kg * 0.9 / step) * step);
-      return { kind: 'down', kg: down, text: 'Da due volte non arrivi a ' + rmin + ' ripetizioni con ' + fmtKg(kg) + ' kg. Scendi a ' + fmtKg(down) + ' kg e ricostruisci.' };
+      return { kind: 'down', kg: down, text: 'Forza in calo nelle ultime due sedute con ' + fmtKg(kg) + ' kg. Settimana di scarico: ' + fmtKg(down) + ' kg (−10%) per ' + rmax + ' ripetizioni pulite, poi riparti. Controlla sonno, proteine e recupero.', targets: Array.from({ length: nSets }, () => ({ kg: down, reps: rmax })) };
     }
   }
-  return { kind: 'keep', kg, text: 'Resta a ' + fmtKg(kg) + ' kg e prova a fare 1 ripetizione in più per serie, fino a ' + rmax + '.' };
+  // 2b) lavori sotto il range del tuo obiettivo (non è un calo): adatta il carico
+  const avgR = work.reduce((a, s) => a + num(s.reps), 0) / work.length;
+  if (avgR < rmin - 1) {
+    const nk = Math.max(step, Math.floor(bestE1(last.sets) / (1 + rmin / 30) / step) * step);
+    return { kind: 'keep', kg: nk, text: 'Lavori intorno a ' + Math.round(avgR) + ' ripetizioni, ma per i tuoi obiettivi il range è ' + rmin + '–' + rmax + ': usa ' + fmtKg(nk) + ' kg' + per + ' e fai ' + rmin + ' ripetizioni, poi sali di ripetizioni come sempre.', targets: Array.from({ length: nSets }, () => ({ kg: nk, reps: rmin })) };
+  }
+  // 3) stallo: massimale stimato fermo da 3 sedute
+  if (hist.length >= 3) {
+    const e0 = bestE1(hist[0].sets), e2 = bestE1(hist[2].sets);
+    if (e0 <= e2 * 1.005 && low === 0) {
+      return { kind: 'keep', kg, text: 'Stallo da 3 sedute a ' + fmtKg(kg) + ' kg. Oggi cambia stimolo: aggiungi una serie oppure rallenta la discesa (3–4 s). Se non si sblocca, fai una settimana di scarico.', targets: last.sets.map(s => ({ kg, reps: Math.min(rmax, num(s.reps) + 1) })).concat([{ kg, reps: rmin }]) };
+    }
+  }
+  // 4) default: stesso carico, +1 ripetizione per serie
+  const targets = last.sets.map(s => ({ kg: num(s.kg) || kg, reps: Math.min(rmax, num(s.reps) + 1) }));
+  const left = work.reduce((a, s) => a + Math.max(0, rmax - num(s.reps)), 0);
+  return { kind: 'keep', kg, text: 'Resta a ' + fmtKg(kg) + ' kg' + per + ' e aggiungi 1 ripetizione per serie (' + targets.map(t => t.reps).join('-') + '). Ti mancano ' + left + ' ripetizioni per arrivare a ' + nSets + '×' + rmax + ', poi aumenti di ' + fmtKg(step) + ' kg.', targets };
+}
+
+/* andamento seduta per seduta: progressione, stallo o regressione */
+function exerciseTrend(exId) {
+  const hist = exerciseHistory(exId).slice().reverse(); // dalla più vecchia
+  return hist.map((h, i) => {
+    const e1 = bestE1(h.sets), vol = h.sets.reduce((a, s) => a + num(s.kg) * num(s.reps), 0);
+    const top = h.sets.reduce((b, s) => (num(s.kg) > num(b.kg) || (num(s.kg) === num(b.kg) && num(s.reps) > num(b.reps))) ? s : b, h.sets[0]);
+    const prev = i ? hist[i - 1] : null, pe1 = prev ? bestE1(prev.sets) : 0, pTop = prev ? prev.sets.reduce((b, s) => (num(s.kg) > num(b.kg) || (num(s.kg) === num(b.kg) && num(s.reps) > num(b.reps))) ? s : b, prev.sets[0]) : null;
+    let kind = 'first', what = 'Prima seduta';
+    if (prev) {
+      const d = pe1 ? (e1 - pe1) / pe1 : 0;
+      kind = d > 0.01 ? 'up' : d < -0.02 ? 'down' : 'same';
+      const dk = num(top.kg) - num(pTop.kg), dr = num(top.reps) - num(pTop.reps);
+      what = dk ? (dk > 0 ? '+' : '') + fmtKg(dk) + ' kg' : dr ? (dr > 0 ? '+' : '') + dr + ' rip' : 'uguale';
+      if (kind === 'same' && vol > prev.sets.reduce((a, s) => a + num(s.kg) * num(s.reps), 0) * 1.03) { kind = 'up'; what += ' · più volume'; }
+    }
+    return { date: h.date, sets: h.sets, top, e1, vol, kind, what };
+  }).reverse(); // dalla più recente
+}
+function trendSummary(tr) {
+  if (!tr.length) return { kind: 'first', label: '' };
+  if (tr.length === 1) return { kind: 'first', label: 'Prima seduta' };
+  const recent = tr.slice(0, 3), base = tr[Math.min(3, tr.length - 1)];
+  const d = base.e1 ? (tr[0].e1 - base.e1) / base.e1 : 0;
+  if (d > 0.02) return { kind: 'up', label: 'In progressione +' + Math.round(d * 100) + '%' };
+  if (d < -0.03) return { kind: 'down', label: 'In calo ' + Math.round(d * 100) + '%' };
+  return { kind: 'same', label: 'Stabile' };
 }
 
 /* serie di riscaldamento */

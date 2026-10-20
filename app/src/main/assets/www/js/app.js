@@ -6,7 +6,7 @@ const UI = {
   stack: [], sheetFn: null,
   coach: { muscles: [], eq: [], result: null },
   lib: { q: '', m: '', eq: '' },
-  prog: { tab: 'esercizi', ex: null, metric: 'e1rm', month: null, week: null },
+  prog: { tab: 'andamento', ex: null, metric: 'e1rm', month: null, week: null },
   schede: 'schede',
   ob: { step: 0 },
   edit: null, pick: { q: '', m: '', eq: '', cb: null },

@@ -158,6 +158,7 @@ function mealCard(m, icon) {
 function nutritionView() {
   const n = nutritionTargets(), p = S.profile, t = todayTemplate(), r = S.reminders.workout;
   let out = '';
+  out += dietMiniCard(n);
   if (!n.ready) {
     out += '<div class="card"><h3>I tuoi dati</h3><p class="small muted">Servono per calcolare calorie e proteine. Restano solo sul telefono.</p>' + bodyDataFields() + '</div>';
   }
@@ -230,7 +231,7 @@ VIEWS.exercise = p => {
 };
 
 /* =================== PROGRESSI =================== */
-const PROG_TABS = [['esercizi', 'Esercizi'], ['calendario', 'Calendario'], ['settimana', 'Settimana'], ['muscoli', 'Muscoli'], ['peso', 'Peso'], ['foto', 'Foto'], ['cardio', 'Cardio'], ['storico', 'Storico']];
+const PROG_TABS = [['andamento', 'Andamento'], ['esercizi', 'Grafici'], ['calendario', 'Calendario'], ['settimana', 'Settimana'], ['muscoli', 'Muscoli'], ['peso', 'Peso'], ['foto', 'Foto'], ['cardio', 'Cardio'], ['storico', 'Storico']];
 
 VIEWS.progress = () => {
   const P = UI.prog;
