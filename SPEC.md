@@ -96,3 +96,12 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Schermo sempre acceso durante l'allenamento (opzione).
 - AI: servizio, chiave, modello.
 - Backup: esporta / importa file (foto incluse a scelta), azzera dati.
+
+## Conta calorie (sezione Calorie)
+- Diario giornaliero per colazione, pranzo, cena e spuntini; anello con kcal rimaste rispetto al fabbisogno; barre di proteine, carboidrati e grassi; stima delle calorie bruciate in palestra; giorni precedenti consultabili.
+- Aggiunta alimenti: scansione codice a barre (scanner Google, nessun permesso fotocamera) con valori da Open Food Facts; codice scritto a mano; ricerca online su Open Food Facts; 57 alimenti comuni offline; recenti; inserimento manuale.
+- Foto del cibo o dell'etichetta: il coach AI (Gemini gratuito, oppure Claude/OpenAI) riconosce l'alimento e stima valori per 100 g e grammi; tutto modificabile prima di salvare.
+- Quantità in grammi con porzioni rapide; calcolo immediato di kcal e macronutrienti.
+
+## Circuito in corso (stile tabella)
+- Ogni stazione è una scheda con una riga per giro (precedente, kg, ripetizioni/secondi, ✓), prossima serie evidenziata, pausa automatica tra stazioni e tra giri, stazioni a tempo con conto alla rovescia nella riga.

@@ -191,6 +191,54 @@ const ACT = {
   noteSave: () => { const it = S.active.items[UI.noteN]; it.note = (document.getElementById('note-in').value || '').trim(); S.exNotes = S.exNotes || {}; if (it.note) S.exNotes[it.ex] = it.note; else delete S.exNotes[it.ex]; save(); closeSheet(); render(); },
   usePrev: d => { if (!d.kg) return; const s = S.active.items[+d.n].sets[+d.k]; s.kg = num(d.kg); s.reps = num(d.r); save(); render(); },
   circTimed: d => { const a = S.active, c = a.circ, it = a.items[+d.n]; stopRest(true); c.idx = +d.n; c.round = +d.k; c.workUntil = Date.now() + it.secs * 1000; Native.restTimer(it.secs, 'Stazione finita'); save(); render(); },
+  foodDayNav: d => { const x = new Date((UI.foodDay || todayKey()) + 'T12:00:00'); x.setDate(x.getDate() + (+d.d)); const k = dayKey(x); UI.foodDay = k > todayKey() ? todayKey() : k; render(); },
+  foodAdd: d => { UI.fadd = { meal: d.m || mealNow(), q: '' }; openSheet(foodAddSheet); },
+  foodScan: () => {
+    UI.fadd = UI.fadd || { meal: mealNow() };
+    if (Native.has() && window.Android.scanBarcode) { closeSheet(); window.Android.scanBarcode(); }
+    else ACT.foodCode();
+  },
+  foodCode: () => { UI.fadd = UI.fadd || { meal: mealNow() }; openSheet(() => '<h3>Codice a barre</h3><p class="small muted">Scrivi le cifre sotto il codice a barre (8 o 13 cifre).</p><input type="text" inputmode="numeric" id="bc-in" class="big-in" placeholder="es. 8001234567890"><button class="btn wide" data-act="foodCodeGo">Cerca prodotto</button>'); setTimeout(() => { const i = document.getElementById('bc-in'); if (i) i.focus(); }, 60); },
+  foodCodeGo: () => foodLookup((document.getElementById('bc-in') || {}).value || ''),
+  foodPhoto: () => {
+    UI.fadd = UI.fadd || { meal: mealNow() };
+    if (!aiReady()) { closeSheet(); toast('Per le foto collega il coach AI (Gemini è gratis)'); go('settings'); setTimeout(() => { const el = document.querySelector('[data-act=aiPaste]'); if (el) el.scrollIntoView({ block: 'center' }); }, 80); return; }
+    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.setAttribute('capture', 'environment');
+    inp.onchange = async () => {
+      const f = inp.files[0]; if (!f) return;
+      UI.fadd.busy = 'Analizzo la foto…'; openSheet(foodAddSheet);
+      try { const img = await shrinkImage(f, 1024); const p = await aiFoodFromPhoto(img); UI.fadd.busy = ''; openQty(p, { edit: !p.kcal }); }
+      catch (e) { UI.fadd.busy = e.message || String(e); rerenderSheet(); }
+    };
+    inp.click();
+  },
+  foodOnline: async () => {
+    const F = UI.fadd; if (!F.q || F.q.trim().length < 2) { toast('Scrivi prima cosa cercare'); return; }
+    F.busy = 'Cerco "' + F.q + '" su Open Food Facts…'; F.online = []; rerenderSheet();
+    try { F.online = await offSearch(F.q.trim()); F.busy = F.online.length ? '' : 'Nessun prodotto trovato.'; } catch (e) { F.busy = 'Errore di connessione: ' + e.message; }
+    rerenderSheet();
+  },
+  foodPick: d => {
+    const F = UI.fadd, pool = d.src === 'db' ? FOOD_DB : d.src === 'online' ? (F.online || []) : (S.foodRecent || []);
+    const p = pool.find(x => x.id === d.id); if (p) openQty(p);
+  },
+  foodManual: () => openQty({ id: 'man:' + uid(), name: (UI.fadd && UI.fadd.q) || 'Alimento', kcal: 0, p: 0, c: 0, f: 0, serving: 100, src: 'man' }, { edit: true, askName: true }),
+  foodValEdit: () => { UI.fprod.edit = true; rerenderSheet(); },
+  foodG: d => { UI.fprod.g = +d.g; rerenderSheet(); },
+  foodMeal: d => { UI.fprod.meal = d.m; rerenderSheet(); },
+  foodSave: () => {
+    const P = UI.fprod, g = num(P.g);
+    if (!(g > 0)) { toast('Inserisci i grammi'); return; }
+    if (!(num(P.kcal) >= 0) || (P.edit && !num(P.kcal) && !num(P.p) && !num(P.c) && !num(P.f))) { toast('Inserisci i valori per 100 g'); return; }
+    const k = UI.foodDay || todayKey(); S.food = S.food || {}; const list = S.food[k] = S.food[k] || [];
+    const entry = { name: P.name, brand: P.brand || '', g, kcal: num(P.kcal), p: num(P.p), c: num(P.c), f: num(P.f), meal: P.meal, t: Date.now(), pid: P.id };
+    if (P.i != null) list[P.i] = entry; else list.push(entry);
+    rememberFood(Object.assign({}, P, { kcal: entry.kcal, p: entry.p, c: entry.c, f: entry.f, serving: P.serving || g }));
+    save(true); closeSheet(); if (current().v !== 'food') go('food'); else render();
+    toast(Math.round(entry.kcal * g / 100) + ' kcal aggiunte');
+  },
+  foodEdit: d => { const x = foodDay()[+d.i]; openQty(Object.assign({ id: x.pid || 'x', serving: x.g }, x), { i: +d.i, g: x.g }); },
+  foodDel: () => { const k = UI.foodDay || todayKey(); S.food[k].splice(UI.fprod.i, 1); save(true); closeSheet(); render(); },
   coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
   goFood: () => { UI.coachTab = 'food'; go('coach'); },
   setSex: d => { S.profile.sex = d.k; save(); render(); },
@@ -304,6 +352,10 @@ document.addEventListener('input', ev => {
     case 'aiModel': S.settings.ai.model = v.trim(); save(); break;
     case 'obWeight': UI.ob.weight = v; break;
     case 'prof': S.profile[d.k] = v === '' ? '' : num(v); save(); break;
+    case 'foodQ': UI.fadd.q = v; UI.fadd.online = []; { const b = $('#sheet-body'), y = b.scrollTop; b.innerHTML = foodAddSheet(); const i = b.querySelector('[data-in=foodQ]'); i.focus(); i.setSelectionRange(v.length, v.length); b.scrollTop = y; } break;
+    case 'fname': UI.fprod.name = v; break;
+    case 'fgrams': UI.fprod.g = v; foodQtyUpdate(); break;
+    case 'fprod': UI.fprod[d.k] = num(v); foodQtyUpdate(); break;
     case 'aiText': el.style.height = 'auto'; el.style.height = Math.min(140, el.scrollHeight) + 'px'; break;
   }
 });
@@ -324,6 +376,8 @@ document.addEventListener('change', async ev => {
 document.addEventListener('keydown', ev => {
   if (ev.key === 'Enter' && ev.target.dataset && ev.target.dataset.in === 'aiText' && !ev.shiftKey) { ev.preventDefault(); ACT.aiSend(); }
   if (ev.key === 'Enter' && ev.target.id === 'w-in') ACT.saveWeight();
+  if (ev.key === 'Enter' && ev.target.id === 'bc-in') ACT.foodCodeGo();
+  if (ev.key === 'Enter' && ev.target.dataset && ev.target.dataset.in === 'foodQ') ACT.foodOnline();
 });
 
 /* il tempo continua anche se l'app torna in primo piano */

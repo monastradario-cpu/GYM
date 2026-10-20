@@ -123,6 +123,36 @@ function aiContext() {
   return lines.join('\n');
 }
 
+/* immagine + testo (riconoscimento del cibo) */
+async function aiVision(prompt, dataUrl) {
+  const cfg = S.settings.ai, prov = AI_PROVIDERS[cfg.provider] || AI_PROVIDERS.gemini, key = cleanKey(cfg.key, cfg.provider);
+  if (!key) throw new Error('Collega il coach AI (Gemini è gratis) nelle impostazioni.');
+  const mime = (dataUrl.match(/^data:([^;]+);/) || [0, 'image/jpeg'])[1], b64 = dataUrl.split(',')[1];
+  let res, data;
+  if (cfg.provider === 'anthropic') {
+    res = await aiFetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: (cfg.model || '').trim() || prov.model, max_tokens: 600, messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: mime, data: b64 } }, { type: 'text', text: prompt }] }] }) });
+    data = await res.json(); if (!res.ok) throw new Error(aiErrorText(res.status, data.error && data.error.message));
+    return data.content.map(c => c.text || '').join('');
+  }
+  if (cfg.provider === 'openai') {
+    res = await aiFetch('https://api.openai.com/v1/chat/completions', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key },
+      body: JSON.stringify({ model: (cfg.model || '').trim() || prov.model, messages: [{ role: 'user', content: [{ type: 'text', text: prompt }, { type: 'image_url', image_url: { url: dataUrl } }] }] }) });
+    data = await res.json(); if (!res.ok) throw new Error(aiErrorText(res.status, data.error && data.error.message));
+    return data.choices[0].message.content;
+  }
+  let model = (cfg.model || '').trim() || cfg.workingModel || prov.model, lastErr;
+  for (const m of [model].concat(['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-flash-latest'].filter(x => x !== model))) {
+    res = await aiFetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(m) + ':generateContent', { method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ inline_data: { mime_type: mime, data: b64 } }, { text: prompt }] }], generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 800 } }) });
+    data = await res.json();
+    if (res.ok) { const c = data.candidates && data.candidates[0]; return c && c.content ? c.content.parts.map(p => p.text || '').join('') : ''; }
+    const msg = data.error && data.error.message; lastErr = aiErrorText(res.status, msg);
+    if (!(res.status === 404 || /not found|is not supported/i.test(msg || ''))) break;
+  }
+  throw new Error(lastErr || 'Errore');
+}
+
 /* formattazione minima delle risposte (grassetto, elenchi, a capo) */
 function aiFormat(t) {
   return esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/^#+\s*(.+)$/gm, '<b>$1</b>')

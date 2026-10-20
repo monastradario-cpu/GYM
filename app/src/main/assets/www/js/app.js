@@ -58,7 +58,7 @@ function applyTheme() {
 
 /* ---------- Navigazione ---------- */
 const VIEWS = {};
-const TABS = [['home', 'Home', 'home'], ['schede', 'Schede', 'list'], ['coach', 'Coach', 'coach'], ['library', 'Esercizi', 'book'], ['progress', 'Progressi', 'chart']];
+const TABS = [['home', 'Home', 'home'], ['schede', 'Schede', 'list'], ['coach', 'Coach', 'coach'], ['food', 'Calorie', 'flame'], ['library', 'Esercizi', 'book'], ['progress', 'Progressi', 'chart']];
 
 function go(v, p, replace) {
   if (replace || TABS.some(t => t[0] === v)) UI.stack = [{ v, p }];
@@ -148,6 +148,7 @@ VIEWS.home = () => {
       '<button class="btn big ghost" data-act="tab" data-v="schede">' + ic('list') + 'Scegli una scheda</button></div>';
   }
   return header('GYM', { sub: fmtDateLong(now) }) + '<div class="pad">' + todayCard +
+    homeKcalCard() +
     '<div class="grid2">' +
       '<button class="tile" data-act="startEmpty">' + ic('plus') + '<b>Allenamento vuoto</b><small>Aggiungi gli esercizi mentre vai</small></button>' +
       '<button class="tile accent" data-act="tab" data-v="coach">' + ic('coach') + '<b>Crea con l\'allenatore</b><small>Scegli muscoli e attrezzi</small></button>' +
@@ -364,6 +365,13 @@ VIEWS.onboarding = () => {
 
 /* carte del trainer in home */
 function homeTrainerCards(t, doneToday) {
+  return homeTrainerCards2(t, doneToday);
+}
+function homeKcalCard() {
+  const ft = foodTotals(foodDay(todayKey())), nt = nutritionTargets();
+  return '<button class="card kcal-mini" data-act="tab" data-v="food"><div class="eyebrow">' + ic('flame', 'inline') + 'Calorie di oggi</div><div class="row gap"><b class="big-num">' + Math.round(ft.kcal) + '<small>' + (nt.kcal ? ' / ' + nt.kcal + ' kcal' : ' kcal') + '</small></b><span class="grow"></span><span class="pill">' + ic('camera', 'inline') + 'Aggiungi</span></div>' + (nt.kcal ? '<div class="mac-bar"><i class="' + (ft.kcal > nt.kcal ? 'fat' : 'pro') + '" style="width:' + Math.min(100, 100 * ft.kcal / nt.kcal) + '%"></i></div>' : '') + '</button>';
+}
+function homeTrainerCards2(t, doneToday) {
   let out = '<div class="card trainer"><div class="eyebrow">' + ic('coach', 'inline') + 'Consiglio del trainer</div><p>' + esc(tipOfDay()) + '</p></div>';
   const n = nutritionTargets(), r = S.reminders.workout;
   if (t && !doneToday) {

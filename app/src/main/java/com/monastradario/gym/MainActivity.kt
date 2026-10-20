@@ -29,6 +29,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.webkit.WebViewAssetLoader
 import org.json.JSONObject
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -201,6 +204,24 @@ class MainActivity : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= 33 &&
                 ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 main.post { askPerm.launch(Manifest.permission.POST_NOTIFICATIONS) }
+            }
+        }
+
+        /** scansione codice a barre (scanner di Google, senza permesso fotocamera) */
+        @JavascriptInterface fun scanBarcode() {
+            main.post {
+                try {
+                    val opts = GmsBarcodeScannerOptions.Builder()
+                        .setBarcodeFormats(Barcode.FORMAT_EAN_13, Barcode.FORMAT_EAN_8, Barcode.FORMAT_UPC_A, Barcode.FORMAT_UPC_E, Barcode.FORMAT_CODE_128)
+                        .enableAutoZoom()
+                        .build()
+                    GmsBarcodeScanning.getClient(this@MainActivity, opts).startScan()
+                        .addOnSuccessListener { b -> js("window.onBarcode(${JSONObject.quote(b.rawValue ?: "")})") }
+                        .addOnCanceledListener { }
+                        .addOnFailureListener { e -> js("window.onBarcodeError(${JSONObject.quote(e.message ?: "")})") }
+                } catch (e: Exception) {
+                    js("window.onBarcodeError(${JSONObject.quote(e.message ?: "")})")
+                }
             }
         }
 
