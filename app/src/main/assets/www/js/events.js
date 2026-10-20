@@ -161,6 +161,13 @@ const ACT = {
     ask((bodyweightOn() ? 'Corpo libero incluso. ' : 'Corpo libero escluso. ') + 'Aggiorno anche le schede e i circuiti pronti? Quelli creati da te restano.', 'Aggiorna', () => { regenPresets(); toast('Schede e circuiti aggiornati'); });
     render();
   },
+  reorder: d => { UI.reorderKey = d.k; openSheet(reorderSheet); },
+  roMove: d => { moveItem(UI.reorderKey, +d.n, +d.n + (+d.d)); rerenderSheet(); render(); },
+  circJump: d => {
+    const c = S.active && S.active.circ; if (!c) return;
+    const n = +d.n; if (c.phase !== 'work') c.phase = 'work';
+    stopRest(true); c.workUntil = 0; c.idx = n; save(); render(); window.scrollTo(0, 0); document.getElementById('view').scrollTo({ top: 0, behavior: 'smooth' });
+  },
   coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
   goFood: () => { UI.coachTab = 'food'; go('coach'); },
   setSex: d => { S.profile.sex = d.k; save(); render(); },

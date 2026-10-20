@@ -80,6 +80,7 @@ VIEWS.workout = () => {
     a.items.map((it, n) => exerciseCard(it, n)).join('') +
     (a.cardio.length ? '<div class="card"><h3>' + ic('run', 'inline') + 'Cardio</h3>' + a.cardio.map((c, n) => '<div class="list-item flat"><div><b>' + esc(c.type) + '</b><small>' + c.min + ' min' + (c.km ? ' · ' + fmtKg(c.km) + ' km' : '') + (c.lvl ? ' · livello ' + esc(c.lvl) : '') + '</small></div><button class="icon-btn sm" data-act="delCardio" data-n="' + n + '">' + ic('trash') + '</button></div>').join('') + '</div>' : '') +
     '<div class="grid2"><button class="btn ghost" data-act="woAdd">' + ic('plus') + 'Esercizio</button><button class="btn ghost" data-act="cardio">' + ic('run') + 'Cardio</button></div>' +
+    (a.items.length > 1 ? '<button class="btn ghost wide" data-act="reorder" data-k="wo">' + ic('list') + 'Riordina gli esercizi</button>' : '') +
     '<div class="grid2"><button class="btn ghost" data-act="plates" data-kg="">' + ic('calc') + 'Calcola dischi</button><button class="btn ghost" data-act="manualRest">' + ic('timer') + 'Timer</button></div>' +
     '<button class="btn wide big" data-act="finish">' + ic('check') + 'Termina allenamento</button>' +
     '<button class="btn danger ghost wide" data-act="discard">Annulla senza salvare</button>' +
@@ -153,7 +154,7 @@ function circuitView(a) {
       (next && !resting ? '<p class="muted small">Dopo: ' + esc((EX[next.ex] || {}).n || next.ex) + '</p>' : '') +
       '</div>';
   }
-  const list = '<div class="card"><h3>Stazioni</h3>' + a.items.map((i, n) => '<div class="list-item flat ' + (n === c.idx && c.phase === 'work' ? 'cur' : '') + '"><div><b>' + (n + 1) + '. ' + esc((EX[i.ex] || {}).n || i.ex) + '</b><small>' + (i.secs ? i.secs + ' sec' : i.reps + ' rip.') + '</small></div><div class="rounds">' + i.sets.map(s => '<i class="' + (s.done ? 'on' : s.skip ? 'skip' : '') + '"></i>').join('') + '</div></div>').join('') + '</div>';
+  const list = '<div class="card"><div class="card-h"><h3>Stazioni</h3><button class="btn sm ghost" data-act="reorder" data-k="wo">' + ic('list', 'inline') + 'Riordina</button></div><p class="small muted">Tocca una stazione per passare subito a quella.</p>' + a.items.map((i, n) => '<div class="list-item flat btnlike ' + (n === c.idx && c.phase === 'work' ? 'cur' : '') + '" data-act="circJump" data-n="' + n + '"><div><b>' + (n + 1) + '. ' + esc((EX[i.ex] || {}).n || i.ex) + '</b><small>' + (i.secs ? i.secs + ' sec' : i.reps + ' rip.') + '</small></div><div class="rounds">' + i.sets.map(s => '<i class="' + (s.done ? 'on' : s.skip ? 'skip' : '') + '"></i>').join('') + '</div></div>').join('') + '</div>';
   return '<header class="top workout-top"><button class="icon-btn" data-act="minimize">' + ic('down') + '</button><div class="top-title"><h1>' + esc(a.name) + '</h1><div class="sub"><span data-clock="elapsed"></span> · ' + doneCount + '/' + total + '</div></div><button class="btn sm" data-act="finish">Termina</button></header>' +
     '<div class="progress thin"><i style="width:' + (100 * doneCount / total) + '%"></i></div>' +
     '<div class="pad">' + main + list +

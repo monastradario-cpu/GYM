@@ -216,7 +216,7 @@ VIEWS.edit = () => {
       field('Pausa stazioni (s)', numIn(t.restEx, 'data-in="editNum" data-k="restEx"')) +
       field('Pausa giri (s)', numIn(t.restRound, 'data-in="editNum" data-k="restRound"')) + '</div>' +
       '<p class="muted small">Durata stimata: circa ' + templateMinutes(t) + ' minuti.</p>' : '') +
-    '<h3 class="sec">' + (circ ? 'Stazioni' : 'Esercizi') + '</h3>' +
+    '<div class="card-h sec-h"><h3 class="sec">' + (circ ? 'Stazioni' : 'Esercizi') + '</h3>' + (t.items.length > 1 ? '<button class="btn sm ghost" data-act="reorder" data-k="edit">' + ic('list', 'inline') + 'Riordina</button>' : '') + '</div>' +
     t.items.map((i, n) => {
       const e = EX[i.ex] || { n: i.ex }, timed = e.type === 'time';
       return '<div class="card edit-item"><div class="card-h"><button class="link" data-act="exInfo" data-id="' + i.ex + '"><b>' + (n + 1) + '. ' + esc(e.n) + '</b></button>' +
@@ -408,3 +408,60 @@ function swapListSheet() {
       return '<button class="list-item btnlike" data-act="swapPick" data-id="' + x.id + '"><div><b>' + esc(x.n) + (used ? ' <span class="role">già presente</span>' : '') + '</b><small>' + EQUIP[x.eq] + (x.pat === e.pat ? ' · stesso movimento' : '') + (x.comp ? ' · multiarticolare' : ' · isolamento') + '</small></div>' + ic('swap') + '</button>';
     }).join('') : '<div class="empty small">Nessun altro esercizio</div>');
 }
+
+/* ---------- Riordino esercizi (trascina la maniglia o usa le frecce) ---------- */
+function reorderItems(k) {
+  if (k === 'wo') return S.active ? S.active.items : [];
+  if (k === 'coach') { const o = UI.coach.result.options[UI.coach.result.sel]; return o.items; }
+  if (k === 'edit') return UI.edit ? UI.edit.items : [];
+  return [];
+}
+function reorderSheet() {
+  const k = UI.reorderKey, items = reorderItems(k);
+  return '<h3>Riordina</h3><p class="small muted">Tieni premuta la maniglia ≡ e trascina, oppure usa le frecce. Consiglio del trainer: prima i multiarticolari pesanti, poi l\'isolamento, addome alla fine.</p>' +
+    '<div class="ro-list">' + items.map((it, n) => {
+      const e = EX[it.ex] || { n: it.ex, m: '' }, done = it.sets && it.sets.some(s => s.done);
+      return '<div class="ro-row" data-i="' + n + '"><span class="grip" data-grip="' + n + '">≡</span><div class="grow"><b>' + (n + 1) + '. ' + esc(e.n) + '</b><small>' + muscleName(e.m) + (it.ss ? ' · superserie ' + it.ss : '') + (done ? ' · iniziato' : '') + '</small></div>' +
+        '<button class="icon-btn sm" data-act="roMove" data-n="' + n + '" data-d="-1"' + (n === 0 ? ' disabled' : '') + '>' + ic('up') + '</button><button class="icon-btn sm" data-act="roMove" data-n="' + n + '" data-d="1"' + (n === items.length - 1 ? ' disabled' : '') + '>' + ic('down') + '</button></div>';
+    }).join('') + '</div><button class="btn wide" data-act="closeSheet">Fatto</button>';
+}
+function moveItem(k, from, to) {
+  const items = reorderItems(k); if (to < 0 || to >= items.length || from === to) return;
+  const cur = k === 'wo' && S.active && S.active.circ ? items[S.active.circ.idx] : null;
+  const [x] = items.splice(from, 1); items.splice(to, 0, x);
+  // superserie: restano tali solo se i due esercizi sono ancora vicini
+  items.forEach((it, i) => { if (it.ss && !((items[i - 1] && items[i - 1].ss === it.ss) || (items[i + 1] && items[i + 1].ss === it.ss))) it.ss = null; });
+  if (cur) S.active.circ.idx = items.indexOf(cur);
+  if (k === 'wo') save();
+}
+/* trascinamento con il dito */
+(function () {
+  let drag = null;
+  document.addEventListener('pointerdown', ev => {
+    const g = ev.target.closest('[data-grip]'); if (!g) return;
+    const row = g.closest('.ro-row'), list = row.parentElement;
+    ev.preventDefault();
+    drag = { row, list, from: +row.dataset.i, y0: ev.clientY, h: row.getBoundingClientRect().height + 6, rows: [...list.children], to: +row.dataset.i };
+    row.classList.add('dragging'); g.setPointerCapture && g.setPointerCapture(ev.pointerId);
+  });
+  document.addEventListener('pointermove', ev => {
+    if (!drag) return;
+    const dy = ev.clientY - drag.y0, n = drag.rows.length;
+    drag.to = Math.max(0, Math.min(n - 1, drag.from + Math.round(dy / drag.h)));
+    drag.row.style.transform = 'translateY(' + dy + 'px)';
+    drag.rows.forEach((r, i) => {
+      if (r === drag.row) return;
+      let s = 0;
+      if (drag.to > drag.from && i > drag.from && i <= drag.to) s = -drag.h;
+      if (drag.to < drag.from && i < drag.from && i >= drag.to) s = drag.h;
+      r.style.transform = s ? 'translateY(' + s + 'px)' : '';
+    });
+  });
+  const end = () => {
+    if (!drag) return;
+    const d = drag; drag = null;
+    d.rows.forEach(r => { r.style.transform = ''; r.classList.remove('dragging'); });
+    if (d.to !== d.from) { moveItem(UI.reorderKey, d.from, d.to); Native.vibrate(20); rerenderSheet(); render(); }
+  };
+  document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
+})();

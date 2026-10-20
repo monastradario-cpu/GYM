@@ -296,3 +296,12 @@ details.card summary{cursor:pointer;list-style:none}
 .coach-ex.ss,.ex-card.ss{border-left:3px solid #38bdf8;padding-left:10px}
 .key-steps{padding-left:20px;margin:8px 0}.key-steps li{margin:5px 0}
 details.adv{margin-top:8px}details.adv summary{cursor:pointer}
+/* riordino */
+.ro-list{margin:8px 0 12px}
+.ro-row{display:flex;align-items:center;gap:8px;background:var(--card2);border-radius:12px;padding:8px 6px 8px 4px;margin:6px 0;transition:transform .15s}
+.ro-row.dragging{transition:none;z-index:2;position:relative;box-shadow:var(--shadow);background:color-mix(in srgb,var(--accent) 14%,var(--card2))}
+.ro-row b{display:block;font-size:14px}.ro-row small{color:var(--muted);font-size:12px}
+.grip{touch-action:none;font-size:22px;color:var(--muted);padding:4px 10px;cursor:grab;user-select:none}
+.icon-btn[disabled]{opacity:.3}
+.sec-h{margin:20px 0 6px}.sec-h h3.sec{margin:0}
+.list-item.btnlike{cursor:pointer}
