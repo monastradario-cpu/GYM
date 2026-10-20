@@ -5,15 +5,16 @@
 const DURATIONS = [30, 45, 60, 75, 90];
 const ANTAG = { petto: 'dorso', dorso: 'petto', bicipiti: 'tricipiti', tricipiti: 'bicipiti', quadricipiti: 'femorali', femorali: 'quadricipiti', spalle: 'dorso', glutei: 'quadricipiti', polpacci: 'addome', addome: 'polpacci' };
 
+function coachEquip() { const c = UI.coach; return c.eq.length ? c.eq : COACH_EQUIP.filter(k => k !== 'corpo' || bodyweightOn()); }
 /* lista di esercizi in ordine di priorità (il trainer sceglie i migliori per primi) */
 function coachPool(seed) {
   const c = UI.coach, p = S.profile;
   const muscles = c.muscles.slice().sort((a, b) => BIG_MUSCLES.includes(b) - BIG_MUSCLES.includes(a));
-  const eqs = c.eq.length ? c.eq : COACH_EQUIP, rnd = mulberry(seed || Date.now());
+  const eqs = coachEquip(), rnd = mulberry(seed || Date.now());
   const per = {};
   muscles.forEach(m => {
     let pool = EXERCISES.filter(e => e.m === m && eqs.includes(e.eq) && e.pat !== 'condizionamento');
-    if (pool.length < 2) pool = pool.concat(EXERCISES.filter(e => e.m === m && e.pat !== 'condizionamento' && !pool.includes(e) && (e.eq === 'corpo' || !c.eq.length)));
+    if (!pool.length) pool = EXERCISES.filter(e => e.m === m && e.pat !== 'condizionamento' && (eqs.includes('corpo') || e.eq !== 'corpo'));
     pool = pool.map(e => ({ e, r: rnd() + (e.comp ? 0.6 : 0) + (goalsOf().includes('forza') && e.comp ? 0.5 : 0) + (p.level === 'principiante' && e.eq === 'macchinari' ? 0.4 : 0) })).sort((a, b) => b.r - a.r).map(x => x.e);
     // movimenti diversi prima, poi il resto
     const seen = new Set(), first = [], rest = [];
@@ -71,7 +72,8 @@ function coachGenerate(seed) {
   const timeAvail = Math.max(15, T - 8 - 4);
   let nSt = Math.max(5, Math.min(10, Math.round(T / 7)));
   const st = pool.slice(0, nSt).map(i => { const e = EX[i.ex]; return e.type === 'time' ? { ex: i.ex, secs: 40, reps: 0 } : { ex: i.ex, reps: i.role === 'acc' || i.role === 'core' ? 15 : 12, secs: 0 }; });
-  if (goals.some(g => g === 'dimagrimento' || g === 'tonificazione' || g === 'benessere')) st.splice(Math.min(3, st.length), 0, { ex: lvl === 'principiante' ? 'jumping_jack' : 'mountain_climber', secs: 40, reps: 0 });
+  const cardioSt = coachEquip().includes('corpo') ? (lvl === 'principiante' ? 'jumping_jack' : 'mountain_climber') : coachEquip().includes('manubri') ? 'swing_man' : null;
+  if (cardioSt && goals.some(g => g === 'dimagrimento' || g === 'tonificazione' || g === 'benessere')) st.splice(Math.min(3, st.length), 0, { ex: cardioSt, secs: 40, reps: 0 });
   const work = 45, restEx = lvl === 'principiante' ? 20 : 15, restRound = 90;
   const perRound = st.length * (work + restEx);
   const rounds = Math.max(2, Math.min(6, Math.floor((timeAvail * 60 + restRound) / (perRound + restRound))));
@@ -116,9 +118,9 @@ VIEWS.coach = () => {
       '<div class="row gap wrap">' + DAY_GROUPS.map(g => '<button class="btn sm ghost" data-act="coachQuick" data-q="' + g.m.join(',') + '">' + g.n + '</button>').join('') + '</div>' +
       (c.muscles.some(m => !rec[m].ready) ? '<div class="note warn small">' + c.muscles.filter(m => !rec[m].ready).map(m => MUSCLES[m]).join(', ') + ': allenati da meno di ' + '48 ore. Puoi farlo, ma con meno volume.</div>' : '') +
     '</div>' +
-    '<div class="card"><h3>2. Preferisci manubri o macchinari?</h3><div class="grid3 eq-pick">' +
-      COACH_EQUIP.map(k => '<button class="opt ' + (c.eq.includes(k) ? 'on' : '') + '" data-act="coachEq" data-k="' + k + '">' + ic(k === 'macchinari' ? 'gear' : 'dumbbell') + '<b>' + EQUIP[k] + '</b></button>').join('') +
-      '</div><p class="muted small">Puoi sceglierne più di uno. Se non scegli, li uso tutti.' + (p.level === 'principiante' ? ' Da principiante i macchinari sono più facili e sicuri.' : '') + '</p></div>' +
+    '<div class="card"><h3>2. Preferisci manubri o macchinari?</h3><div class="grid2 eq-pick">' +
+      COACH_EQUIP.map(k => '<button class="opt ' + (c.eq.includes(k) ? 'on' : '') + '" data-act="coachEq" data-k="' + k + '">' + ic(k === 'macchinari' ? 'gear' : k === 'corpo' ? 'run' : 'dumbbell') + '<b>' + EQUIP[k] + '</b></button>').join('') +
+      '</div><p class="muted small">Puoi sceglierne più di uno. Se non scegli nulla li uso tutti' + (bodyweightOn() ? ' (corpo libero compreso).' : ' tranne il corpo libero (escluso nelle impostazioni).') + (p.level === 'principiante' ? ' Da principiante i macchinari sono più facili e sicuri.' : '') + '</p></div>' +
     '<div class="card"><h3>3. Quanto tempo hai?</h3><div class="chips dur">' + DURATIONS.map(d => chip(d + ' min', (c.dur || 60) === d, 'coachDur', 'data-d="' + d + '"')).join('') + '</div><p class="muted small">Riscaldamento e defaticamento compresi. Ti preparo più opzioni che stanno in questo tempo.</p></div>' +
     '<button class="btn wide big" data-act="coachGo"' + (c.muscles.length ? '' : ' disabled') + '>' + ic('sparkle') + 'Proponimi gli allenamenti</button>';
   if (c.result) {

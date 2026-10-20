@@ -101,7 +101,7 @@ function makeTemplateFromPreset(key, days) {
 function makeCircuit(c) {
   return { id: uid(), kind: 'circuito', name: c.n, desc: c.desc, days: [], preset: c.key,
     rounds: c.rounds, restEx: c.restEx, restRound: c.restRound, warm: c.warm, cool: c.cool, work: c.work,
-    items: c.st.map(s => ({ ex: s.ex, reps: s.reps || 0, secs: s.secs || 0 })) };
+    items: c.st.map(s => { const id = noBodyweight(s.ex), timed = EX[id].type === 'time'; return id === s.ex ? { ex: s.ex, reps: s.reps || 0, secs: s.secs || 0 } : { ex: id, reps: timed ? 0 : 15, secs: timed ? 40 : 0 }; }) };
 }
 function templateMinutes(t) {
   if (t.kind === 'circuito') {

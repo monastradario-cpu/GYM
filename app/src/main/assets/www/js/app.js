@@ -276,6 +276,7 @@ VIEWS.settings = () => {
     '<h3 class="sec">Allenamento</h3><div class="card">' +
       '<div class="list-item flat"><div><b>Recupero automatico</b><small>Il timer parte quando segni la serie</small></div>' + toggle(st.autoRest, 'setFlag', 'data-k="autoRest"') + '</div>' +
       '<div class="list-item flat"><div><b>Suono a fine recupero</b></div>' + toggle(st.sound, 'setFlag', 'data-k="sound"') + '</div>' +
+      '<div class="list-item flat"><div><b>Esercizi a corpo libero</b><small>Piegamenti, plank, trazioni, burpees… nelle schede, nei circuiti e nel Coach</small></div>' + toggle(bodyweightOn(), 'toggleBW') + '</div>' +
       '<div class="list-item flat"><div><b>Schermo sempre acceso</b><small>Durante l\'allenamento</small></div>' + toggle(st.keepScreen, 'setFlag', 'data-k="keepScreen"') + '</div>' +
     '</div>' +
     '<h3 class="sec">Promemoria</h3><div class="card">' +

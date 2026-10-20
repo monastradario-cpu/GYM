@@ -148,6 +148,11 @@ const ACT = {
   aiSend: () => { const t = document.querySelector('[data-in="aiText"]'); aiSend(t ? t.value : ''); },
 
   coachFromNew: () => { closeSheet(); UI.coachTab = 'train'; go('coach'); toast('Scegli muscoli, attrezzi e durata'); },
+  toggleBW: () => {
+    S.profile.bodyweight = !bodyweightOn(); save();
+    ask((bodyweightOn() ? 'Corpo libero incluso. ' : 'Corpo libero escluso. ') + 'Aggiorno anche le schede e i circuiti pronti? Quelli creati da te restano.', 'Aggiorna', () => { regenPresets(); toast('Schede e circuiti aggiornati'); });
+    render();
+  },
   coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
   goFood: () => { UI.coachTab = 'food'; go('coach'); },
   setSex: d => { S.profile.sex = d.k; save(); render(); },
@@ -222,6 +227,12 @@ const ACT = {
   }
 };
 
+function regenPresets(quiet) {
+  const mine = S.templates.filter(t => !t.preset);
+  S.templates = buildDefaultTemplates().concat(mine);
+  save(true); syncReminders(); if (!quiet) render();
+}
+
 /* tocchi */
 document.addEventListener('click', ev => {
   // figura del corpo nell'allenatore
@@ -286,8 +297,7 @@ applyTheme();
 if (S.onboarded && !S.templates.length) S.templates = buildDefaultTemplates();
 if (S.onboarded && S.needRegen) {
   // nuove schede del trainer: sostituisce quelle preimpostate, tiene quelle create da te
-  const mine = S.templates.filter(t => !t.preset);
-  S.templates = buildDefaultTemplates().concat(mine);
+  regenPresets(true);
   delete S.needRegen; save(true);
   setTimeout(() => toast('Schede aggiornate dal trainer: dai un\'occhiata in "Schede"'), 800);
 }

@@ -8,7 +8,8 @@ const MUSCLES = {
 const BIG_MUSCLES = ['petto', 'dorso', 'quadricipiti', 'femorali', 'glutei'];
 
 const EQUIP = { manubri: 'Manubri', macchinari: 'Macchinari', bilanciere: 'Bilanciere', corpo: 'Corpo libero' };
-const COACH_EQUIP = ['manubri', 'macchinari', 'bilanciere'];
+const COACH_EQUIP = ['manubri', 'macchinari', 'bilanciere', 'corpo'];
+const bodyweightOn = () => typeof S === 'undefined' || S.profile.bodyweight !== false;
 
 const CARDIO_TYPES = ['Tapis roulant', 'Cyclette', 'Ellittica', 'Vogatore', 'Corsa', 'Step', 'Altro'];
 
@@ -432,7 +433,16 @@ const PRESET_SPLITS = {
 };
 function splitItems(key, level) {
   const beg = level === 'principiante';
-  return PRESET_SPLITS[key].slots.map(([role, id, alt]) => prescribe(beg && alt ? alt : id, role));
+  return PRESET_SPLITS[key].slots.map(([role, id, alt]) => prescribe(noBodyweight(beg && alt ? alt : id, alt), role));
+}
+/* se il corpo libero è escluso: sostituisce con l'alternativa più simile con attrezzi */
+function noBodyweight(id, alt) {
+  const e = EX[id]; if (!e || e.eq !== 'corpo' || bodyweightOn()) return id;
+  if (alt && EX[alt] && EX[alt].eq !== 'corpo') return alt;
+  if (e.m === 'addome') return 'crunch_macchina';
+  if (e.pat === 'condizionamento') return { burpees: 'goblet_squat', jumping_jack: 'alzate_laterali', mountain_climber: 'crunch_cavi' }[id] || 'leg_press';
+  const a = alternatives(id).find(x => x.eq !== 'corpo');
+  return a ? a.id : id;
 }
 function splitForDays(n, level) {
   if (n <= 1) return ['fullA'];
