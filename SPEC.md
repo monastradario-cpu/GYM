@@ -13,10 +13,10 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Dati in locale (localStorage + IndexedDB per le foto).
 
 ## Primo avvio — configurazione guidata
-1. Obiettivo: massa, forza, tonificazione, dimagrimento.
+1. Obiettivi (scelta multipla, combinati dal trainer): massa, forza, tonificazione, dimagrimento, salute e benessere.
 2. Livello: principiante, intermedio, avanzato.
 3. Giorni di allenamento (lun…dom) → l'app crea le schede preimpostate per quei giorni.
-4. Peso corporeo attuale.
+4. Peso, sesso, età, altezza (per calorie e proteine).
 5. Promemoria: allenamento (ora), acqua (intervallo e fascia oraria), pesata (giorno e ora).
 
 ## Home
@@ -25,9 +25,12 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - **Crea con l'allenatore**.
 - **Riepilogo settimana**: allenamenti fatti, peso più recente, bicchieri d'acqua oggi (+1 con un tocco).
 
-## Schede e circuiti
-- Schede preimpostate generate in base a giorni, obiettivo e livello:
-  2–3 giorni Full body A/B, 4 giorni Upper/Lower A/B, 5–6 giorni Push/Pull/Legs.
+## Schede e circuiti (impostate come un personal trainer)
+- Schede preimpostate in base a giorni, obiettivi e livello:
+  1–2 giorni Full body, 3 giorni Full body A/B/C (avanzato: Spinta/Tirata/Gambe), 4 giorni Parte alta/bassa A/B, 5 giorni Alta/Bassa + Spinta/Tirata/Gambe, 6 giorni Spinta/Tirata/Gambe ×2.
+- Ogni esercizio ha un ruolo (principale, complementare, isolamento, core) con serie, ripetizioni e recupero propri; gli obiettivi multipli vengono combinati.
+- Principianti: versioni ai macchinari degli esercizi tecnici e ripetizioni più alte sui principali.
+- Nota del trainer per ogni scheda e per ogni esercizio (ripetizioni di scorta, ritmo).
 - **Circuiti preimpostati da circa un'ora** (riscaldamento e defaticamento inclusi):
   Total body manubri, Macchinari, Bilanciere forza‑resistenza, Brucia grassi misto, Gambe e glutei, Parte alta.
 - Creazione e modifica libera: nome, giorni, esercizi, serie, ripetizioni min–max, recupero; per i circuiti giri, lavoro in secondi o ripetizioni, pausa tra stazioni e tra giri.
@@ -43,6 +46,13 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Aggiunta esercizi e cardio.
 - Circuiti in modalità guidata: stazione corrente grande, conto alla rovescia, pause automatiche, giri.
 
+## Coach (allenamento + alimentazione)
+- "Il trainer consiglia oggi": gruppo muscolare suggerito in base a recupero (48 h muscoli grandi, 36 h piccoli) e volume della settimana.
+- Scelta dei muscoli con abbinamenti consigliati (es. petto → tricipiti, spalle) e avviso per i muscoli ancora in recupero.
+- Allenamento libero: all'inizio propone i gruppi da allenare; nella scelta esercizi suggerisce gli abbinamenti.
+- Alimentazione: calorie (Mifflin-St Jeor + attività + obiettivi), proteine, carboidrati, grassi, acqua; pasti 2–3 ore prima, spuntino 30–60 minuti prima, recupero entro 2 ore dopo, giorni di riposo; consigli per obiettivo.
+- Home: consiglio del giorno, pasto pre/post allenamento, mobilità nei giorni di riposo, settimana di scarico ogni 6 settimane.
+
 ## Allenatore
 - Scegli i gruppi muscolari e l'attrezzo (manubri, macchinari, bilanciere).
 - Propone gli esercizi con serie, ripetizioni e recupero adattati a obiettivo e livello.
@@ -52,7 +62,7 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 
 ## Libreria esercizi
 - Filtri per muscolo e attrezzo, ricerca.
-- Scheda esercizio: figura del corpo con muscoli principali e secondari evidenziati, esecuzione, errori, consiglio, alternative, link a video di esempio (YouTube), storico e record.
+- Scheda esercizio: **animazione creata nell'app** al rallentatore (manichino con postura corretta, muscoli evidenziati, fasi con indicazioni e respirazione, velocità molto lento/lento/normale), figura anatomica con muscoli principali e secondari, esecuzione, errori, consiglio, alternative, link facoltativo a YouTube, storico e record.
 
 ## Cardio
 - Tipo (tapis roulant, cyclette, ellittica, vogatore, corsa, altro), tempo, distanza (km), livello/inclinazione.

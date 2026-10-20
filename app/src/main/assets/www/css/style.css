@@ -249,3 +249,39 @@ h3.sec{margin:20px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:
 .ob-hero{text-align:center;padding:50px 10px 20px}.ob-hero h1{font-size:30px;margin:16px 0 8px}.ob-hero p{color:var(--muted);font-size:16px}
 .ob-nav{display:flex;justify-content:space-between;gap:10px;margin-top:auto;padding:24px 0 10px}
 .ob-nav .btn{min-width:120px}
+.body-svg .mu{stroke:var(--card);stroke-width:1.1;stroke-linejoin:round;transition:fill-opacity .2s}
+:root{--mq:#c9ced6;--mq2:#6b7280;--prop:#4b5563;--prop2:#9ca3af}
+[data-theme=light]{--mq:#8a94a3;--mq2:#c3c9d2;--prop:#cfd4db;--prop2:#7b8494}
+/* v2: trainer, animazioni, alimentazione */
+.demo-stage{position:relative;background:var(--card2);border-radius:14px;overflow:hidden}
+.demo-svg{width:100%;height:auto;display:block}
+.demo-view{position:absolute;top:8px;right:10px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.demo-cue{display:flex;align-items:center;gap:10px;margin:10px 0 6px;min-height:40px}
+.demo-cue b{font-size:15px;line-height:1.3}
+.demo-phase{flex:none;font-size:12px;font-weight:800;color:#fff;background:var(--accent);border-radius:99px;padding:3px 9px;min-width:52px;text-align:center}
+.demo-bar{height:4px;border-radius:99px;background:var(--card2);overflow:hidden}.demo-bar i{display:block;height:100%;background:var(--accent)}
+.demo-ctrl{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.demo-ctrl .btn.on{background:var(--accent);color:#fff}
+.role{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:99px;vertical-align:2px;background:var(--card2);color:var(--muted)}
+.role.main{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--accent)}
+.role.sec{background:color-mix(in srgb,#38bdf8 18%,transparent);color:#38bdf8}
+.tnote{font-size:12.5px;color:var(--muted);margin:-4px 0 10px}
+.card.trainer{background:color-mix(in srgb,var(--accent) 9%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}
+.card.trainer p{margin:6px 0 10px}
+.pairs{margin:6px 0 10px}
+.pair{display:block;width:100%;text-align:left;background:var(--card2);border-radius:12px;padding:10px 12px;margin:6px 0}
+.pair b{display:block}.pair small{color:var(--muted);font-size:12.5px}
+.rec-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#eab308;margin-left:5px;vertical-align:1px}
+.note.warn{background:color-mix(in srgb,#eab308 14%,var(--card))}
+.link-inline{color:var(--accent);font-weight:700;text-decoration:underline}
+.opt.check{flex-direction:row;align-items:center;justify-content:space-between}
+.opt.check span{display:flex;flex-direction:column;gap:2px}
+.opt.check .tick{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:transparent;flex:none}
+.opt.check.on .tick{background:var(--accent);border-color:var(--accent);color:#fff}
+.opt.check .tick .ic{width:16px;height:16px}
+.macro{display:flex;height:12px;border-radius:99px;overflow:hidden;gap:2px;margin:6px 0}
+.macro i,.macro-l i{display:block}.pro{background:var(--accent)}.carb{background:#38bdf8}.fat{background:#eab308}
+.macro-l{display:flex;flex-wrap:wrap;gap:12px;color:var(--muted)}.macro-l i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.meal-mini{display:block;width:100%;text-align:left}
+.meal-mini p{margin:6px 0 4px}
+details.card summary{cursor:pointer;list-style:none}
+.demo-card .card-h{margin-bottom:10px}

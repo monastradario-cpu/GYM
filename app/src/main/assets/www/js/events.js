@@ -53,7 +53,7 @@ const ACT = {
   editMove: d => { const a = UI.edit.items, n = +d.n, m = n + (+d.d); if (m < 0 || m >= a.length) return; [a[n], a[m]] = [a[m], a[n]]; render(); },
   editDel: d => { UI.edit.items.splice(+d.n, 1); render(); },
   editSwap: d => pickExercise(id => { const it = UI.edit.items[+d.n]; it.ex = id; if (EX[id].type === 'time' && !it.secs) it.secs = 40; render(); }, { m: EX[UI.edit.items[+d.n].ex].m }),
-  editAdd: () => pickExercise(id => { const t = UI.edit; t.items.push(t.kind === 'circuito' ? { ex: id, reps: EX[id].type === 'time' ? 0 : 12, secs: EX[id].type === 'time' ? 40 : 0 } : prescribe(id, S.profile.goal, S.profile.level)); render(); }),
+  editAdd: () => pickExercise(id => { const t = UI.edit; t.items.push(t.kind === 'circuito' ? { ex: id, reps: EX[id].type === 'time' ? 0 : 12, secs: EX[id].type === 'time' ? 40 : 0 } : prescribe(id)); render(); }),
   saveTemplate: () => {
     const t = UI.edit; if (!t.items.length) { toast('Aggiungi almeno un esercizio'); return; }
     t.name = (t.name || '').trim() || 'Scheda';
@@ -86,8 +86,8 @@ const ACT = {
   exMenu: d => openSheet(() => exMenuSheet(+d.n)),
   woMove: d => { const a = S.active.items, n = +d.n, m = n + (+d.d); if (m < 0 || m >= a.length) return; [a[n], a[m]] = [a[m], a[n]]; save(); closeSheet(); render(); },
   woDel: d => { S.active.items.splice(+d.n, 1); save(); closeSheet(); render(); },
-  woAdd: () => pickExercise(id => { S.active.items.push(newItem(prescribe(id, S.profile.goal, S.profile.level), 'scheda')); save(); render(); setTimeout(() => { const v = $('#view'); v.scrollTop = v.scrollHeight; }, 30); }),
-  addToActive: d => { S.active.items.push(newItem(prescribe(d.id, S.profile.goal, S.profile.level), 'scheda')); save(); go('workout'); toast('Aggiunto'); },
+  woAdd: () => pickExercise(id => { S.active.items.push(newItem(prescribe(id), 'scheda')); save(); render(); setTimeout(() => { const v = $('#view'); v.scrollTop = v.scrollHeight; }, 30); }),
+  addToActive: d => { S.active.items.push(newItem(prescribe(d.id), 'scheda')); save(); go('workout'); toast('Aggiunto'); },
   swapEx: d => openSheet(() => swapSheet(+d.n)),
   doSwap: d => {
     const a = S.active, it = a.items[+d.n];
@@ -122,7 +122,7 @@ const ACT = {
   coachEq: d => { const c = UI.coach; c.eq = c.eq.includes(d.k) ? c.eq.filter(x => x !== d.k) : c.eq.concat(d.k); c.result = null; render(); },
   coachGo: () => { if (!UI.coach.muscles.length) { toast('Scegli almeno un muscolo'); return; } coachGenerate(Date.now()); render(); setTimeout(() => { const el = document.querySelector('.coach-ex'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 30); },
   coachSwap: d => openSheet(() => coachSwapSheet(+d.n)),
-  coachDoSwap: d => { const items = UI.coach.result.items, old = items[+d.n]; items[+d.n] = prescribe(d.id, S.profile.goal, S.profile.level); closeSheet(); render(); },
+  coachDoSwap: d => { const items = UI.coach.result.items, old = items[+d.n]; items[+d.n] = prescribe(d.id, old.role); closeSheet(); render(); },
   coachStart: () => startWorkout({ id: null, kind: 'scheda', name: 'Allenamento ' + UI.coach.muscles.map(m => MUSCLES[m]).join(', '), items: UI.coach.result.items }),
   coachSave: () => {
     const t = { id: uid(), kind: 'scheda', name: UI.coach.muscles.map(m => MUSCLES[m]).join(' + '), days: [], items: JSON.parse(JSON.stringify(UI.coach.result.items)) };
@@ -131,6 +131,12 @@ const ACT = {
   openAI: () => { if (!aiReady()) { go('settings'); setTimeout(() => { const el = document.querySelector('[data-in="aiKey"]'); if (el) el.scrollIntoView({ block: 'center' }); }, 50); toast('Inserisci una chiave API per attivare il coach AI'); return; } go('aichat'); },
   aiSugg: d => aiSend(d.t),
   aiSend: () => { const t = document.querySelector('[data-in="aiText"]'); aiSend(t ? t.value : ''); },
+
+  coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
+  goFood: () => { UI.coachTab = 'food'; go('coach'); },
+  setSex: d => { S.profile.sex = d.k; save(); render(); },
+  mobility: () => openSheet(mobilitySheet),
+  woGroup: d => { const ms = d.q.split(','); pickExercise(id => { S.active.items.push(newItem(prescribe(id), 'scheda')); save(); render(); }, { m: ms[0], group: ms }); },
 
   /* libreria / esercizio */
   exInfo: d => { closeSheet(); go('exercise', { id: d.id }); },
@@ -147,14 +153,14 @@ const ACT = {
   weekNav: d => { const w = new Date(UI.prog.week || startOfWeek(Date.now())); w.setDate(w.getDate() + 7 * (+d.d)); UI.prog.week = w.getTime(); render(); },
   histOpen: d => openSheet(() => histSheet(d.id)),
   histDel: d => ask('Eliminare questo allenamento dallo storico?', 'Elimina', () => { S.history = S.history.filter(h => h.id !== d.id); save(); render(); }, true),
-  histRepeat: d => { const h = S.history.find(x => x.id === d.id); closeSheet(); startWorkout({ id: null, kind: 'scheda', name: h.name, items: h.items.map(it => { const p = prescribe(it.ex, S.profile.goal, S.profile.level); p.sets = it.sets.filter(s => !s.wu).length || p.sets; return p; }) }); },
+  histRepeat: d => { const h = S.history.find(x => x.id === d.id); closeSheet(); startWorkout({ id: null, kind: 'scheda', name: h.name, items: h.items.map(it => { const p = prescribe(it.ex); p.sets = it.sets.filter(s => !s.wu).length || p.sets; return p; }) }); },
   photoView: d => Photos.all().then(list => { const p = list.find(x => x.id === d.id); if (!p) return; openSheet(() => '<img class="photo-full" src="' + p.data + '"><p class="center muted">' + fmtDateLong(p.date) + '</p><button class="btn danger ghost wide" data-act="photoDel" data-id="' + p.id + '">' + ic('trash') + 'Elimina foto</button>'); }),
   photoDel: d => ask('Eliminare la foto?', 'Elimina', () => Photos.del(d.id).then(() => { render(); loadPhotos(); }), true),
 
   /* impostazioni */
   setTheme: d => { S.settings.theme = d.t; applyTheme(); save(); render(); },
   setAccent: d => { S.settings.accent = d.k; applyTheme(); save(); render(); },
-  setGoal: d => { S.profile.goal = d.k; save(); render(); },
+  setGoal: d => { const g = S.profile.goals; if (g.includes(d.k)) { if (g.length > 1) S.profile.goals = g.filter(x => x !== d.k); else toast('Scegli almeno un obiettivo'); } else g.push(d.k); save(); render(); },
   setLevel: d => { S.profile.level = d.k; save(); render(); },
   setDay: d => { const x = +d.d, p = S.profile; p.days = p.days.includes(x) ? p.days.filter(y => y !== x) : p.days.concat(x); save(); if (S.onboarded) syncReminders(); render(); },
   setFlag: d => { S.settings[d.k] = !S.settings[d.k]; save(); if (d.k === 'keepScreen' && S.active) Native.keepScreen(S.settings.keepScreen); render(); },
@@ -218,6 +224,7 @@ document.addEventListener('input', ev => {
     case 'aiKey': S.settings.ai.key = v.trim(); save(); break;
     case 'aiModel': S.settings.ai.model = v.trim(); save(); break;
     case 'obWeight': UI.ob.weight = v; break;
+    case 'prof': S.profile[d.k] = v === '' ? '' : num(v); save(); break;
     case 'aiText': el.style.height = 'auto'; el.style.height = Math.min(140, el.scrollHeight) + 'px'; break;
   }
 });
@@ -247,6 +254,14 @@ if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListen
 /* ---------- Avvio ---------- */
 applyTheme();
 if (S.onboarded && !S.templates.length) S.templates = buildDefaultTemplates();
+if (S.onboarded && S.needRegen) {
+  // nuove schede del trainer: sostituisce quelle preimpostate, tiene quelle create da te
+  const mine = S.templates.filter(t => !t.preset);
+  S.templates = buildDefaultTemplates().concat(mine);
+  delete S.needRegen; save(true);
+  setTimeout(() => toast('Schede aggiornate dal trainer: dai un\'occhiata in "Schede"'), 800);
+}
+delete S.needRegen;
 UI.stack = [{ v: S.active ? 'workout' : 'home' }];
 render(true);
 if (S.onboarded) syncReminders();

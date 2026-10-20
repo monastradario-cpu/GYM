@@ -24,12 +24,12 @@ function coachGenerate(seed) {
   muscles.forEach(m => {
     let pool = EXERCISES.filter(e => e.m === m && eqs.includes(e.eq) && e.pat !== 'condizionamento');
     if (!pool.length) pool = EXERCISES.filter(e => e.m === m && e.pat !== 'condizionamento'); // es. addome: corpo libero
-    pool = pool.map(e => ({ e, r: rnd() + (e.comp ? 0.6 : 0) + (p.goal === 'forza' && e.comp ? 0.5 : 0) })).sort((a, b) => b.r - a.r).map(x => x.e);
+    pool = pool.map(e => ({ e, r: rnd() + (e.comp ? 0.6 : 0) + (goalsOf().includes('forza') && e.comp ? 0.5 : 0) + (p.level === 'principiante' && e.eq === 'macchinari' ? 0.4 : 0) })).sort((a, b) => b.r - a.r).map(x => x.e);
     const used = new Set();
     for (const e of pool) {
       if (picks.filter(x => EX[x.ex].m === m).length >= quota[m]) break;
       if (used.has(e.pat) && pool.some(o => !used.has(o.pat) && !picks.some(pk => pk.ex === o.id))) continue;
-      used.add(e.pat); picks.push(prescribe(e.id, p.goal, p.level));
+      used.add(e.pat); picks.push(prescribe(e.id, e.comp && BIG_MUSCLES.includes(m) && !picks.some(x => x.role === 'main' && EX[x.ex].m === m) ? 'main' : null));
     }
   });
   // ordine: grandi multiarticolari prima, addome in fondo
@@ -39,44 +39,91 @@ function coachGenerate(seed) {
 function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
 function coachAdvice() {
-  const p = S.profile, g = GOALS[p.goal];
-  const tips = {
-    massa: ['Lavora tra ' + g.rmin + ' e ' + g.rmax + ' ripetizioni, lasciando 1–2 ripetizioni di scorta.', 'Aumenta il carico appena completi tutte le serie al massimo delle ripetizioni.', 'Mangia a sufficienza, con proteine in ogni pasto, e dormi 7–9 ore.'],
-    forza: ['Serie pesanti da ' + g.rmin + '–' + g.rmax + ' ripetizioni con recuperi lunghi (2–3 minuti).', 'Cura la tecnica prima del carico: ogni ripetizione uguale alla prima.', 'Fai sempre il riscaldamento progressivo prima delle serie pesanti.'],
-    tonificazione: ['Serie da ' + g.rmin + '–' + g.rmax + ' ripetizioni controllate, 2 secondi in discesa.', 'Recuperi brevi (circa ' + g.rest + ' secondi) per mantenere il ritmo.', 'Aumenta il carico quando arrivi facilmente a ' + g.rmax + ' ripetizioni.'],
-    dimagrimento: ['Recuperi brevi e ritmo alto: i circuiti da un\'ora sono perfetti.', 'Aggiungi 15–20 minuti di cardio a fine allenamento.', 'Mantieni carichi impegnativi per conservare i muscoli mentre perdi grasso.']
-  };
-  return tips[p.goal] || tips.massa;
+  const goals = goalsOf(), t = [];
+  const pr = prescribe('panca_piana_bil', 'main'), ac = prescribe('alzate_laterali', 'acc');
+  t.push('Con i tuoi obiettivi: esercizi principali ' + pr.sets + '×' + pr.rmin + '–' + pr.rmax + ' con ' + pr.rest + ' s di recupero, isolamento ' + ac.sets + '×' + ac.rmin + '–' + ac.rmax + ' con ' + ac.rest + ' s.');
+  if (goals.includes('massa')) t.push('Massa: 10–20 serie a settimana per muscolo, aumenta il carico appena completi tutte le ripetizioni.');
+  if (goals.includes('forza')) t.push('Forza: riscaldamento progressivo prima delle serie pesanti, recuperi lunghi (2–3 minuti).');
+  if (goals.includes('tonificazione')) t.push('Tonificazione: ripetizioni controllate con 2–3 secondi in discesa e contrazione in alto.');
+  if (goals.includes('dimagrimento')) t.push('Dimagrimento: 15–20 minuti di cardio a fine seduta o i circuiti da un\'ora; mantieni carichi impegnativi per non perdere muscolo.');
+  if (goals.includes('benessere')) t.push('Benessere: cura la mobilità ogni giorno e non trascurare dorso e glutei per una postura migliore.');
+  return t;
 }
 
 VIEWS.coach = () => {
   const c = UI.coach, p = S.profile;
-  let out = header('Allenatore', { sub: GOALS[p.goal].n + ' · ' + LEVELS[p.level].n }) + '<div class="pad">' +
-    '<div class="card"><h3>1. Cosa vuoi allenare?</h3><p class="muted small">Tocca i muscoli sulla figura o scegli dall\'elenco.</p>' +
-      '<div class="body-pick" data-act="bodyPick">' + bodySvg(m => c.muscles.includes(m) ? { color: 'var(--accent)', op: 1 } : null, { click: true }) + '</div>' +
-      '<div class="chips">' + Object.keys(MUSCLES).map(m => chip(MUSCLES[m], c.muscles.includes(m), 'coachM', 'data-m="' + m + '"')).join('') + '</div>' +
-      '<div class="row gap wrap"><button class="btn sm ghost" data-act="coachQuick" data-q="petto,spalle,tricipiti">Spinta</button><button class="btn sm ghost" data-act="coachQuick" data-q="dorso,bicipiti">Tirata</button><button class="btn sm ghost" data-act="coachQuick" data-q="quadricipiti,femorali,glutei,polpacci">Gambe</button><button class="btn sm ghost" data-act="coachQuick" data-q="petto,dorso,spalle,quadricipiti,femorali,addome">Tutto il corpo</button></div>' +
+  const seg = '<div class="seg">' + chip('Allenamento', UI.coachTab !== 'food', 'coachTab', 'data-t="train"') + chip('Alimentazione', UI.coachTab === 'food', 'coachTab', 'data-t="food"') + '</div>';
+  let out = header('Coach', { sub: goalLabel() + ' · ' + LEVELS[p.level].n }) + '<div class="pad">' + seg;
+  if (UI.coachTab === 'food') return out + nutritionView() + '</div>';
+  const rec = muscleRecovery(), sugg = suggestedGroups()[0], pairs = pairSuggestions(c.muscles);
+  out += '<div class="card trainer"><div class="eyebrow">' + ic('coach', 'inline') + 'Il trainer consiglia oggi</div>' +
+      '<p><b>' + sugg.n + '</b>: ' + (sugg.ready === 1 ? 'muscoli riposati e pronti.' : 'i muscoli più recuperati in questo momento.') + '</p>' +
+      '<button class="btn sm" data-act="coachQuick" data-q="' + sugg.m.join(',') + '">Usa questo</button></div>' +
+    '<div class="card"><h3>1. Cosa vuoi allenare?</h3><p class="muted small">Tocca i muscoli sulla figura o scegli dall\'elenco. Il puntino indica i muscoli ancora in recupero.</p>' +
+      '<div class="body-pick">' + bodySvg(m => c.muscles.includes(m) ? { color: 'var(--accent)', op: 1 } : null, { click: true }) + '</div>' +
+      '<div class="chips">' + Object.keys(MUSCLES).map(m => chip(MUSCLES[m] + (rec[m].ready ? '' : ' <i class="rec-dot" title="in recupero"></i>'), c.muscles.includes(m), 'coachM', 'data-m="' + m + '"')).join('') + '</div>' +
+      (pairs.length ? '<div class="pairs"><div class="eyebrow">Si abbinano bene</div>' + pairs.map(x => '<button class="pair" data-act="coachM" data-m="' + x.m + '"><b>+ ' + MUSCLES[x.m] + '</b><small>' + esc(x.why) + (rec[x.m].ready ? '' : ' · ancora in recupero') + '</small></button>').join('') + '</div>' : '') +
+      '<div class="row gap wrap">' + DAY_GROUPS.map(g => '<button class="btn sm ghost" data-act="coachQuick" data-q="' + g.m.join(',') + '">' + g.n + '</button>').join('') + '</div>' +
+      (c.muscles.some(m => !rec[m].ready) ? '<div class="note warn small">' + c.muscles.filter(m => !rec[m].ready).map(m => MUSCLES[m]).join(', ') + ': allenati da meno di ' + '48 ore. Puoi farlo, ma con meno volume.</div>' : '') +
     '</div>' +
     '<div class="card"><h3>2. Preferisci manubri o macchinari?</h3><div class="grid3 eq-pick">' +
       COACH_EQUIP.map(k => '<button class="opt ' + (c.eq.includes(k) ? 'on' : '') + '" data-act="coachEq" data-k="' + k + '">' + ic(k === 'macchinari' ? 'gear' : 'dumbbell') + '<b>' + EQUIP[k] + '</b></button>').join('') +
-      '</div><p class="muted small">Puoi sceglierne più di uno. Se non scegli, li uso tutti.</p></div>' +
+      '</div><p class="muted small">Puoi sceglierne più di uno. Se non scegli, li uso tutti.' + (p.level === 'principiante' ? ' Da principiante i macchinari sono più facili e sicuri.' : '') + '</p></div>' +
     '<button class="btn wide big" data-act="coachGo"' + (c.muscles.length ? '' : ' disabled') + '>' + ic('sparkle') + 'Proponimi l\'allenamento</button>';
   if (c.result) {
     const items = c.result.items;
     out += '<div class="card"><div class="card-h"><h3>La mia proposta</h3><button class="btn sm ghost" data-act="coachGo">' + ic('swap', 'inline') + 'Rigenera</button></div>' +
-      '<p class="muted small">' + items.length + ' esercizi · circa ' + templateMinutes({ items }) + ' min. Tocca un esercizio per vedere come si esegue.</p>' +
+      '<p class="muted small">' + items.length + ' esercizi · circa ' + templateMinutes({ items }) + ' min · riscaldamento incluso. Tocca un esercizio per vedere l\'animazione.</p>' +
+      '<div class="note small">' + ic('timer', 'inline') + WARMUP_TEXT + '</div>' +
       items.map((i, n) => {
         const e = EX[i.ex], last = lastPerformance(i.ex), prog = progression(i.ex, i.rmin, i.rmax);
-        return '<div class="coach-ex"><button class="link grow" data-act="exInfo" data-id="' + i.ex + '"><b>' + (n + 1) + '. ' + esc(e.n) + '</b><small>' + muscleName(e.m) + ' · ' + EQUIP[e.eq] + ' · ' + prescText(i) + '</small>' +
-          '<span class="small tip-inline">' + esc(prog.kind === 'info' && !last ? e.tip : prog.text) + '</span></button>' +
+        return '<div class="coach-ex"><button class="link grow" data-act="exInfo" data-id="' + i.ex + '"><b>' + (n + 1) + '. ' + esc(e.n) + ' <span class="role ' + (i.role || '') + '">' + (ROLE_N[i.role] || '') + '</span></b><small>' + muscleName(e.m) + ' · ' + EQUIP[e.eq] + ' · ' + prescText(i) + '</small>' +
+          '<span class="small tip-inline">' + esc(last ? prog.text : trainerNote(i)) + '</span></button>' +
           '<button class="icon-btn sm" data-act="coachSwap" data-n="' + n + '">' + ic('swap') + '</button></div>';
       }).join('') +
+      (goalsOf().includes('dimagrimento') ? '<div class="note small">' + ic('run', 'inline') + 'Chiudi con 15–20 minuti di cardio moderato (tapis roulant in salita o cyclette).</div>' : '') +
       '<div class="grid2"><button class="btn" data-act="coachStart">' + ic('play') + 'Inizia ora</button><button class="btn ghost" data-act="coachSave">Salva come scheda</button></div></div>';
   }
-  out += '<div class="card"><h3>' + ic('info', 'inline') + 'Consigli per il tuo obiettivo</h3><ul class="tips">' + coachAdvice().map(t => '<li>' + esc(t) + '</li>').join('') + '</ul></div>' +
+  out += '<div class="card"><h3>' + ic('info', 'inline') + 'Consigli per i tuoi obiettivi</h3><ul class="tips">' + coachAdvice().map(t => '<li>' + esc(t) + '</li>').join('') + '</ul></div>' +
     '<button class="btn ghost wide" data-act="openAI">' + ic('sparkle') + (aiReady() ? 'Chiedi al coach AI' : 'Coach AI: attivalo nelle impostazioni') + '</button></div>';
   return out;
 };
+
+/* ---------- Alimentazione ---------- */
+function mealCard(m, icon) {
+  return '<div class="card meal"><h3>' + ic(icon, 'inline') + m.t + '</h3><p class="small muted">' + m.d + '</p><ul class="tips">' + m.ex.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>';
+}
+function nutritionView() {
+  const n = nutritionTargets(), p = S.profile, t = todayTemplate(), r = S.reminders.workout;
+  let out = '';
+  if (!n.ready) {
+    out += '<div class="card"><h3>I tuoi dati</h3><p class="small muted">Servono per calcolare calorie e proteine. Restano solo sul telefono.</p>' + bodyDataFields() + '</div>';
+  }
+  if (n.w) {
+    out += '<div class="card"><div class="card-h"><h3>Il tuo fabbisogno</h3><span class="muted small">' + goalLabel() + '</span></div>' +
+      '<div class="stats3">' +
+        '<div><b>' + (n.kcal ? n.kcal : '—') + '</b><small>kcal al giorno</small></div>' +
+        '<div><b>' + n.protein + ' g</b><small>proteine</small></div>' +
+        '<div><b>' + fmtKg(n.water) + ' l</b><small>acqua (+0,5 l se ti alleni)</small></div></div>' +
+      (n.kcal ? '<div class="macro"><i style="flex:' + n.protein * 4 + '" class="pro"></i><i style="flex:' + n.carbs * 4 + '" class="carb"></i><i style="flex:' + n.fat * 9 + '" class="fat"></i></div>' +
+        '<div class="macro-l small"><span><i class="pro"></i>Proteine ' + n.protein + ' g</span><span><i class="carb"></i>Carboidrati ' + n.carbs + ' g</span><span><i class="fat"></i>Grassi ' + n.fat + ' g</span></div>' +
+        '<p class="small muted">Metabolismo a riposo circa ' + n.bmr + ' kcal, consumo giornaliero circa ' + n.tdee + ' kcal' + (n.kcalAdj ? ', ' + (n.kcalAdj > 0 ? '+' : '') + n.kcalAdj + ' kcal per il tuo obiettivo' : '') + '.</p>' : '<p class="small muted">Completa sesso, età e altezza per le calorie.</p>') +
+    '</div>';
+  } else out += '<div class="note">Registra il peso dalla home per calcolare proteine e acqua.</div>';
+  if (t) out += '<div class="note good">' + ic('flame', 'inline') + 'Oggi ti alleni' + (r.on ? ' alle ' + pad(r.hour) + ':' + pad(r.min) : '') + ' (' + esc(t.name) + '): pasto completo 2–3 ore prima, spuntino leggero 30–60 minuti prima se hai fame, pasto di recupero entro 2 ore dopo.</div>';
+  out += mealCard(MEALS.pre_full, 'timer') + mealCard(MEALS.pre_snack, 'flame') + mealCard(MEALS.post, 'dumbbell') + mealCard(MEALS.rest, 'water');
+  const gt = goalNutritionTips(goalsOf());
+  if (gt.length) out += '<div class="card"><h3>Per i tuoi obiettivi</h3><ul class="tips">' + gt.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>';
+  out += '<p class="small muted center">Indicazioni generali, non sostituiscono un medico o un nutrizionista.</p>';
+  if (n.ready) out += '<details class="card"><summary><b>Modifica i miei dati</b></summary>' + bodyDataFields() + '</details>';
+  return out;
+}
+function bodyDataFields() {
+  const p = S.profile;
+  return '<div class="field"><span>Sesso</span><div class="seg">' + chip('Uomo', p.sex === 'm', 'setSex', 'data-k="m"') + chip('Donna', p.sex === 'f', 'setSex', 'data-k="f"') + '</div></div>' +
+    '<div class="grid2">' + field('Età', numIn(p.age, 'data-in="prof" data-k="age"', 'es. 35')) + field('Altezza (cm)', numIn(p.height, 'data-in="prof" data-k="height"', 'es. 175')) + '</div>' +
+    (S.weights.length ? '' : '<button class="btn ghost wide" data-act="addWeight">Registra il peso</button>');
+}
 
 function coachSwapSheet(n) {
   const i = UI.coach.result.items[n], e = EX[i.ex];
@@ -110,15 +157,17 @@ VIEWS.exercise = p => {
   const pts = hist.slice().reverse().map(h => ({ x: h.date, y: Math.max(...h.sets.map(s => e1rm(num(s.kg), num(s.reps)))) })).filter(x => x.y > 0);
   const yt = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(e.n + ' esecuzione corretta');
   return header(esc(e.n), { back: true, sub: muscleName(e.m) + ' · ' + EQUIP[e.eq] }) + '<div class="pad">' +
+    '<div class="card demo-card"><div class="card-h"><h3>' + ic('video', 'inline') + 'Esecuzione al rallentatore</h3></div><div id="demo" data-ex="' + e.id + '"></div>' +
+      '<p class="small muted">I muscoli che lavorano sono evidenziati. Segui il ritmo: ' + (animDef(e.id).seq ? 'movimento continuo.' : 'fase di sforzo in 2 secondi, ritorno lento in 3.') + '</p></div>' +
     '<div class="card body-card">' + exerciseBody(e) + '<div class="legend"><span><i class="lg main"></i>Principale: ' + muscleName(e.m) + '</span>' + (e.s.length ? '<span><i class="lg sec"></i>Secondari: ' + e.s.map(muscleName).join(', ') + '</span>' : '') + '</div></div>' +
-    '<button class="btn wide" data-act="openUrl" data-u="' + yt + '">' + ic('video') + 'Guarda un video di esempio</button>' +
     '<div class="card"><h3>Come si esegue</h3><ol class="steps">' + e.steps.map(s => '<li>' + esc(s) + '</li>').join('') + '</ol></div>' +
     '<div class="card warn"><h3>Errori da evitare</h3><ul class="tips">' + e.err.map(s => '<li>' + esc(s) + '</li>').join('') + '</ul></div>' +
     '<div class="card"><h3>' + ic('sparkle', 'inline') + 'Consiglio</h3><p>' + esc(e.tip) + '</p>' +
-      '<p class="small muted">Per il tuo obiettivo: ' + prescText(prescribe(e.id, S.profile.goal, S.profile.level)) + '</p></div>' +
+      '<p class="small"><b>Per i tuoi obiettivi:</b> ' + prescText(prescribe(e.id)) + '</p><p class="small muted">' + esc(trainerNote(prescribe(e.id))) + '</p></div>' +
     (r.kg ? '<div class="card"><h3>I tuoi record</h3><div class="stats3"><div><b>' + fmtKg(r.kg) + ' kg</b><small>carico max × ' + r.reps + '</small></div><div><b>' + Math.round(r.e1rm) + ' kg</b><small>massimale stimato</small></div><div><b>' + hist.length + '</b><small>volte</small></div></div>' +
       lineChart(pts) + '<div class="hist">' + hist.slice(0, 6).map(h => '<div class="list-item flat"><div><b>' + fmtDate(h.date) + '</b><small>' + h.sets.map(s => fmtKg(num(s.kg)) + '×' + num(s.reps)).join('  ') + '</small></div></div>').join('') + '</div></div>' : '') +
     '<div class="card"><h3>Alternative</h3>' + alternatives(e.id).slice(0, 5).map(x => '<button class="list-item btnlike" data-act="exInfo" data-id="' + x.id + '"><div><b>' + esc(x.n) + '</b><small>' + EQUIP[x.eq] + '</small></div>' + ic('back', 'flip') + '</button>').join('') + '</div>' +
+    '<button class="btn ghost wide" data-act="openUrl" data-u="' + yt + '">' + ic('video') + 'Cerca anche un video su YouTube</button>' +
     (S.active && !S.active.circ ? '<button class="btn wide" data-act="addToActive" data-id="' + e.id + '">' + ic('plus') + 'Aggiungi all\'allenamento in corso</button>' : '') +
     '</div>';
 };

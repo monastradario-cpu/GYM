@@ -342,56 +342,127 @@ const EXERCISES = [
 const EX = {};
 EXERCISES.forEach(e => { EX[e.id] = e; });
 
-/* Obiettivi: serie, ripetizioni, recupero */
+/* ===== Obiettivi (si possono combinare) =====
+   schema per ruolo: [serie, rip. min, rip. max, recupero s]
+   main = esercizio principale multiarticolare, sec = complementare, acc = isolamento, core = addome */
 const GOALS = {
-  massa: { n: 'Massa muscolare', sets: 4, rmin: 8, rmax: 12, rest: 90, desc: 'Muscoli più grandi' },
-  forza: { n: 'Forza', sets: 5, rmin: 3, rmax: 6, rest: 180, desc: 'Sollevare di più' },
-  tonificazione: { n: 'Tonificazione', sets: 3, rmin: 12, rmax: 15, rest: 60, desc: 'Muscoli definiti e resistenti' },
-  dimagrimento: { n: 'Dimagrimento', sets: 3, rmin: 12, rmax: 15, rest: 45, desc: 'Bruciare grassi, recuperi brevi' }
+  massa: { n: 'Massa muscolare', desc: 'Muscoli più grandi', protein: 2.0, kcal: 300,
+    scheme: { main: [4, 6, 8, 120], sec: [3, 8, 10, 90], acc: [3, 10, 15, 60], core: [3, 12, 15, 45] } },
+  forza: { n: 'Forza', desc: 'Sollevare di più', protein: 1.8, kcal: 200,
+    scheme: { main: [5, 3, 5, 180], sec: [4, 5, 7, 150], acc: [3, 8, 12, 90], core: [3, 10, 15, 60] } },
+  tonificazione: { n: 'Tonificazione', desc: 'Muscoli definiti e resistenti', protein: 1.8, kcal: 0,
+    scheme: { main: [3, 10, 12, 75], sec: [3, 12, 12, 60], acc: [3, 12, 15, 45], core: [3, 15, 20, 40] } },
+  dimagrimento: { n: 'Dimagrimento', desc: 'Bruciare grassi, recuperi brevi', protein: 2.2, kcal: -400,
+    scheme: { main: [3, 10, 12, 60], sec: [3, 12, 15, 45], acc: [3, 15, 20, 30], core: [3, 15, 20, 30] } },
+  benessere: { n: 'Salute e benessere', desc: 'Stare in forma, postura, energia', protein: 1.6, kcal: 0,
+    scheme: { main: [3, 8, 12, 90], sec: [3, 10, 12, 75], acc: [2, 12, 15, 60], core: [3, 12, 15, 45] } }
 };
 const LEVELS = {
-  principiante: { n: 'Principiante', setsAdj: -1, perBig: 1, perSmall: 1, desc: 'Meno di 6 mesi' },
-  intermedio: { n: 'Intermedio', setsAdj: 0, perBig: 2, perSmall: 1, desc: 'Da 6 mesi a 2 anni' },
-  avanzato: { n: 'Avanzato', setsAdj: 0, perBig: 3, perSmall: 2, desc: 'Più di 2 anni' }
+  principiante: { n: 'Principiante', setsAdj: -1, perBig: 1, perSmall: 1, desc: 'Meno di 6 mesi', rir: '2–3' },
+  intermedio: { n: 'Intermedio', setsAdj: 0, perBig: 2, perSmall: 1, desc: 'Da 6 mesi a 2 anni', rir: '1–2' },
+  avanzato: { n: 'Avanzato', setsAdj: 0, perBig: 3, perSmall: 2, desc: 'Più di 2 anni', rir: '0–1' }
 };
+const ROLE_N = { main: 'Principale', sec: 'Complementare', acc: 'Isolamento', core: 'Core' };
 
-/* Prescrizione per un esercizio in base a obiettivo e livello */
-function prescribe(exId, goal, level) {
-  const g = GOALS[goal] || GOALS.massa, l = LEVELS[level] || LEVELS.intermedio;
-  const e = EX[exId];
-  let sets = Math.max(2, g.sets + l.setsAdj), rmin = g.rmin, rmax = g.rmax, rest = g.rest;
-  if (e && !e.comp) { // esercizi di isolamento: niente forza pura, recupero più breve
-    if (goal === 'forza') { rmin = 6; rmax = 10; sets = Math.min(sets, 3); }
-    rest = Math.max(45, rest - 30);
-  }
-  if (e && e.m === 'addome') { rmin = Math.max(rmin, 12); rmax = Math.max(rmax, 20); rest = Math.min(rest, 60); }
-  if (e && e.m === 'polpacci') { rmin = Math.max(rmin, 10); rmax = Math.max(rmax, 15); rest = Math.min(rest, 60); }
-  if (e && e.type === 'time') return { ex: exId, sets, secs: 40, rest: Math.min(rest, 60) };
-  return { ex: exId, sets, rmin, rmax, rest };
+function goalsOf(p) {
+  p = p || (typeof S !== 'undefined' ? S.profile : {});
+  const g = (p.goals && p.goals.length ? p.goals : [p.goal || 'massa']).filter(k => GOALS[k]);
+  return g.length ? g : ['massa'];
+}
+function goalLabel(p) { return goalsOf(p).map(k => GOALS[k].n).join(' + '); }
+
+function defaultRole(exId) {
+  const e = EX[exId]; if (!e) return 'acc';
+  if (e.m === 'addome' || e.pat === 'condizionamento') return 'core';
+  return e.comp ? 'sec' : 'acc';
 }
 
-/* Schede preimpostate (liste di esercizi, le serie si adattano al profilo) */
-const PRESET_SPLITS = {
-  fullA: { n: 'Full body A', ex: ['squat_bil', 'panca_piana_bil', 'lat_machine', 'lento_man', 'leg_curl', 'curl_man', 'plank'] },
-  fullB: { n: 'Full body B', ex: ['stacco_rumeno_bil', 'panca_inclinata_man', 'rematore_man', 'leg_press', 'alzate_laterali', 'pushdown', 'crunch_macchina'] },
-  fullC: { n: 'Full body C', ex: ['goblet_squat', 'chest_press', 'pulley', 'hip_thrust_bil', 'shoulder_press_mac', 'curl_martello', 'leg_raise'] },
-  upperA: { n: 'Parte alta A', ex: ['panca_piana_bil', 'rematore_bil', 'lento_man', 'lat_machine', 'curl_bil', 'french_press', 'alzate_laterali'] },
-  lowerA: { n: 'Parte bassa A', ex: ['squat_bil', 'stacco_rumeno_bil', 'leg_press', 'leg_curl', 'calf_piedi', 'plank'] },
-  upperB: { n: 'Parte alta B', ex: ['panca_inclinata_man', 'pulley', 'shoulder_press_mac', 'trazioni', 'curl_martello', 'pushdown', 'face_pull'] },
-  lowerB: { n: 'Parte bassa B', ex: ['hip_thrust_bil', 'bulgarian_man', 'leg_extension', 'leg_curl_seduto', 'calf_seduto', 'crunch_cavi'] },
-  push: { n: 'Spinta (petto, spalle, tricipiti)', ex: ['panca_piana_bil', 'panca_inclinata_man', 'lento_man', 'alzate_laterali', 'croci_cavi', 'pushdown', 'estensioni_man'] },
-  pull: { n: 'Tirata (dorso, bicipiti)', ex: ['stacco_bil', 'lat_machine', 'rematore_man', 'pulley', 'face_pull', 'curl_bil', 'curl_martello'] },
-  legs: { n: 'Gambe', ex: ['squat_bil', 'leg_press', 'stacco_rumeno_bil', 'leg_extension', 'leg_curl', 'calf_piedi', 'crunch_macchina'] }
-};
+/* Prescrizione: combina gli obiettivi scelti (media) e adatta al livello */
+function prescribe(exId, role) {
+  const p = typeof S !== 'undefined' ? S.profile : {}, goals = goalsOf(p), lv = LEVELS[p.level] || LEVELS.intermedio;
+  role = role || defaultRole(exId);
+  const avg = i => goals.reduce((a, g) => a + GOALS[g].scheme[role][i], 0) / goals.length;
+  let sets = Math.round(avg(0)), rmin = Math.round(avg(1)), rmax = Math.round(avg(2)), rest = Math.round(avg(3) / 15) * 15;
+  sets = Math.max(2, sets + lv.setsAdj + (p.level === 'avanzato' && role === 'main' ? 1 : 0));
+  if (p.level === 'principiante' && role === 'main') { rmin += 2; rmax += 2; } // tecnica prima del carico
+  const NICE = [3, 4, 5, 6, 8, 10, 12, 15, 20, 25], snap = v => NICE.reduce((b, x) => Math.abs(x - v) < Math.abs(b - v) ? x : b, NICE[0]);
+  rmin = snap(rmin); rmax = snap(rmax);
+  if (rmax < rmin) rmax = rmin;
+  const e = EX[exId];
+  if (e && e.m === 'polpacci') { rmin = Math.max(rmin, 10); rmax = Math.max(rmax, 15); rest = Math.min(rest, 60); }
+  if (e && e.type === 'time') return { ex: exId, role, sets, secs: role === 'core' ? 40 : 45, rest: Math.min(rest, 60) };
+  return { ex: exId, role, sets, rmin, rmax, rest };
+}
 
-function splitForDays(n) {
+/* nota del trainer per ogni esercizio della scheda */
+function trainerNote(item) {
+  const lv = LEVELS[(typeof S !== 'undefined' && S.profile.level) || 'intermedio'] || LEVELS.intermedio;
+  const e = EX[item.ex] || {};
+  const role = item.role || defaultRole(item.ex);
+  if (e.type === 'time') return 'Qualità prima della durata: corpo in linea e respirazione regolare.';
+  if (role === 'main') return 'Esercizio principale: tecnica perfetta, lascia ' + lv.rir + ' ripetizioni di scorta. Discesa lenta (3 s), salita decisa.';
+  if (role === 'sec') return 'Complementare: carico impegnativo, ' + lv.rir + ' ripetizioni di scorta. Controlla tutta l\'escursione.';
+  if (role === 'core') return 'Movimento lento e controllato, espira nella contrazione.';
+  return 'Isolamento: carico moderato, arriva vicino al cedimento con contrazione di 1 s.';
+}
+
+/* ===== Schede preimpostate da personal trainer =====
+   ogni slot: [ruolo, esercizio, alternativa per principianti] */
+const PRESET_SPLITS = {
+  fullA: { n: 'Full body A', focus: 'Squat e panca', note: 'Tutto il corpo con priorità a gambe e petto. Inizia dai multiarticolari quando sei fresco, chiudi con braccia e addome.',
+    slots: [['main', 'squat_bil', 'leg_press'], ['sec', 'panca_piana_bil', 'chest_press'], ['sec', 'lat_machine'], ['sec', 'stacco_rumeno_man'], ['acc', 'alzate_laterali'], ['acc', 'pushdown'], ['core', 'plank']] },
+  fullB: { n: 'Full body B', focus: 'Stacco e spalle', note: 'Catena posteriore e spinta verticale. Completa la A: in due sedute alleni ogni muscolo da angolazioni diverse.',
+    slots: [['main', 'stacco_rumeno_bil', 'stacco_rumeno_man'], ['sec', 'lento_man', 'shoulder_press_mac'], ['sec', 'rematore_man', 'row_machine'], ['sec', 'affondi_man', 'leg_press'], ['acc', 'croci_cavi', 'pec_deck'], ['acc', 'curl_man'], ['core', 'crunch_cavi', 'crunch_macchina']] },
+  fullC: { n: 'Full body C', focus: 'Glutei e petto alto', note: 'Glutei, petto alto e dorso in orizzontale. Con A e B copre tutti gli schemi di movimento.',
+    slots: [['main', 'hip_thrust_bil', 'hip_thrust_man'], ['sec', 'panca_inclinata_man'], ['sec', 'pulley'], ['sec', 'goblet_squat'], ['acc', 'leg_curl'], ['acc', 'face_pull'], ['acc', 'curl_martello'], ['core', 'leg_raise']] },
+  upperA: { n: 'Parte alta A', focus: 'Forza: panca e rematore', note: 'Spinta e tirata orizzontale in equilibrio (stesso numero di serie) per spalle sane e postura dritta.',
+    slots: [['main', 'panca_piana_bil', 'chest_press'], ['main', 'rematore_bil', 'row_machine'], ['sec', 'lento_man', 'shoulder_press_mac'], ['sec', 'lat_machine'], ['acc', 'alzate_laterali'], ['acc', 'curl_bil', 'curl_man'], ['acc', 'pushdown']] },
+  lowerA: { n: 'Parte bassa A', focus: 'Squat', note: 'Quadricipiti dominanti. Riscaldati bene anche e caviglie prima dello squat.',
+    slots: [['main', 'squat_bil', 'leg_press'], ['sec', 'stacco_rumeno_bil', 'stacco_rumeno_man'], ['sec', 'affondi_man', 'step_up'], ['acc', 'leg_curl'], ['acc', 'calf_piedi'], ['core', 'plank']] },
+  upperB: { n: 'Parte alta B', focus: 'Volume: inclinata e trazioni', note: 'Angoli diversi rispetto alla A: petto alto e tirata verticale. Più ripetizioni, recuperi più brevi.',
+    slots: [['main', 'panca_inclinata_man'], ['main', 'trazioni', 'lat_machine'], ['sec', 'pulley'], ['sec', 'dip', 'dip_machine'], ['acc', 'face_pull'], ['acc', 'curl_martello'], ['acc', 'estensioni_man']] },
+  lowerB: { n: 'Parte bassa B', focus: 'Glutei e femorali', note: 'Catena posteriore dominante: glutei e femorali. Ottima per la schiena e la postura.',
+    slots: [['main', 'hip_thrust_bil', 'hip_thrust_man'], ['sec', 'bulgarian_man', 'leg_press'], ['sec', 'leg_extension'], ['acc', 'leg_curl_seduto'], ['acc', 'calf_seduto'], ['core', 'crunch_cavi', 'crunch_macchina']] },
+  push: { n: 'Spinta', focus: 'Petto, spalle, tricipiti', note: 'Prima i movimenti pesanti di spinta, poi isolamento di spalle laterali e tricipiti.',
+    slots: [['main', 'panca_piana_bil', 'chest_press'], ['sec', 'lento_man', 'shoulder_press_mac'], ['sec', 'panca_inclinata_man'], ['acc', 'alzate_laterali'], ['acc', 'croci_cavi', 'pec_deck'], ['acc', 'pushdown'], ['acc', 'estensioni_man']] },
+  pull: { n: 'Tirata', focus: 'Dorso e bicipiti', note: 'Dorso in verticale e in orizzontale, deltoidi posteriori per la postura, poi bicipiti.',
+    slots: [['main', 'stacco_bil', 'row_machine'], ['sec', 'lat_machine'], ['sec', 'rematore_man'], ['sec', 'pulley'], ['acc', 'face_pull'], ['acc', 'curl_bil', 'curl_man'], ['acc', 'curl_martello']] },
+  legs: { n: 'Gambe', focus: 'Gambe complete', note: 'Quadricipiti, femorali, glutei e polpacci. Gli esercizi più pesanti all\'inizio.',
+    slots: [['main', 'squat_bil', 'leg_press'], ['sec', 'stacco_rumeno_bil', 'stacco_rumeno_man'], ['sec', 'leg_press', 'goblet_squat'], ['acc', 'leg_extension'], ['acc', 'leg_curl'], ['acc', 'calf_piedi'], ['core', 'crunch_macchina']] }
+};
+function splitItems(key, level) {
+  const beg = level === 'principiante';
+  return PRESET_SPLITS[key].slots.map(([role, id, alt]) => prescribe(beg && alt ? alt : id, role));
+}
+function splitForDays(n, level) {
   if (n <= 1) return ['fullA'];
   if (n === 2) return ['fullA', 'fullB'];
-  if (n === 3) return ['fullA', 'fullB', 'fullC'];
+  if (n === 3) return level === 'avanzato' ? ['push', 'pull', 'legs'] : ['fullA', 'fullB', 'fullC'];
   if (n === 4) return ['upperA', 'lowerA', 'upperB', 'lowerB'];
-  if (n === 5) return ['push', 'pull', 'legs', 'upperA', 'lowerA'];
+  if (n === 5) return ['upperA', 'lowerA', 'push', 'pull', 'legs'];
   return ['push', 'pull', 'legs', 'push', 'pull', 'legs'].slice(0, n);
 }
+
+/* ===== Gruppi muscolari consigliati ===== */
+const PAIRS = {
+  petto: ['tricipiti', 'spalle'], dorso: ['bicipiti', 'spalle'], spalle: ['petto', 'tricipiti'], bicipiti: ['dorso'],
+  tricipiti: ['petto', 'spalle'], quadricipiti: ['femorali', 'glutei', 'polpacci'], femorali: ['glutei', 'quadricipiti'],
+  glutei: ['femorali', 'quadricipiti'], polpacci: ['quadricipiti', 'femorali'], addome: ['dorso', 'glutei']
+};
+const PAIR_WHY = {
+  petto: 'i tricipiti e le spalle lavorano già in tutte le spinte', dorso: 'i bicipiti lavorano già in tutte le tirate',
+  spalle: 'spinte di petto e spalle condividono i muscoli', bicipiti: 'si completano con le tirate del dorso',
+  tricipiti: 'si allenano bene dopo le spinte', quadricipiti: 'gambe complete in una sola seduta',
+  femorali: 'catena posteriore completa', glutei: 'catena posteriore completa', polpacci: 'chiudi la seduta gambe',
+  addome: 'il core stabilizza dorso e gambe'
+};
+const DAY_GROUPS = [
+  { k: 'spinta', n: 'Spinta', m: ['petto', 'spalle', 'tricipiti'] },
+  { k: 'tirata', n: 'Tirata', m: ['dorso', 'bicipiti'] },
+  { k: 'gambe', n: 'Gambe', m: ['quadricipiti', 'femorali', 'glutei', 'polpacci'] },
+  { k: 'alta', n: 'Parte alta', m: ['petto', 'dorso', 'spalle', 'bicipiti', 'tricipiti'] },
+  { k: 'tutto', n: 'Tutto il corpo', m: ['petto', 'dorso', 'spalle', 'quadricipiti', 'femorali', 'addome'] }
+];
 
 /* Circuiti preimpostati da circa un'ora.
    Stazione: {ex, reps} oppure {ex, secs}. work = secondi stimati per stazione. */

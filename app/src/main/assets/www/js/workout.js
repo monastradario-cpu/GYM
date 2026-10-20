@@ -3,7 +3,7 @@
 
 function newItem(src, kind) {
   const e = EX[src.ex] || {};
-  const it = { ex: src.ex, rmin: src.rmin || 8, rmax: src.rmax || 12, rest: src.rest || 90, secs: src.secs || 0, reps: src.reps || 0, sets: [] };
+  const it = { ex: src.ex, role: src.role || defaultRole(src.ex), rmin: src.rmin || 8, rmax: src.rmax || 12, rest: src.rest || 90, secs: src.secs || 0, reps: src.reps || 0, sets: [] };
   const last = lastPerformance(src.ex);
   const n = kind === 'circuito' ? 0 : (src.sets || 3);
   for (let i = 0; i < n; i++) {
@@ -76,7 +76,7 @@ VIEWS.workout = () => {
   return '<header class="top workout-top"><button class="icon-btn" data-act="minimize">' + ic('down') + '</button><div class="top-title"><h1>' + esc(a.name) + '</h1><div class="sub"><span data-clock="elapsed"></span> · ' + doneSets + '/' + totalSets + ' serie</div></div><button class="btn sm" data-act="finish">Termina</button></header>' +
     restBar(a) +
     '<div class="pad">' +
-    (a.items.length ? '' : '<div class="empty">Allenamento vuoto: aggiungi il primo esercizio.</div>') +
+    (a.items.length ? '' : emptyWorkoutCard()) +
     a.items.map((it, n) => exerciseCard(it, n)).join('') +
     (a.cardio.length ? '<div class="card"><h3>' + ic('run', 'inline') + 'Cardio</h3>' + a.cardio.map((c, n) => '<div class="list-item flat"><div><b>' + esc(c.type) + '</b><small>' + c.min + ' min' + (c.km ? ' · ' + fmtKg(c.km) + ' km' : '') + (c.lvl ? ' · livello ' + esc(c.lvl) : '') + '</small></div><button class="icon-btn sm" data-act="delCardio" data-n="' + n + '">' + ic('trash') + '</button></div>').join('') + '</div>' : '') +
     '<div class="grid2"><button class="btn ghost" data-act="woAdd">' + ic('plus') + 'Esercizio</button><button class="btn ghost" data-act="cardio">' + ic('run') + 'Cardio</button></div>' +
@@ -101,10 +101,11 @@ function exerciseCard(it, n) {
   const hasWu = it.sets.some(s => s.wu);
   let wsN = 0;
   return '<div class="card ex-card' + (it.sets.length && it.sets.every(s => s.done) ? ' done' : '') + '">' +
-    '<div class="card-h"><button class="link" data-act="exInfo" data-id="' + it.ex + '"><h3>' + esc(e.n) + '</h3><small class="muted">' + muscleName(e.m) + ' · ' + (EQUIP[e.eq] || '') + ' · ' + (timed ? (it.secs || 40) + ' sec' : it.rmin + '–' + it.rmax + ' rip.') + ' · rec. ' + it.rest + 's</small></button>' +
+    '<div class="card-h"><button class="link" data-act="exInfo" data-id="' + it.ex + '"><h3>' + esc(e.n) + ' <span class="role ' + (it.role || '') + '">' + (ROLE_N[it.role] || '') + '</span></h3><small class="muted">' + muscleName(e.m) + ' · ' + (EQUIP[e.eq] || '') + ' · ' + (timed ? (it.secs || 40) + ' sec' : it.rmin + '–' + it.rmax + ' rip.') + ' · rec. ' + it.rest + 's</small></button>' +
       '<button class="icon-btn sm" data-act="exMenu" data-n="' + n + '">' + ic('more') + '</button></div>' +
     '<div class="last">' + (last ? 'Ultima volta (' + fmtDate(last.date) + '): <b>' + last.sets.map(s => fmtKg(num(s.kg)) + '×' + num(s.reps)).join('  ') + '</b>' : 'Prima volta con questo esercizio') + '</div>' +
     '<div class="tip ' + prog.kind + '">' + ic(prog.kind === 'up' ? 'up' : prog.kind === 'down' ? 'down' : 'info', 'inline') + esc(prog.text) + '</div>' +
+    '<div class="tnote">' + ic('coach', 'inline') + esc(trainerNote(it)) + '</div>' +
     '<div class="sets"><div class="set-h"><span>Serie</span><span>kg</span><span>' + (timed ? 'sec' : 'rip.') + '</span><span></span></div>' +
     it.sets.map((s, k) => {
       const label = s.wu ? 'R' : String(++wsN);
@@ -207,6 +208,7 @@ VIEWS.summary = p => {
     '<div class="card hero center"><div class="big-ic">' + ic('flame', 'xl') + '</div><h2>Grande lavoro!</h2><div class="muted">' + esc(h.name) + ' · ' + fmtDateLong(h.start) + '</div>' +
       '<div class="stats3"><div><b>' + fmtDur((h.end - h.start) / 1000) + '</b><small>durata</small></div><div><b>' + sets + '</b><small>serie</small></div><div><b>' + Math.round(vol) + '</b><small>kg sollevati</small></div></div>' +
       '<div class="muted small">Settimane consecutive: <b>' + st.weekStreak + '</b> · allenamenti totali: <b>' + st.total + '</b></div></div>' +
+    '<div class="card meal"><h3>' + ic('dumbbell', 'inline') + 'Adesso: pasto di recupero</h3><p class="small muted">Entro 1–2 ore: proteine (' + (nutritionTargets().protein ? Math.round(nutritionTargets().protein / 4) + ' g circa' : '25–40 g') + ') e carboidrati per ricaricare. Bevi 500 ml d\'acqua.</p><ul class="tips">' + MEALS.post.ex.slice(0, 3).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>' +
     (h.prs && h.prs.length ? '<div class="card"><h3>' + ic('sparkle', 'inline') + 'Nuovi record!</h3>' + h.prs.map(p => '<div class="list-item flat"><div><b>' + exLine(p.ex) + '</b><small>' + fmtKg(p.kg) + ' kg × ' + p.reps + ' · massimale stimato ' + Math.round(e1rm(p.kg, p.reps)) + ' kg</small></div></div>').join('') + '</div>' : '') +
     '<div class="card"><h3>Dettaglio</h3>' + h.items.map(it => '<div class="list-item flat"><div><b>' + exLine(it.ex) + '</b><small>' + it.sets.map(s => (s.wu ? 'R ' : '') + fmtKg(s.kg) + '×' + s.reps).join('  ') + '</small></div></div>').join('') +
       (h.cardio || []).map(c => '<div class="list-item flat"><div><b>' + esc(c.type) + '</b><small>' + c.min + ' min' + (c.km ? ' · ' + fmtKg(c.km) + ' km' : '') + '</small></div></div>').join('') + '</div>' +
@@ -248,4 +250,12 @@ function swapSheet(n) {
   const e = EX[it.ex], alts = alternatives(it.ex).slice(0, 8);
   return '<h3>Alternative a ' + esc(e.n) + '</h3><p class="muted small">Stesso muscolo, attrezzo diverso o movimento simile.</p>' +
     alts.map(x => '<button class="list-item btnlike" data-act="doSwap" data-n="' + n + '" data-id="' + x.id + '"><div><b>' + esc(x.n) + '</b><small>' + EQUIP[x.eq] + (x.pat === e.pat ? ' · stesso movimento' : '') + '</small></div>' + ic('swap') + '</button>').join('');
+}
+
+/* allenamento libero: il trainer consiglia cosa allenare */
+function emptyWorkoutCard() {
+  const g = suggestedGroups().slice(0, 3), rec = muscleRecovery();
+  return '<div class="card trainer"><div class="eyebrow">' + ic('coach', 'inline') + 'Cosa alleni oggi?</div><p class="small muted">In base a recupero e volume della settimana ti consiglio:</p>' +
+    g.map((x, i) => '<button class="pair" data-act="woGroup" data-q="' + x.m.join(',') + '"><b>' + (i === 0 ? '★ ' : '') + x.n + '</b><small>' + x.m.map(m => MUSCLES[m] + (rec[m].ready ? '' : ' (in recupero)')).join(', ') + '</small></button>').join('') +
+    '<p class="small muted">Oppure aggiungi un esercizio qualsiasi qui sotto.</p></div>';
 }

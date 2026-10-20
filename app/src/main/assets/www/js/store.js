@@ -40,9 +40,9 @@ function startOfWeek(d) { d = new Date(d); d.setHours(0, 0, 0, 0); const wd = (d
 /* ---------- Stato ---------- */
 function defaultState() {
   return {
-    v: 1,
+    v: 2,
     onboarded: false,
-    profile: { goal: 'massa', level: 'intermedio', days: [1, 3, 5], waterGoal: 8 },
+    profile: { goals: ['massa'], level: 'intermedio', days: [1, 3, 5], waterGoal: 8, sex: '', age: '', height: '' },
     settings: { theme: 'dark', accent: 'arancio', keepScreen: false, sound: true, autoRest: true,
       ai: { provider: 'gemini', key: '', model: '' } },
     reminders: {
@@ -62,9 +62,21 @@ let S = load();
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const st = JSON.parse(raw); return deepMerge(defaultState(), st); }
+    if (raw) { const st = deepMerge(defaultState(), JSON.parse(raw)); return migrate(st); }
   } catch (e) { console.error(e); }
   return defaultState();
+}
+/* aggiornamenti dei dati salvati tra una versione e l'altra */
+function migrate(st) {
+  const p = st.profile;
+  if (p.goal && GOALS[p.goal] && (st.v || 1) < 2) p.goals = [p.goal];
+  if (!Array.isArray(p.goals) || !p.goals.length) p.goals = [p.goal && GOALS[p.goal] ? p.goal : 'massa'];
+  delete p.goal;
+  if ((st.v || 1) < 2) {
+    st.v = 2;
+    st.needRegen = true; // le schede preimpostate vengono rifatte con il nuovo metodo
+  }
+  return st;
 }
 function deepMerge(base, over) {
   for (const k in over) {
@@ -83,8 +95,8 @@ function save(now) {
 /* ---------- Schede ---------- */
 function makeTemplateFromPreset(key, days) {
   const p = PRESET_SPLITS[key];
-  return { id: uid(), kind: 'scheda', name: p.n, days: days || [], preset: key,
-    items: p.ex.map(id => prescribe(id, S.profile.goal, S.profile.level)) };
+  return { id: uid(), kind: 'scheda', name: p.n, focus: p.focus, note: p.note, days: days || [], preset: key,
+    items: splitItems(key, S.profile.level) };
 }
 function makeCircuit(c) {
   return { id: uid(), kind: 'circuito', name: c.n, desc: c.desc, days: [], preset: c.key,
@@ -100,7 +112,7 @@ function templateMinutes(t) {
 }
 function buildDefaultTemplates() {
   const days = S.profile.days.slice().sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7));
-  const keys = splitForDays(days.length);
+  const keys = splitForDays(days.length, S.profile.level);
   const list = keys.map((k, i) => makeTemplateFromPreset(k, [days[i]]));
   // con 1 solo giorno o schede ripetute, unisci nomi uguali
   const merged = [];
@@ -299,6 +311,6 @@ async function exportBackup(withPhotos) {
 async function importBackup(text) {
   const data = JSON.parse(text);
   if (!data || data.app !== 'GYM' || !data.state) throw new Error('File non valido');
-  S = deepMerge(defaultState(), data.state); S.active = null; save(true);
+  S = migrate(deepMerge(defaultState(), data.state)); S.active = null; save(true);
   if (Array.isArray(data.photos)) { for (const p of data.photos) await Photos.put(p); }
 }

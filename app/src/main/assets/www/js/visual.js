@@ -1,74 +1,75 @@
 /* GYM — figura del corpo con muscoli e grafici SVG */
 'use strict';
 
-/* Figura fronte/retro. Ogni forma ha data-m = muscolo. */
+/* Figura anatomica fronte/retro. Ogni muscolo ha data-m. Metà sinistra disegnata e specchiata. */
+function smoothPath(pts, closed) {
+  const n = pts.length, P = i => pts[(i + n) % n];
+  let d = 'M' + pts[0][0] + ' ' + pts[0][1];
+  const last = closed ? n : n - 1;
+  for (let i = 0; i < last; i++) {
+    const p0 = P(i - 1), p1 = P(i), p2 = P(i + 1), p3 = P(i + 2);
+    const c1 = [p1[0] + (p2[0] - (closed || i ? p0[0] : p1[0])) / 6, p1[1] + (p2[1] - (closed || i ? p0[1] : p1[1])) / 6];
+    const c2 = [p2[0] - ((closed || i < n - 2 ? p3[0] : p2[0]) - p1[0]) / 6, p2[1] - ((closed || i < n - 2 ? p3[1] : p2[1]) - p1[1]) / 6];
+    d += ' C' + c1[0].toFixed(1) + ' ' + c1[1].toFixed(1) + ' ' + c2[0].toFixed(1) + ' ' + c2[1].toFixed(1) + ' ' + p2[0] + ' ' + p2[1];
+  }
+  return d + (closed ? 'Z' : '');
+}
+const mirrorPts = pts => pts.map(p => [120 - p[0], p[1]]);
+
+/* contorno (metà sinistra, dall'alto del collo al cavallo) */
+const SIL_HALF = [[60, 37], [53, 38], [52, 47], [44, 52], [33, 55], [25, 61], [21, 72], [20, 86], [17, 102], [15, 118], [13, 136], [12, 152], [10, 164], [11, 176], [16, 181], [20, 172], [21, 160], [24, 140], [27, 122], [30, 104], [33, 90], [35, 104], [37, 122], [34, 140], [32, 160], [33, 190], [36, 214], [37, 226], [35, 246], [38, 268], [42, 284], [38, 294], [44, 299], [54, 298], [53, 286], [54, 266], [55, 246], [55, 228], [56, 210], [58, 186], [60, 166]];
+const SILHOUETTE = smoothPath(SIL_HALF.concat(mirrorPts(SIL_HALF.slice(1, -1)).reverse()), true);
+
+const MUSCLES_FRONT = [
+  ['dorso', [[53, 41], [52, 48], [43, 53], [48, 54], [54, 51]]],                                   // trapezio (vista frontale)
+  ['spalle', [[42, 54], [32, 57], [24, 64], [21, 76], [23, 88], [29, 82], [33, 71], [38, 62]]],      // deltoide
+  ['petto', [[58, 58], [46, 57], [37, 62], [33, 72], [34, 82], [42, 89], [52, 90], [58, 86]]],       // pettorale
+  ['bicipiti', [[30, 86], [25, 90], [21, 102], [21, 114], [26, 117], [30, 106], [32, 94]]],
+  ['avambracci', [[21, 121], [16, 128], [14, 142], [15, 156], [20, 156], [24, 140], [26, 126]]],
+  ['addome', [[52, 93], [59, 93], [59, 104], [52, 104]]],
+  ['addome', [[52, 107], [59, 107], [59, 118], [52, 118]]],
+  ['addome', [[52, 121], [59, 121], [59, 132], [52, 133]]],
+  ['addome', [[52, 136], [59, 136], [59, 154], [54, 150]]],
+  ['addome', [[49, 94], [41, 92], [37, 104], [38, 120], [42, 134], [49, 140], [50, 118]]],           // obliqui
+  ['quadricipiti', [[50, 152], [40, 150], [35, 164], [35, 190], [39, 212], [45, 220], [50, 206], [54, 184], [55, 166]]],
+  ['quadricipiti', [[55, 196], [50, 208], [50, 220], [55, 224], [57, 212]]],                          // vasto mediale
+  ['adduttori', [[59, 160], [56, 166], [55, 186], [58, 182]]],
+  ['polpacci', [[40, 232], [37, 248], [39, 266], [44, 272], [47, 254], [46, 236]]],                    // tibiale/polpaccio
+  ['polpacci', [[52, 234], [50, 250], [52, 264], [54, 248]]]
+];
+const MUSCLES_BACK = [
+  ['dorso', [[60, 40], [53, 42], [42, 53], [47, 60], [55, 72], [60, 96]]],                           // trapezio
+  ['spalle', [[41, 55], [31, 58], [24, 65], [21, 78], [24, 88], [30, 80], [35, 68]]],                 // deltoide posteriore
+  ['dorso', [[47, 63], [38, 66], [35, 80], [37, 98], [43, 118], [52, 124], [57, 110], [56, 92], [53, 76]]], // gran dorsale
+  ['dorso', [[59, 112], [54, 118], [53, 136], [59, 140]]],                                           // lombari
+  ['tricipiti', [[31, 86], [25, 89], [20, 102], [21, 116], [27, 118], [31, 104], [33, 92]]],
+  ['avambracci', [[21, 121], [16, 128], [14, 142], [15, 156], [20, 156], [24, 140], [26, 126]]],
+  ['glutei', [[59, 142], [48, 138], [38, 146], [35, 160], [40, 172], [50, 175], [59, 170]]],
+  ['femorali', [[57, 178], [45, 177], [37, 188], [37, 206], [42, 220], [49, 222], [54, 210], [57, 194]]],
+  ['polpacci', [[46, 228], [39, 234], [37, 250], [40, 266], [45, 262], [47, 246]]],
+  ['polpacci', [[49, 228], [48, 246], [50, 262], [54, 256], [55, 238]]]
+];
+
 function bodySvg(fill, opts) {
   opts = opts || {};
-  // fill(m) -> {color, op}
   const f = m => { const r = fill(m) || {}; return 'fill="' + (r.color || 'var(--muscle)') + '" fill-opacity="' + (r.op == null ? 1 : r.op) + '"'; };
-  const sil = 'fill="var(--body)"';
-  const figure = (ox, back) => {
-    const g = [];
-    // silhouette
-    g.push('<circle cx="' + (ox + 60) + '" cy="26" r="17" ' + sil + '/>');
-    g.push('<rect x="' + (ox + 52) + '" y="40" width="16" height="12" rx="4" ' + sil + '/>');
-    g.push('<path d="M' + (ox + 22) + ' 66 Q' + (ox + 60) + ' 50 ' + (ox + 98) + ' 66 L' + (ox + 94) + ' 200 Q' + (ox + 60) + ' 212 ' + (ox + 26) + ' 200 Z" ' + sil + '/>');
-    // braccia (silhouette)
-    g.push('<path d="M' + (ox + 20) + ' 68 Q' + (ox + 6) + ' 120 ' + (ox + 8) + ' 196 L' + (ox + 20) + ' 198 Q' + (ox + 24) + ' 130 ' + (ox + 32) + ' 90 Z" ' + sil + '/>');
-    g.push('<path d="M' + (ox + 100) + ' 68 Q' + (ox + 114) + ' 120 ' + (ox + 112) + ' 196 L' + (ox + 100) + ' 198 Q' + (ox + 96) + ' 130 ' + (ox + 88) + ' 90 Z" ' + sil + '/>');
-    // gambe (silhouette)
-    g.push('<path d="M' + (ox + 28) + ' 200 L' + (ox + 58) + ' 206 L' + (ox + 56) + ' 372 L' + (ox + 38) + ' 372 Q' + (ox + 26) + ' 290 ' + (ox + 28) + ' 200 Z" ' + sil + '/>');
-    g.push('<path d="M' + (ox + 92) + ' 200 L' + (ox + 62) + ' 206 L' + (ox + 64) + ' 372 L' + (ox + 82) + ' 372 Q' + (ox + 94) + ' 290 ' + (ox + 92) + ' 200 Z" ' + sil + '/>');
-    // spalle (deltoidi)
-    g.push('<ellipse data-m="spalle" cx="' + (ox + 25) + '" cy="78" rx="11" ry="14" ' + f('spalle') + '/>');
-    g.push('<ellipse data-m="spalle" cx="' + (ox + 95) + '" cy="78" rx="11" ry="14" ' + f('spalle') + '/>');
-    if (!back) {
-      // petto
-      g.push('<path data-m="petto" d="M' + (ox + 36) + ' 72 Q' + (ox + 48) + ' 66 ' + (ox + 58) + ' 70 L' + (ox + 58) + ' 102 Q' + (ox + 44) + ' 108 ' + (ox + 34) + ' 98 Z" ' + f('petto') + '/>');
-      g.push('<path data-m="petto" d="M' + (ox + 84) + ' 72 Q' + (ox + 72) + ' 66 ' + (ox + 62) + ' 70 L' + (ox + 62) + ' 102 Q' + (ox + 76) + ' 108 ' + (ox + 86) + ' 98 Z" ' + f('petto') + '/>');
-      // addome
-      for (let r = 0; r < 4; r++) {
-        g.push('<rect data-m="addome" x="' + (ox + 47) + '" y="' + (112 + r * 20) + '" width="12" height="17" rx="4" ' + f('addome') + '/>');
-        g.push('<rect data-m="addome" x="' + (ox + 61) + '" y="' + (112 + r * 20) + '" width="12" height="17" rx="4" ' + f('addome') + '/>');
-      }
-      // bicipiti
-      g.push('<ellipse data-m="bicipiti" cx="' + (ox + 19) + '" cy="116" rx="7" ry="18" ' + f('bicipiti') + '/>');
-      g.push('<ellipse data-m="bicipiti" cx="' + (ox + 101) + '" cy="116" rx="7" ry="18" ' + f('bicipiti') + '/>');
-      // avambracci
-      g.push('<ellipse data-m="avambracci" cx="' + (ox + 14) + '" cy="164" rx="6" ry="20" ' + f('avambracci') + '/>');
-      g.push('<ellipse data-m="avambracci" cx="' + (ox + 106) + '" cy="164" rx="6" ry="20" ' + f('avambracci') + '/>');
-      // quadricipiti
-      g.push('<ellipse data-m="quadricipiti" cx="' + (ox + 44) + '" cy="252" rx="13" ry="40" ' + f('quadricipiti') + '/>');
-      g.push('<ellipse data-m="quadricipiti" cx="' + (ox + 76) + '" cy="252" rx="13" ry="40" ' + f('quadricipiti') + '/>');
-      // polpacci (vista frontale)
-      g.push('<ellipse data-m="polpacci" cx="' + (ox + 46) + '" cy="330" rx="7" ry="24" ' + f('polpacci') + '/>');
-      g.push('<ellipse data-m="polpacci" cx="' + (ox + 74) + '" cy="330" rx="7" ry="24" ' + f('polpacci') + '/>');
-    } else {
-      // trapezio + dorsali + lombari = dorso
-      g.push('<path data-m="dorso" d="M' + (ox + 40) + ' 64 Q' + (ox + 60) + ' 54 ' + (ox + 80) + ' 64 L' + (ox + 66) + ' 90 L' + (ox + 54) + ' 90 Z" ' + f('dorso') + '/>');
-      g.push('<path data-m="dorso" d="M' + (ox + 34) + ' 90 Q' + (ox + 48) + ' 84 ' + (ox + 57) + ' 94 L' + (ox + 57) + ' 150 Q' + (ox + 42) + ' 140 ' + (ox + 34) + ' 120 Z" ' + f('dorso') + '/>');
-      g.push('<path data-m="dorso" d="M' + (ox + 86) + ' 90 Q' + (ox + 72) + ' 84 ' + (ox + 63) + ' 94 L' + (ox + 63) + ' 150 Q' + (ox + 78) + ' 140 ' + (ox + 86) + ' 120 Z" ' + f('dorso') + '/>');
-      g.push('<rect data-m="dorso" x="' + (ox + 50) + '" y="154" width="20" height="34" rx="6" ' + f('dorso') + '/>');
-      // tricipiti
-      g.push('<ellipse data-m="tricipiti" cx="' + (ox + 19) + '" cy="116" rx="7" ry="18" ' + f('tricipiti') + '/>');
-      g.push('<ellipse data-m="tricipiti" cx="' + (ox + 101) + '" cy="116" rx="7" ry="18" ' + f('tricipiti') + '/>');
-      g.push('<ellipse data-m="avambracci" cx="' + (ox + 14) + '" cy="164" rx="6" ry="20" ' + f('avambracci') + '/>');
-      g.push('<ellipse data-m="avambracci" cx="' + (ox + 106) + '" cy="164" rx="6" ry="20" ' + f('avambracci') + '/>');
-      // glutei
-      g.push('<ellipse data-m="glutei" cx="' + (ox + 46) + '" cy="210" rx="15" ry="14" ' + f('glutei') + '/>');
-      g.push('<ellipse data-m="glutei" cx="' + (ox + 74) + '" cy="210" rx="15" ry="14" ' + f('glutei') + '/>');
-      // femorali
-      g.push('<ellipse data-m="femorali" cx="' + (ox + 44) + '" cy="262" rx="12" ry="34" ' + f('femorali') + '/>');
-      g.push('<ellipse data-m="femorali" cx="' + (ox + 76) + '" cy="262" rx="12" ry="34" ' + f('femorali') + '/>');
-      // polpacci
-      g.push('<ellipse data-m="polpacci" cx="' + (ox + 46) + '" cy="326" rx="9" ry="26" ' + f('polpacci') + '/>');
-      g.push('<ellipse data-m="polpacci" cx="' + (ox + 74) + '" cy="326" rx="9" ry="26" ' + f('polpacci') + '/>');
-    }
-    return g.join('');
+  const figure = (ox, list, back) => {
+    let g = '<g transform="translate(' + ox + ',0)">';
+    g += '<ellipse cx="60" cy="21" rx="12.5" ry="15" fill="var(--body)"/>';
+    g += '<path d="' + SILHOUETTE + '" fill="var(--body)"/>';
+    list.forEach(([m, pts]) => {
+      const dm = m === 'adduttori' ? '' : ' data-m="' + m + '"';
+      const attr = m === 'adduttori' ? 'fill="var(--muscle)"' : f(m);
+      g += '<path' + dm + ' d="' + smoothPath(pts, true) + '" ' + attr + ' class="mu"/>';
+      g += '<path' + dm + ' d="' + smoothPath(mirrorPts(pts), true) + '" ' + attr + ' class="mu"/>';
+    });
+    if (!back) g += '<path d="M60 92 L60 156" stroke="var(--body)" stroke-width="1.5"/>';
+    else g += '<path d="M60 96 L60 140" stroke="var(--body)" stroke-width="1.5"/>';
+    return g + '</g>';
   };
-  const lbl = (x, t) => '<text x="' + x + '" y="392" text-anchor="middle" class="svg-lbl">' + t + '</text>';
-  return '<svg class="body-svg' + (opts.click ? ' clickable' : '') + '" viewBox="0 0 270 400" xmlns="http://www.w3.org/2000/svg">' +
-    figure(10, false) + figure(140, true) + lbl(70, 'Fronte') + lbl(200, 'Retro') + '</svg>';
+  const lbl = (x, t) => '<text x="' + x + '" y="318" text-anchor="middle" class="svg-lbl">' + t + '</text>';
+  return '<svg class="body-svg' + (opts.click ? ' clickable' : '') + '" viewBox="0 0 260 326" xmlns="http://www.w3.org/2000/svg">' +
+    figure(0, MUSCLES_FRONT, false) + figure(140, MUSCLES_BACK, true) + lbl(60, 'Fronte') + lbl(200, 'Retro') + '</svg>';
 }
 
 /* evidenzia muscoli di un esercizio */

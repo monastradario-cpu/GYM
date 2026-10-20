@@ -58,7 +58,7 @@ function applyTheme() {
 
 /* ---------- Navigazione ---------- */
 const VIEWS = {};
-const TABS = [['home', 'Home', 'home'], ['schede', 'Schede', 'list'], ['coach', 'Allenatore', 'coach'], ['library', 'Esercizi', 'book'], ['progress', 'Progressi', 'chart']];
+const TABS = [['home', 'Home', 'home'], ['schede', 'Schede', 'list'], ['coach', 'Coach', 'coach'], ['library', 'Esercizi', 'book'], ['progress', 'Progressi', 'chart']];
 
 function go(v, p, replace) {
   if (replace || TABS.some(t => t[0] === v)) UI.stack = [{ v, p }];
@@ -81,6 +81,8 @@ function render(scrollTop) {
   const fn = VIEWS[c.v] || VIEWS.home;
   main.innerHTML = fn(c.p || {});
   main.scrollTop = scrollTop ? 0 : y;
+  const demo = document.getElementById('demo');
+  if (demo) Demo.mount(demo, demo.dataset.ex); else Demo.stop();
   const isWorkout = c.v === 'workout';
   $('#nav').hidden = isWorkout || c.v === 'aichat';
   $('#nav').innerHTML = TABS.map(t => '<button data-act="tab" data-v="' + t[0] + '" class="' + (navTab() === t[0] ? 'on' : '') + '">' + ic(t[2]) + '<span>' + t[1] + '</span></button>').join('');
@@ -141,7 +143,8 @@ VIEWS.home = () => {
       '<div class="ex-preview">' + t.items.slice(0, 4).map(i => '<span>' + exLine(i.ex) + '</span>').join('') + (t.items.length > 4 ? '<span>+' + (t.items.length - 4) + '</span>' : '') + '</div>' +
       '<button class="btn big" data-act="startTemplate" data-id="' + t.id + '">' + ic('play') + (S.active ? 'Riprendi allenamento' : 'Inizia') + '</button></div>';
   } else {
-    todayCard = '<div class="card hero rest"><div class="eyebrow">Oggi</div><h2>Giorno di riposo</h2><div class="muted">Recupera bene. Se vuoi allenarti lo stesso, scegli una scheda o un circuito.</div>' +
+    todayCard = '<div class="card hero rest"><div class="eyebrow">Oggi</div><h2>Giorno di riposo</h2><div class="muted">Il muscolo cresce mentre recuperi. Oggi: camminata e 10 minuti di mobilità. Se vuoi allenarti lo stesso, scegli una scheda o un circuito.</div>' +
+      '<button class="btn ghost wide" data-act="mobility">' + ic('run') + 'Mobilità e stretching (10 min)</button>' +
       '<button class="btn big ghost" data-act="tab" data-v="schede">' + ic('list') + 'Scegli una scheda</button></div>';
   }
   return header('GYM', { sub: fmtDateLong(now) }) + '<div class="pad">' + todayCard +
@@ -165,6 +168,7 @@ VIEWS.home = () => {
         '<div class="row gap"><button class="btn sm ghost" data-act="water" data-d="-1">−</button><button class="btn sm" data-act="water" data-d="1">+ bicchiere</button></div></div>' +
     '</div>' +
     '<button class="btn ghost wide" data-act="cardio">' + ic('run') + 'Registra cardio</button>' +
+    homeTrainerCards(t, doneToday) +
     '</div>';
 };
 
@@ -180,6 +184,8 @@ VIEWS.schede = () => {
         ((t.days || []).length ? ' · ' + t.days.map(d => WEEKDAYS[d]).join(', ') : '') + '</div></div>' +
         '<button class="icon-btn" data-act="editTemplate" data-id="' + t.id + '">' + ic('edit') + '</button></div>' +
       (t.desc ? '<p class="small muted">' + esc(t.desc) + '</p>' : '') +
+      (t.focus ? '<div class="eyebrow">' + esc(t.focus) + '</div>' : '') +
+      (t.note ? '<p class="small muted">' + ic('coach', 'inline') + esc(t.note) + '</p>' : '') +
       '<div class="ex-preview">' + t.items.slice(0, 6).map(i => '<span>' + exLine(i.ex) + '</span>').join('') + (t.items.length > 6 ? '<span>+' + (t.items.length - 6) + '</span>' : '') + '</div>' +
       '<button class="btn" data-act="startTemplate" data-id="' + t.id + '">' + ic('play') + 'Inizia</button></div>').join('')
       : '<div class="empty">Nessuna ' + (UI.schede === 'circuiti' ? 'circuito' : 'scheda') + ' qui.</div>') +
@@ -234,7 +240,10 @@ function pickExercise(cb, preset) {
 }
 function pickerSheet() {
   const p = UI.pick;
+  const pairs = p.m ? pairSuggestions(p.group && p.group.length ? p.group : [p.m]).filter(x => !(p.group || []).includes(x.m)) : [];
   return '<h3>Scegli esercizio</h3><input type="search" placeholder="Cerca…" value="' + esc(p.q) + '" data-in="pickQ" class="search">' +
+    (p.group && p.group.length > 1 ? '<div class="eyebrow">Gruppo di oggi</div><div class="chips">' + p.group.map(m => chip(MUSCLES[m], p.m === m, 'pickM', 'data-m="' + m + '"')).join('') + '</div>' : '') +
+    (pairs.length ? '<div class="small muted">' + ic('coach', 'inline') + 'Con ' + MUSCLES[p.m] + ' si abbina bene: ' + pairs.map(x => '<button class="link-inline" data-act="pickM" data-m="' + x.m + '">' + MUSCLES[x.m] + '</button>').join(', ') + '</div>' : '') +
     '<div class="chips scroll">' + chip('Tutti', !p.m, 'pickM', 'data-m=""') + Object.keys(MUSCLES).map(m => chip(MUSCLES[m], p.m === m, 'pickM', 'data-m="' + m + '"')).join('') + '</div>' +
     '<div class="chips scroll">' + chip('Ogni attrezzo', !p.eq, 'pickEq', 'data-e=""') + Object.keys(EQUIP).map(k => chip(EQUIP[k], p.eq === k, 'pickEq', 'data-e="' + k + '"')).join('') + '</div>' +
     '<div id="pick-list">' + pickerList() + '</div>';
@@ -257,7 +266,8 @@ VIEWS.settings = () => {
       '<div class="field"><span>Colore</span><div class="swatches">' + Object.keys(ACCENTS).map(k => '<button class="sw ' + (st.accent === k ? 'on' : '') + '" style="background:' + ACCENTS[k] + '" data-act="setAccent" data-k="' + k + '" aria-label="' + k + '"></button>').join('') + '</div></div>' +
     '</div>' +
     '<h3 class="sec">Profilo</h3><div class="card">' +
-      '<div class="field"><span>Obiettivo</span><div class="chips">' + Object.keys(GOALS).map(k => chip(GOALS[k].n, p.goal === k, 'setGoal', 'data-k="' + k + '"')).join('') + '</div></div>' +
+      '<div class="field"><span>Obiettivi (anche più di uno)</span><div class="chips">' + Object.keys(GOALS).map(k => chip(GOALS[k].n, p.goals.includes(k), 'setGoal', 'data-k="' + k + '"')).join('') + '</div></div>' +
+      bodyDataFields() +
       '<div class="field"><span>Livello</span><div class="chips">' + Object.keys(LEVELS).map(k => chip(LEVELS[k].n, p.level === k, 'setLevel', 'data-k="' + k + '"')).join('') + '</div></div>' +
       '<div class="field"><span>Giorni di allenamento</span>' + daysChips(p.days, 'setDay') + '</div>' +
       field('Bicchieri d\'acqua al giorno', numIn(p.waterGoal, 'data-in="waterGoal"')) +
@@ -327,11 +337,13 @@ VIEWS.onboarding = () => {
   const nav = (next, label) => '<div class="ob-nav">' + (o.step ? '<button class="btn ghost" data-act="obPrev">Indietro</button>' : '<span></span>') + '<button class="btn" data-act="' + (next || 'obNext') + '">' + (label || 'Avanti') + '</button></div>';
   let body = '';
   if (o.step === 0) body = '<div class="ob-hero">' + ic('dumbbell', 'xl') + '<h1>Benvenuto in GYM</h1><p>Il tuo allenatore personale in tasca. Ti faccio qualche domanda per preparare le schede su misura per te.</p></div>' + nav(null, 'Iniziamo');
-  if (o.step === 1) body = '<h2>Qual è il tuo obiettivo?</h2>' + Object.keys(GOALS).map(k => '<button class="opt ' + (p.goal === k ? 'on' : '') + '" data-act="setGoal" data-k="' + k + '"><b>' + GOALS[k].n + '</b><small>' + GOALS[k].desc + '</small></button>').join('') + nav();
+  if (o.step === 1) body = '<h2>Quali sono i tuoi obiettivi?</h2><p class="muted">Puoi sceglierne più di uno: il trainer li combina.</p>' + Object.keys(GOALS).map(k => '<button class="opt check ' + (p.goals.includes(k) ? 'on' : '') + '" data-act="setGoal" data-k="' + k + '"><span><b>' + GOALS[k].n + '</b><small>' + GOALS[k].desc + '</small></span><i class="tick">' + ic('check') + '</i></button>').join('') + nav();
   if (o.step === 2) body = '<h2>Che livello hai?</h2>' + Object.keys(LEVELS).map(k => '<button class="opt ' + (p.level === k ? 'on' : '') + '" data-act="setLevel" data-k="' + k + '"><b>' + LEVELS[k].n + '</b><small>' + LEVELS[k].desc + '</small></button>').join('') + nav();
   if (o.step === 3) body = '<h2>In quali giorni ti alleni?</h2><p class="muted">Creo una scheda per ogni giorno.</p>' + daysChips(p.days, 'setDay') +
     '<p class="muted small">' + (p.days.length ? 'Schede: ' + splitForDays(p.days.length).map(k => PRESET_SPLITS[k].n).join(' · ') : 'Scegli almeno un giorno') + '</p>' + nav();
-  if (o.step === 4) body = '<h2>Quanto pesi?</h2><p class="muted">Serve per seguire i progressi. Puoi saltare.</p>' + field('Peso (kg)', numIn(o.weight || '', 'data-in="obWeight"', 'es. 75')) + nav();
+  if (o.step === 4) body = '<h2>I tuoi dati</h2><p class="muted">Servono per i progressi e per calcolare calorie e proteine. Puoi saltare.</p>' + field('Peso (kg)', numIn(o.weight || '', 'data-in="obWeight"', 'es. 75')) +
+    '<div class="field"><span>Sesso</span><div class="seg">' + chip('Uomo', p.sex === 'm', 'setSex', 'data-k="m"') + chip('Donna', p.sex === 'f', 'setSex', 'data-k="f"') + '</div></div>' +
+    '<div class="grid2">' + field('Età', numIn(p.age, 'data-in="prof" data-k="age"', 'es. 35')) + field('Altezza (cm)', numIn(p.height, 'data-in="prof" data-k="height"', 'es. 175')) + '</div>' + nav();
   if (o.step === 5) body = '<h2>Promemoria</h2>' +
     '<div class="list-item flat"><div><b>Allenamento</b><small>Nei tuoi giorni</small></div>' + toggle(r.workout.on, 'remOn', 'data-k="workout"') + '</div>' + (r.workout.on ? field('Ora', timeIn(r.workout.hour, r.workout.min, 'workout')) : '') +
     '<div class="list-item flat"><div><b>Bere acqua</b><small>Ogni ' + r.water.every + ' ore dalle ' + r.water.from + ' alle ' + r.water.to + '</small></div>' + toggle(r.water.on, 'remOn', 'data-k="water"') + '</div>' +
@@ -339,3 +351,21 @@ VIEWS.onboarding = () => {
     '<p class="muted small">Puoi cambiarli quando vuoi nelle impostazioni.</p>' + nav('obFinish', 'Fatto, entriamo!');
   return '<div class="pad ob">' + dots + body + '</div>';
 };
+
+/* carte del trainer in home */
+function homeTrainerCards(t, doneToday) {
+  let out = '<div class="card trainer"><div class="eyebrow">' + ic('coach', 'inline') + 'Consiglio del trainer</div><p>' + esc(tipOfDay()) + '</p></div>';
+  const n = nutritionTargets(), r = S.reminders.workout;
+  if (t && !doneToday) {
+    out += '<button class="card meal-mini" data-act="goFood"><div class="eyebrow">' + ic('flame', 'inline') + 'Prima dell\'allenamento</div><p><b>' + (r.on ? 'Alle ' + pad(Math.max(0, r.hour - 2)) + ':' + pad(r.min) + ' circa' : '2–3 ore prima') + '</b>: pasto con carboidrati e proteine magre. 30–60 min prima, se hai fame: una banana o uno yogurt con miele.</p><small class="muted">Tocca per l\'alimentazione completa</small></button>';
+  } else if (doneToday) {
+    out += '<button class="card meal-mini" data-act="goFood"><div class="eyebrow">' + ic('dumbbell', 'inline') + 'Recupero</div><p>Pasto di recupero entro 2 ore: ' + (n.protein ? Math.round(n.protein / 4) + ' g di proteine' : '25–40 g di proteine') + ' e carboidrati (es. yogurt greco con frutta e avena, o pasta con tonno e verdure).</p><small class="muted">Tocca per l\'alimentazione completa</small></button>';
+  }
+  const st = streaks();
+  if (st.weekStreak >= 6 && st.weekStreak % 6 === 0) out += '<div class="note warn">' + ic('info', 'inline') + 'Sei a ' + st.weekStreak + ' settimane di fila: questa settimana fai uno <b>scarico</b> (stessi esercizi, circa 60% del carico) per recuperare e ripartire più forte.</div>';
+  return out;
+}
+function mobilitySheet() {
+  return '<h3>' + ic('run', 'inline') + 'Mobilità e stretching</h3><p class="small muted">Per i giorni di riposo o dopo l\'allenamento. Movimenti lenti, senza dolore.</p>' +
+    MOBILITY.map((m, i) => '<div class="list-item flat"><div><b>' + (i + 1) + '. ' + m[0] + '</b><small>' + m[1] + '</small></div></div>').join('');
+}
