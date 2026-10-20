@@ -250,7 +250,7 @@ const ACT = {
   },
   deloadOn: () => { S.deloadUntil = Date.now() + 7 * 864e5; S.lastDeload = Date.now(); save(); render(); toast('Settimana di scarico attiva: serie dimezzate per 7 giorni'); },
   deloadOff: () => { S.deloadUntil = 0; save(); render(); toast('Scarico terminato'); },
-  setBodyStyle: d => { S.settings.bodyStyle = d.k; save(); render(); },
+  setBodyStyle: d => { S.settings.body2 = d.k; save(); render(); },
   coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
   goFood: () => { UI.coachTab = 'food'; go('coach'); },
   setSex: d => { S.profile.sex = d.k; save(); render(); },
@@ -375,6 +375,12 @@ document.addEventListener('input', ev => {
 });
 document.addEventListener('change', async ev => {
   const el = ev.target, k = el.dataset.in; if (!k) return;
+  if (k === 'profW') {
+    const v = num(el.value); if (v < 25 || v > 350) { toast('Inserisci un peso valido'); return; }
+    const last = S.weights[S.weights.length - 1];
+    if (last && dayKey(last.d) === todayKey()) { last.kg = v; last.d = Date.now(); } else S.weights.push({ d: Date.now(), kg: v });
+    save(true); toast('Peso aggiornato: ' + fmtKg(v) + ' kg'); render();
+  }
   if (k === 'remTime') { const [h, m] = el.value.split(':').map(Number); const r = S.reminders[el.dataset.k]; r.hour = h || 0; r.min = m || 0; save(); syncReminders(); }
   if (k === 'editNum' || k === 'editItem') render();
   if (k === 'importB' && el.files[0]) {

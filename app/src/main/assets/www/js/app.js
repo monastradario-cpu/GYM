@@ -264,7 +264,7 @@ VIEWS.settings = () => {
       updateBox() + '</div>' +
     '<h3 class="sec">Aspetto</h3><div class="card">' +
       '<div class="field"><span>Tema</span><div class="seg">' + [['light', 'Chiaro'], ['dark', 'Scuro'], ['system', 'Sistema']].map(x => chip(x[1], st.theme === x[0], 'setTheme', 'data-t="' + x[0] + '"')).join('') + '</div></div>' +
-      '<div class="field"><span>Figura del corpo</span><div class="chips">' + Object.keys(BODY_STYLES).map(k => chip(BODY_STYLES[k].n, bodyStyle() === k, 'setBodyStyle', 'data-k="' + k + '"')).join('') + '</div></div>' +
+      '<div class="field"><span>Figura del corpo</span><div class="chips">' + Object.keys(B2_STYLES).map(k => chip(B2_STYLES[k].n, ((S.settings.body2) || 'vettoriale') === k, 'setBodyStyle', 'data-k="' + k + '"')).join('') + '</div></div>' +
       '<div class="body-prev">' + bodySvg(m => m === 'petto' ? { color: 'var(--accent)' } : m === 'tricipiti' ? { color: 'var(--accent)', op: .45 } : null) + '</div>' +
       '<div class="field"><span>Colore</span><div class="swatches">' + Object.keys(ACCENTS).map(k => '<button class="sw ' + (st.accent === k ? 'on' : '') + '" style="background:' + ACCENTS[k] + '" data-act="setAccent" data-k="' + k + '" aria-label="' + k + '"></button>').join('') + '</div></div>' +
     '</div>' +

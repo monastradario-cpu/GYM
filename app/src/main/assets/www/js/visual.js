@@ -88,6 +88,7 @@ function grow(pts, k) {
   return pts.map(p => [cx + (p[0] - cx) * k, cy + (p[1] - cy) * k]);
 }
 const BODY_STYLES = {
+  davinci: { n: 'Leonardo', d: 'Tavola anatomica rinascimentale: pergamena, inchiostro seppia, muscolo allenato a sanguigna.' },
   ibrido: { n: 'Rilievo pulito', d: 'Muscoli in rilievo con ombre, forme pulite senza linee.' },
   atlante: { n: 'Atlante a china', d: 'Tavola anatomica disegnata: fondo chiaro, contorni e fibre a inchiostro.' },
   realistico: { n: 'Realistico', d: 'Muscoli in rilievo con ombre, effetto 3D su fondo scuro.' },
@@ -96,9 +97,74 @@ const BODY_STYLES = {
 };
 function bodyStyle() { return (typeof S !== 'undefined' && S.settings && S.settings.bodyStyle) || 'ibrido'; }
 
+/* ===== Stile Leonardo: pergamena, inchiostro seppia, tratteggio, sanguigna ===== */
+function hatchLines(pts, angleOff, gap, ext) {
+  const n = pts.length, cx = pts.reduce((a, p) => a + p[0], 0) / n, cy = pts.reduce((a, p) => a + p[1], 0) / n;
+  let sxx = 0, syy = 0, sxy = 0; pts.forEach(p => { const x = p[0] - cx, y = p[1] - cy; sxx += x * x; syy += y * y; sxy += x * y; });
+  const th = 0.5 * Math.atan2(2 * sxy, sxx - syy) + (angleOff || 0), dx = Math.cos(th), dy = Math.sin(th), nx = -dy, ny = dx;
+  let dmin = 1e9, dmax = -1e9, nmin = 1e9, nmax = -1e9;
+  pts.forEach(p => { const x = p[0] - cx, y = p[1] - cy, a = x * dx + y * dy, b = x * nx + y * ny; dmin = Math.min(dmin, a); dmax = Math.max(dmax, a); nmin = Math.min(nmin, b); nmax = Math.max(nmax, b); });
+  let d = '';
+  for (let t = nmin + gap * 0.5; t < nmax; t += gap) {
+    const w = (Math.sin(t * 7.3) * 0.5) * (ext || 1);
+    d += 'M' + (cx + nx * t + dx * (dmin - 3)).toFixed(1) + ' ' + (cy + ny * t + dy * (dmin - 3)).toFixed(1) + ' Q' + (cx + nx * (t + w) + dx * (dmin + dmax) / 2).toFixed(1) + ' ' + (cy + ny * (t + w) + dy * (dmin + dmax) / 2).toFixed(1) + ' ' + (cx + nx * t + dx * (dmax + 3)).toFixed(1) + ' ' + (cy + ny * t + dy * (dmax + 3)).toFixed(1) + ' ';
+  }
+  return d;
+}
+function daVinciSvg(fill, opts) {
+  const u = ++_bodyN, R = 'rf' + u, EM = 'em' + u;
+  let defs = '<filter id="' + R + '" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0.85" xChannelSelector="R" yChannelSelector="G"/></filter>' +
+    '<filter id="pp' + u + '"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" seed="11"/><feColorMatrix type="matrix" values="0 0 0 0 0.38  0 0 0 0 0.25  0 0 0 0 0.1  0 0 0 0.16 0"/></filter>' +
+    '<filter id="st' + u + '"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="2"/><feColorMatrix type="matrix" values="0 0 0 0 0.45  0 0 0 0 0.3  0 0 0 0 0.12  0 0 0 0.22 -0.06"/></filter>' +
+    '<radialGradient id="pg' + u + '" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#f3e6c8"/><stop offset=".7" stop-color="#e8d3a6"/><stop offset="1" stop-color="#cfb27c"/></radialGradient>' +
+    '<radialGradient id="' + EM + 'g" cx="50%" cy="50%" r="55%"><stop offset=".45" stop-color="#000"/><stop offset="1" stop-color="#fff"/></radialGradient>' +
+    '<mask id="' + EM + '" maskContentUnits="objectBoundingBox"><rect width="1" height="1" fill="url(#' + EM + 'g)"/></mask>' +
+    '<radialGradient id="sg' + u + '" cx="45%" cy="40%" r="70%"><stop offset="0" stop-color="#c8643f"/><stop offset="1" stop-color="#9b3d22"/></radialGradient>';
+  const figure = (ox, list, back, fid) => {
+    const clip = 'dc' + u + fid;
+    let g = '<g transform="translate(' + (ox + 60) + ',0) scale(1.14,1) translate(-60,0)"><clipPath id="' + clip + '"><path d="' + SILHOUETTE + '"/><path d="' + HEAD + '"/></clipPath>';
+    // ombreggiatura generale del corpo sui bordi (tratteggio incrociato)
+    g += '<g clip-path="url(#' + clip + ')"><g mask="url(#' + EM + ')"><path d="' + hatchLines(SIL_HALF.concat(mirrorPts(SIL_HALF)), 0.9, 1.5) + '" class="dv-x"/></g></g>';
+    g += '<g filter="url(#' + R + ')">';
+    list.forEach(([m, pts]) => {
+      const r = m !== 'x' ? fill(m) : null, dm = m !== 'x' ? ' data-m="' + m + '"' : '';
+      [pts, mirrorPts(pts)].forEach(P0 => {
+        const P = grow(P0, 1.1), d = smoothPath(P, true), cid = 'dm' + u + '_' + (++_bodyN);
+        g += '<clipPath id="' + cid + '"><path d="' + d + '"/></clipPath>';
+        g += '<path' + dm + ' d="' + d + '" class="dv-mu' + (r ? ' on' : '') + '" fill="' + (r ? 'url(#sg' + u + ')' : 'rgba(255,250,235,0.01)') + '"' + (r ? ' fill-opacity="' + (0.35 + 0.55 * (r.op == null ? 1 : r.op)) + '"' : '') + '/>';
+        if (!opts.mini) {
+          g += '<path d="' + hatchLines(P, 0, 1.9) + '" class="dv-f" clip-path="url(#' + cid + ')"/>';
+          g += '<g clip-path="url(#' + cid + ')"><g mask="url(#' + EM + ')"><path d="' + hatchLines(P, 1.05, 1.4) + '" class="dv-x"/></g></g>';
+        }
+      });
+    });
+    // contorno e dettagli anatomici
+    g += '<path d="' + SILHOUETTE + '" class="dv-out"/><path d="' + HEAD + '" class="dv-out"/>';
+    if (!back) {
+      g += '<path d="M44 53.5 Q51 50.5 58 54.5 M76 53.5 Q69 50.5 62 54.5 M60 56 L60 92 M57.5 152 q2.5 2.4 5 0 M52 21 q3 -1.8 6 0 M62 21 q3 -1.8 6 0 M53 23.5 q2 1 4 0 M63 23.5 q2 1 4 0 M60 22 Q58.5 26.5 59 28.8 Q60.5 29.6 62 28.6 M56.3 32.6 q3.7 1.6 7.4 0 M57.3 34 q2.7 1 5.4 0 M47 9 Q60 1 73 9" class="dv-d"/>';
+      g += '<path d="M43.5 231 q3.5 -4 7 0 q0.5 5 -3.5 7.5 q-4 -2.5 -3.5 -7.5 Z M76.5 231 q-3.5 -4 -7 0 q-0.5 5 3.5 7.5 q4 -2.5 3.5 -7.5 Z" class="dv-d"/>';
+      g += '<path d="M44 290 q-2 3 0 5 M76 290 q2 3 0 5 M37.5 104 q2 2 4 1 M37.5 110 q2 2 4 1 M82.5 104 q-2 2 -4 1 M82.5 110 q-2 2 -4 1" class="dv-d"/>';
+    } else {
+      g += '<path d="M42 60 Q36 70 41 84 Q47 78 50 66 Z M78 60 Q84 70 79 84 Q73 78 70 66 Z M48 14 C52 4 68 4 72 14 M47 9 Q60 0 73 9 M50 37 Q60 41 70 37" class="dv-d"/>';
+      for (let y = 46; y <= 146; y += 6.5) g += '<path d="M58.6 ' + y + ' q1.4 -1.4 2.8 0 q-1.4 1.6 -2.8 0" class="dv-d"/>';
+      g += '<path d="M44 293 q-1 -6 2 -10 M76 293 q1 -6 -2 -10" class="dv-d"/>';
+    }
+    g += '<path d="M12 184 L11.5 193 M14.5 186 L14.5 197 M17.5 186 L17.8 197 M108 184 L108.5 193 M105.5 186 L105.5 197 M102.5 186 L102.2 197 M44 308 L44.5 311 M47.5 309 L47.8 312 M76 308 L75.5 311 M72.5 309 L72.2 312" class="dv-d"/>';
+    return g + '</g></g>';
+  };
+  const W = 290, H = opts.mini ? 318 : 352;
+  const paper = '<rect x="-14" y="-2" width="' + W + '" height="' + H + '" rx="10" fill="url(#pg' + u + ')"/><rect x="-14" y="-2" width="' + W + '" height="' + H + '" rx="10" filter="url(#st' + u + ')"/><rect x="-14" y="-2" width="' + W + '" height="' + H + '" rx="10" filter="url(#pp' + u + ')"/>';
+  const lbl = opts.mini ? '' : '<text x="60" y="334" text-anchor="middle" class="dv-l">Fronte</text><text x="202" y="334" text-anchor="middle" class="dv-l">Retro</text>';
+  return '<svg class="body-svg bs-davinci' + (opts.click ? ' clickable' : '') + (opts.mini ? ' mini' : '') + '" viewBox="-14 -2 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg"><defs>' + defs + '</defs>' + paper +
+    figure(0, MUSCLES_FRONT, false, 'f') + figure(142, MUSCLES_BACK, true, 'b') + lbl + '</svg>';
+}
+
 function bodySvg(fill, opts) {
   opts = opts || {};
+  // figura v2 (stile scelto: vettoriale)
+  if (typeof bodySvg2 === 'function') return bodySvg2(m => { const r = fill(m); return r ? { op: r.op } : null; }, Object.assign({ style: (typeof S !== 'undefined' && S.settings && S.settings.body2) || 'vettoriale' }, opts));
   const st = opts.style || bodyStyle(), uid0 = ++_bodyN;
+  if (st === 'davinci') return daVinciSvg(fill, opts);
   const sel = m => fill(m) || null;
   const K = st === 'minimal' ? 1.04 : st === 'ibrido' ? 1.12 : 1.13;
   const real = st === 'realistico' || st === 'ibrido';

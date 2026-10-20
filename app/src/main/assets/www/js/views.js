@@ -184,8 +184,8 @@ function nutritionView() {
 function bodyDataFields() {
   const p = S.profile;
   return '<div class="field"><span>Sesso</span><div class="seg">' + chip('Uomo', p.sex === 'm', 'setSex', 'data-k="m"') + chip('Donna', p.sex === 'f', 'setSex', 'data-k="f"') + '</div></div>' +
-    '<div class="grid2">' + field('Età', numIn(p.age, 'data-in="prof" data-k="age"', 'es. 35')) + field('Altezza (cm)', numIn(p.height, 'data-in="prof" data-k="height"', 'es. 175')) + '</div>' +
-    (S.weights.length ? '' : '<button class="btn ghost wide" data-act="addWeight">Registra il peso</button>');
+    '<div class="grid3">' + field('Età', numIn(p.age, 'data-in="prof" data-k="age"', 'es. 35')) + field('Altezza (cm)', numIn(p.height, 'data-in="prof" data-k="height"', 'es. 175')) +
+      field('Peso (kg)', numIn(S.weights.length ? fmtKg(S.weights[S.weights.length - 1].kg) : '', 'data-in="profW"', 'es. 75')) + '</div>';
 }
 
 

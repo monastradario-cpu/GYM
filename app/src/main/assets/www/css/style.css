@@ -450,3 +450,53 @@ span.set-n{text-align:center;font-weight:800;color:var(--muted)}
 .dist-body .body-svg{max-width:360px}
 .body-svg.mini{width:70px;max-width:70px}
 .body-prev{display:flex;justify-content:center;margin:4px 0 8px}.body-prev .body-svg{max-width:260px}
+.seg .chip.on{color:var(--accent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent) 70%,transparent)}
+/* stile Leonardo */
+.bs-davinci{border-radius:12px}
+.bs-davinci .dv-mu{stroke:#4a2f17;stroke-width:.6;stroke-linejoin:round}
+.bs-davinci .dv-f{fill:none;stroke:#5b3b1d;stroke-width:.28;opacity:.55;pointer-events:none}
+.bs-davinci .dv-x{fill:none;stroke:#4a2f17;stroke-width:.32;opacity:.55;pointer-events:none}
+.bs-davinci .dv-out{fill:none;stroke:#3b2410;stroke-width:1.05;stroke-linejoin:round;pointer-events:none}
+.bs-davinci .dv-d{fill:none;stroke:#4a2f17;stroke-width:.6;stroke-linecap:round;pointer-events:none}
+.bs-davinci .dv-l{fill:#5b3b1d;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:13px}
+/* ===== figura v2 ===== */
+.b2 .b2-out{fill:none;pointer-events:none}
+.b2 .b2-d{fill:none;pointer-events:none;stroke-linecap:round}
+.b2 .b2-fib{fill:none;pointer-events:none}
+/* tavola medica: corpo grigio, muscoli chiari, allenati rossi con fibre */
+.b2-medico .b2-sil{fill:#c3c9d2}
+.b2-medico .b2-mu{stroke:#aab1bb;stroke-width:.8}.b2-medico .b2-mu:not(.on){fill:#dde1e7}
+.b2-medico .b2-mu.xx:not(.on){fill:#d3d8df}
+.b2-medico .b2-mu.on{stroke:#b52f3a;stroke-width:.8}
+.b2-medico .b2-fib.on{stroke:#ffd7d3;stroke-width:.45;opacity:.7}
+.b2-medico .b2-out{stroke:#9aa2ad;stroke-width:1}
+.b2-medico .b2-d{stroke:#9aa2ad;stroke-width:.8}
+:root{--b2-ahi:#ff6b6b;--b2-alo:#c92a3a;--b2-hi:#eceff3;--b2-lo:#a8afb9}
+/* lineare */
+.b2-lineare .b2-sil{fill:#fff}
+.b2-lineare .b2-mu{stroke:#22262b;stroke-width:.75}.b2-lineare .b2-mu:not(.on){fill:#fff}
+.b2-lineare .b2-mu.on{stroke:#22262b}
+.b2-lineare .b2-out{stroke:#22262b;stroke-width:1.1}
+.b2-lineare .b2-d{stroke:#22262b;stroke-width:.6}
+.body-svg.b2-lineare{background:#fff;border-radius:14px}
+.b2-lineare .svg-lbl{fill:#555}
+/* vettoriale */
+.b2-vettoriale .b2-sil{fill:#7c8592}
+.b2-vettoriale .b2-mu{stroke:none}.b2-vettoriale .b2-mu:not(.on){fill:#a7afba}
+.b2-vettoriale .b2-mu.xx:not(.on){fill:#98a0ab}
+.b2-vettoriale .b2-hl{fill:#c3c9d1;opacity:.55}
+.b2-vettoriale .b2-hl.on{fill:#ffb08a;opacity:.6}
+.b2-vettoriale .b2-out{stroke:none}
+.b2-vettoriale .b2-d{stroke:#6a7380;stroke-width:.8}
+/* rilievo 3d */
+.b2-rilievo .b2-sil{fill:#8d949e}
+.b2-rilievo .b2-mu{stroke:#5d646e;stroke-width:.6}
+.b2-rilievo .b2-fib{stroke:#5d646e;stroke-width:.3;opacity:.4}
+.b2-rilievo .b2-fib.on{stroke:#7a1d24;opacity:.35}
+.b2-rilievo .b2-out{stroke:#4d545e;stroke-width:.9}
+.b2-rilievo .b2-d{stroke:#5d646e;stroke-width:.7}
+.b2 .svg-lbl{font-size:15px}
+.body-svg.b2{max-width:440px;width:100%}
+.body-svg.b2.mini{width:72px;max-width:72px}
+.dist-body .body-svg.b2{max-width:340px}.body-prev .body-svg.b2{max-width:280px}
+.b2.clickable .b2-mu{cursor:pointer}
