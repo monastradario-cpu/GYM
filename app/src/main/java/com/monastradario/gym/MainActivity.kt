@@ -204,6 +204,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        /** testo negli appunti (per incollare la chiave API) */
+        @JavascriptInterface fun clipboard(): String {
+            var out = ""
+            val latch = java.util.concurrent.CountDownLatch(1)
+            main.post {
+                try {
+                    val cm = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                    val clip = cm.primaryClip
+                    if (clip != null && clip.itemCount > 0) out = clip.getItemAt(0).coerceToText(this@MainActivity)?.toString() ?: ""
+                } catch (_: Exception) { }
+                latch.countDown()
+            }
+            latch.await(2, java.util.concurrent.TimeUnit.SECONDS)
+            return out
+        }
+
         @JavascriptInterface fun openUrl(url: String) {
             main.post { openExternal(url) }
         }

@@ -54,11 +54,14 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Home: consiglio del giorno, pasto pre/post allenamento, mobilità nei giorni di riposo, settimana di scarico ogni 6 settimane.
 
 ## Allenatore
+- Passo 3: **durata** (30, 45, 60, 75, 90 minuti, riscaldamento compreso): gli esercizi vengono scelti per stare nel tempo.
+- **Tre opzioni** per ogni richiesta, con quella consigliata in base agli obiettivi: Classico (serie e recuperi pieni), Superserie (coppie di muscoli opposti senza pausa, timer solo dopo la coppia), Circuito (stazioni a giri, guidato).
+- "Nuova scheda" propone anche di crearla con il trainer.
 - Scegli i gruppi muscolari e l'attrezzo (manubri, macchinari, bilanciere).
 - Propone gli esercizi con serie, ripetizioni e recupero adattati a obiettivo e livello.
 - Per ogni esercizio: come eseguirlo, errori da evitare, alternative.
 - Dalla proposta: inizia subito o salva come scheda.
-- AI facoltativa (impostazioni): Gemini predefinito (piano gratuito), oppure Claude o OpenAI con la propria chiave. Senza chiave l'app funziona al completo con i consigli integrati.
+- AI facoltativa (impostazioni): Gemini predefinito (piano gratuito), oppure Claude o OpenAI con la propria chiave. Collegamento guidato: passi per ottenere la chiave, pulsante Incolla (pulisce spazi e testo in più, controlla che inizi con AIza), prova automatica, messaggi d'errore in italiano, modello di riserva se quello predefinito non è disponibile, chiave separata per ogni servizio. Senza chiave l'app funziona al completo con i consigli integrati.
 
 ## Libreria esercizi
 - Filtri per muscolo e attrezzo, ricerca.

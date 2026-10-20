@@ -108,7 +108,7 @@ function templateMinutes(t) {
     return circuitMinutes({ rounds: t.rounds, restEx: t.restEx, restRound: t.restRound, warm: t.warm, cool: t.cool, work: t.work || 45,
       st: t.items.map(i => ({ secs: i.secs || 0 })) });
   }
-  return Math.round(t.items.reduce((a, i) => a + i.sets * (40 + (i.rest || 60)), 0) / 60) + 8;
+  return estMinutes(t.items.map(i => Object.assign({ sets: 3, rest: 60 }, i)));
 }
 function buildDefaultTemplates() {
   const days = S.profile.days.slice().sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7));

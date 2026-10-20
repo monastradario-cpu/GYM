@@ -47,7 +47,9 @@ const ACT = {
     S.templates = fresh.filter(t => t.kind !== 'circuito').concat(keep, hasCirc ? [] : fresh.filter(t => t.kind === 'circuito'));
     save(); syncReminders(); render(); toast('Schede aggiornate');
   }),
-  newTemplate: d => { UI.edit = d.k === 'circuito' ? { id: uid(), kind: 'circuito', name: 'Nuovo circuito', days: [], rounds: 4, restEx: 15, restRound: 120, warm: 8, cool: 5, work: 45, items: [] } : { id: uid(), kind: 'scheda', name: 'Nuova scheda', days: [], items: [] }; go('edit'); },
+  newTemplate: d => {
+    if (d.k !== 'circuito' && !d.blank) { openSheet(() => '<h3>Nuova scheda</h3><button class="list-item btnlike" data-act="coachFromNew"><div><b>Creala con il trainer</b><small>Scegli muscoli, attrezzi e durata: ti propongo più opzioni</small></div>' + ic('coach') + '</button><button class="list-item btnlike" data-act="newTemplate" data-k="scheda" data-blank="1"><div><b>Scheda vuota</b><small>Aggiungi tu gli esercizi</small></div>' + ic('plus') + '</button>'); return; }
+    closeSheet(); UI.edit = d.k === 'circuito' ? { id: uid(), kind: 'circuito', name: 'Nuovo circuito', days: [], rounds: 4, restEx: 15, restRound: 120, warm: 8, cool: 5, work: 45, items: [] } : { id: uid(), kind: 'scheda', name: 'Nuova scheda', days: [], items: [] }; go('edit'); },
   editTemplate: d => { UI.edit = JSON.parse(JSON.stringify(S.templates.find(t => t.id === d.id))); go('edit'); },
   editDay: d => { const t = UI.edit, x = +d.d; t.days = t.days.includes(x) ? t.days.filter(y => y !== x) : t.days.concat(x); render(); },
   editMove: d => { const a = UI.edit.items, n = +d.n, m = n + (+d.d); if (m < 0 || m >= a.length) return; [a[n], a[m]] = [a[m], a[n]]; render(); },
@@ -74,8 +76,13 @@ const ACT = {
     if (s.done) {
       if (s.kg === '' && s.pk !== '') s.kg = s.pk;
       if (s.reps === '' && s.pr !== '') s.reps = s.pr;
-      const isLast = it.sets.every(x => x.done) && S.active.items.indexOf(it) === S.active.items.length - 1;
-      if (S.settings.autoRest && !isLast) startRest(s.wu ? 60 : it.rest, (EX[it.ex] || {}).n);
+      const items = S.active.items, idx = items.indexOf(it);
+      const isLast = it.sets.every(x => x.done) && idx === items.length - 1;
+      const mate = it.ss ? items.find((x, j) => j !== idx && x.ss === it.ss) : null;
+      const mateFirst = mate && items.indexOf(mate) > idx;
+      const mateSet = mate ? mate.sets.filter(x => !x.wu)[it.sets.filter(x => !x.wu).indexOf(s)] : null;
+      if (!s.wu && mateFirst && mateSet && !mateSet.done) { stopRest(true); toast('Superserie: ora ' + (EX[mate.ex] || {}).n + ', senza pausa'); setTimeout(() => { const el = document.querySelectorAll('.ex-card')[items.indexOf(mate)]; if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); }
+      else if (S.settings.autoRest && !isLast) startRest(s.wu ? 60 : it.rest, (mate ? 'Superserie ' + it.ss : (EX[it.ex] || {}).n));
       Native.vibrate(40);
     }
     save(); render();
@@ -120,18 +127,27 @@ const ACT = {
   coachQuick: d => { UI.coach.muscles = d.q.split(','); UI.coach.result = null; render(); },
   coachFor: d => { UI.coach.muscles = d.q.split(','); coachGenerate(); go('coach'); },
   coachEq: d => { const c = UI.coach; c.eq = c.eq.includes(d.k) ? c.eq.filter(x => x !== d.k) : c.eq.concat(d.k); c.result = null; render(); },
-  coachGo: () => { if (!UI.coach.muscles.length) { toast('Scegli almeno un muscolo'); return; } coachGenerate(Date.now()); render(); setTimeout(() => { const el = document.querySelector('.coach-ex'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 30); },
+  coachGo: () => { if (!UI.coach.muscles.length) { toast('Scegli almeno un muscolo'); return; } coachGenerate(Date.now()); render(); setTimeout(() => { const el = document.getElementById('proposal'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30); },
+  coachDur: d => { UI.coach.dur = +d.d; if (UI.coach.result) coachGenerate(UI.coach.result.seed); render(); },
+  coachOpt: d => { UI.coach.result.sel = +d.i; render(); },
   coachSwap: d => openSheet(() => coachSwapSheet(+d.n)),
-  coachDoSwap: d => { const items = UI.coach.result.items, old = items[+d.n]; items[+d.n] = prescribe(d.id, old.role); closeSheet(); render(); },
-  coachStart: () => startWorkout({ id: null, kind: 'scheda', name: 'Allenamento ' + UI.coach.muscles.map(m => MUSCLES[m]).join(', '), items: UI.coach.result.items }),
+  coachDoSwap: d => { const items = UI.coach.result.options[UI.coach.result.sel].items, old = items[+d.n]; items[+d.n] = Object.assign(prescribe(d.id, old.role), { sets: old.sets, ss: old.ss, rest: old.rest }); closeSheet(); render(); },
+  coachStart: () => {
+    const o = UI.coach.result.options[UI.coach.result.sel], name = (o.k === 'classico' ? 'Allenamento ' : o.n + ' ') + UI.coach.muscles.map(m => MUSCLES[m]).join(', ');
+    if (o.circuit) startWorkout(Object.assign({ id: null }, JSON.parse(JSON.stringify(o.circuit)), { name }));
+    else startWorkout({ id: null, kind: 'scheda', name, items: JSON.parse(JSON.stringify(o.items)) });
+  },
   coachSave: () => {
-    const t = { id: uid(), kind: 'scheda', name: UI.coach.muscles.map(m => MUSCLES[m]).join(' + '), days: [], items: JSON.parse(JSON.stringify(UI.coach.result.items)) };
-    S.templates.push(t); save(); UI.edit = JSON.parse(JSON.stringify(t)); go('edit'); toast('Scheda salvata: puoi rinominarla e assegnare i giorni');
+    const o = UI.coach.result.options[UI.coach.result.sel], base = UI.coach.muscles.map(m => MUSCLES[m]).join(' + ');
+    const t = o.circuit ? Object.assign({ id: uid(), days: [] }, JSON.parse(JSON.stringify(o.circuit)), { name: 'Circuito ' + base })
+      : { id: uid(), kind: 'scheda', name: (o.k === 'superserie' ? 'Superserie ' : '') + base, days: [], items: JSON.parse(JSON.stringify(o.items)) };
+    S.templates.push(t); save(); UI.edit = JSON.parse(JSON.stringify(t)); go('edit'); toast('Salvata: puoi rinominarla e assegnare i giorni');
   },
   openAI: () => { if (!aiReady()) { go('settings'); setTimeout(() => { const el = document.querySelector('[data-in="aiKey"]'); if (el) el.scrollIntoView({ block: 'center' }); }, 50); toast('Inserisci una chiave API per attivare il coach AI'); return; } go('aichat'); },
   aiSugg: d => aiSend(d.t),
   aiSend: () => { const t = document.querySelector('[data-in="aiText"]'); aiSend(t ? t.value : ''); },
 
+  coachFromNew: () => { closeSheet(); UI.coachTab = 'train'; go('coach'); toast('Scegli muscoli, attrezzi e durata'); },
   coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
   goFood: () => { UI.coachTab = 'food'; go('coach'); },
   setSex: d => { S.profile.sex = d.k; save(); render(); },
@@ -167,11 +183,25 @@ const ACT = {
   remOn: d => { S.reminders[d.k].on = !S.reminders[d.k].on; save(); if (S.onboarded) syncReminders(); render(); },
   weighDay: d => { S.reminders.weigh.day = +d.d; save(); syncReminders(); render(); },
   askNotif: () => { Native.askNotifications(); syncReminders(); toast('Promemoria aggiornati'); },
-  aiProv: d => { S.settings.ai.provider = d.k; S.settings.ai.model = ''; save(); render(); },
+  aiProv: d => { const ai = S.settings.ai; ai.keys = ai.keys || {}; ai.keys[ai.provider] = ai.key; ai.provider = d.k; ai.key = ai.keys[d.k] || ''; ai.model = ''; UI.aiStatus = null; save(); render(); },
+  toggleKey: () => { UI.showKey = !UI.showKey; render(); },
+  aiClear: () => { S.settings.ai.key = ''; UI.aiStatus = null; save(); render(); },
+  aiPaste: async () => {
+    let t = '';
+    try { t = Native.has() && window.Android.clipboard ? window.Android.clipboard() : await navigator.clipboard.readText(); } catch (e) { }
+    const ai = S.settings.ai, k = cleanKey(t, ai.provider);
+    if (!k) { toast('Gli appunti sono vuoti: copia prima la chiave'); return; }
+    if (!keyLooksValid(k, ai.provider)) { toast('Negli appunti non c\'è una chiave ' + (ai.provider === 'gemini' ? 'Gemini (deve iniziare con AIza)' : 'valida') + ': copiala di nuovo'); return; }
+    ai.key = k; save(true); UI.showKey = false; render();
+    ACT.aiTest();
+  },
   aiTest: async () => {
-    if (!aiReady()) { toast('Inserisci prima la chiave'); return; }
-    toast('Provo la connessione…');
-    try { await aiAsk([{ role: 'user', text: 'Rispondi solo: OK' }]); toast('Coach AI collegato!'); } catch (e) { toast('Errore: ' + (e.message || e)); }
+    const ai = S.settings.ai; ai.key = cleanKey(ai.key, ai.provider); save();
+    if (!ai.key) { toast('Inserisci prima la chiave'); return; }
+    UI.aiStatus = { state: 'testing' }; render();
+    try { await aiAsk([{ role: 'user', text: 'Rispondi solo: OK' }]); UI.aiStatus = { state: 'ok' }; save(); }
+    catch (e) { UI.aiStatus = { state: 'err', msg: e.message || String(e) }; }
+    if (current().v === 'settings') render(); else toast(UI.aiStatus.state === 'ok' ? 'Coach AI collegato!' : UI.aiStatus.msg);
   },
   exportB: d => exportBackup(d.p === '1').then(() => toast('Backup creato')).catch(e => toast('Errore: ' + e.message)),
   resetAll: () => ask('Cancellare TUTTI i dati (schede, storico, peso, foto)? Non si può annullare.', 'Cancella tutto', async () => { try { await Photos.clear(); } catch (e) { } localStorage.removeItem(KEY); S = defaultState(); UI.ob.step = 0; UI.stack = []; render(); }, true),
@@ -221,7 +251,7 @@ document.addEventListener('input', ev => {
     case 'plates': UI.plates[d.k] = v; { const b = $('#sheet-body'), f = document.activeElement, name = f && f.dataset.k; b.innerHTML = platesSheet(); const nf = b.querySelector('[data-in="plates"][data-k="' + name + '"]'); if (nf) { nf.focus(); nf.setSelectionRange(nf.value.length, nf.value.length); } } break;
     case 'waterGoal': S.profile.waterGoal = Math.max(1, Math.min(20, num(v) | 0)); save(); break;
     case 'remNum': S.reminders.water[d.k] = num(v) | 0; save(); syncReminders(); break;
-    case 'aiKey': S.settings.ai.key = v.trim(); save(); break;
+    case 'aiKey': S.settings.ai.key = cleanKey(v, S.settings.ai.provider); UI.aiStatus = null; save(); break;
     case 'aiModel': S.settings.ai.model = v.trim(); save(); break;
     case 'obWeight': UI.ob.weight = v; break;
     case 'prof': S.profile[d.k] = v === '' ? '' : num(v); save(); break;

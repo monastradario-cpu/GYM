@@ -285,3 +285,14 @@ h3.sec{margin:20px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:
 .meal-mini p{margin:6px 0 4px}
 details.card summary{cursor:pointer;list-style:none}
 .demo-card .card-h{margin-bottom:10px}
+/* v3: durata e opzioni */
+.chips.dur{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.chips.dur .chip{text-align:center;padding:9px 0;font-size:13px}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 4px}
+.optcard{position:relative;background:var(--card2);border:2px solid transparent;border-radius:14px;padding:14px 8px 10px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.optcard b{font-size:15px}.optcard small{color:var(--muted);font-size:11.5px}
+.optcard.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--card))}
+.optcard .rec{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:99px;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+.ss-head{font-size:12px;font-weight:800;color:#38bdf8;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 2px}
+.coach-ex.ss,.ex-card.ss{border-left:3px solid #38bdf8;padding-left:10px}
+.key-steps{padding-left:20px;margin:8px 0}.key-steps li{margin:5px 0}
+details.adv{margin-top:8px}details.adv summary{cursor:pointer}

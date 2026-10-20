@@ -2,39 +2,89 @@
 'use strict';
 
 /* =================== ALLENATORE =================== */
-function coachGenerate(seed) {
-  const c = UI.coach, p = S.profile, lv = LEVELS[p.level] || LEVELS.intermedio;
-  const muscles = c.muscles.slice(), eqs = c.eq.length ? c.eq : COACH_EQUIP;
-  const maxEx = muscles.length === 1 ? (p.level === 'principiante' ? 4 : 5) : Math.min(9, Math.max(5, muscles.length * 2));
-  const rnd = mulberry(seed || Date.now());
-  const picks = [];
-  // per ogni muscolo: quanti esercizi
-  const quota = {}; muscles.forEach(m => { quota[m] = muscles.length === 1 ? maxEx : (BIG_MUSCLES.includes(m) ? lv.perBig : lv.perSmall); });
-  let total = Object.values(quota).reduce((a, b) => a + b, 0);
-  while (total > maxEx) { const m = muscles.slice().sort((a, b) => quota[b] - quota[a])[0]; quota[m]--; total--; }
-  // pochi muscoli: aggiungi esercizi fino a un allenamento completo (prima ai muscoli grandi)
-  const target = muscles.length === 1 ? maxEx : Math.min(maxEx, p.level === 'principiante' ? 5 : 6);
-  const order = muscles.slice().sort((a, b) => BIG_MUSCLES.includes(b) - BIG_MUSCLES.includes(a));
-  let guard = 0;
-  while (total < target && guard++ < 30) {
-    const m = order[guard % order.length];
-    const avail = EXERCISES.filter(e => e.m === m && eqs.includes(e.eq) && e.pat !== 'condizionamento').length || 2;
-    if (quota[m] < Math.min(avail, BIG_MUSCLES.includes(m) ? 4 : 3)) { quota[m]++; total++; }
-  }
+const DURATIONS = [30, 45, 60, 75, 90];
+const ANTAG = { petto: 'dorso', dorso: 'petto', bicipiti: 'tricipiti', tricipiti: 'bicipiti', quadricipiti: 'femorali', femorali: 'quadricipiti', spalle: 'dorso', glutei: 'quadricipiti', polpacci: 'addome', addome: 'polpacci' };
+
+/* lista di esercizi in ordine di priorità (il trainer sceglie i migliori per primi) */
+function coachPool(seed) {
+  const c = UI.coach, p = S.profile;
+  const muscles = c.muscles.slice().sort((a, b) => BIG_MUSCLES.includes(b) - BIG_MUSCLES.includes(a));
+  const eqs = c.eq.length ? c.eq : COACH_EQUIP, rnd = mulberry(seed || Date.now());
+  const per = {};
   muscles.forEach(m => {
     let pool = EXERCISES.filter(e => e.m === m && eqs.includes(e.eq) && e.pat !== 'condizionamento');
-    if (!pool.length) pool = EXERCISES.filter(e => e.m === m && e.pat !== 'condizionamento'); // es. addome: corpo libero
+    if (pool.length < 2) pool = pool.concat(EXERCISES.filter(e => e.m === m && e.pat !== 'condizionamento' && !pool.includes(e) && (e.eq === 'corpo' || !c.eq.length)));
     pool = pool.map(e => ({ e, r: rnd() + (e.comp ? 0.6 : 0) + (goalsOf().includes('forza') && e.comp ? 0.5 : 0) + (p.level === 'principiante' && e.eq === 'macchinari' ? 0.4 : 0) })).sort((a, b) => b.r - a.r).map(x => x.e);
-    const used = new Set();
-    for (const e of pool) {
-      if (picks.filter(x => EX[x.ex].m === m).length >= quota[m]) break;
-      if (used.has(e.pat) && pool.some(o => !used.has(o.pat) && !picks.some(pk => pk.ex === o.id))) continue;
-      used.add(e.pat); picks.push(prescribe(e.id, e.comp && BIG_MUSCLES.includes(m) && !picks.some(x => x.role === 'main' && EX[x.ex].m === m) ? 'main' : null));
-    }
+    // movimenti diversi prima, poi il resto
+    const seen = new Set(), first = [], rest = [];
+    pool.forEach(e => { if (seen.has(e.pat)) rest.push(e); else { seen.add(e.pat); first.push(e); } });
+    per[m] = first.concat(rest).slice(0, BIG_MUSCLES.includes(m) ? 5 : 4);
   });
-  // ordine: grandi multiarticolari prima, addome in fondo
-  picks.sort((a, b) => (EX[b.ex].comp - EX[a.ex].comp) || ((EX[a.ex].m === 'addome') - (EX[b.ex].m === 'addome')));
-  c.result = { items: picks, seed };
+  const out = [], hasMain = {};
+  for (let round = 0; round < 5; round++) muscles.forEach(m => {
+    const e = per[m][round]; if (!e || out.some(x => x.ex === e.id)) return;
+    const role = e.comp && BIG_MUSCLES.includes(m) && !hasMain[m] ? 'main' : null;
+    if (role) hasMain[m] = true;
+    out.push(prescribe(e.id, role));
+  });
+  return out;
+}
+const ROLE_ORDER = { main: 0, sec: 1, acc: 2, core: 3 };
+function estClassic(items) { return 8 + 3 + items.reduce((a, i) => a + i.sets * (40 + i.rest) + 60, 0) / 60; }
+function estSuper(items) {
+  let s = 0; const done = new Set();
+  items.forEach(i => {
+    if (done.has(i)) return;
+    const mate = i.ss ? items.find(x => x !== i && x.ss === i.ss) : null;
+    if (mate) { done.add(mate); s += Math.max(i.sets, mate.sets) * (80 + 15 + i.rest) + 90; } else s += i.sets * (40 + i.rest) + 60;
+  });
+  return 8 + 3 + s / 60;
+}
+function estMinutes(items) { return Math.round(items.some(i => i.ss) ? estSuper(items) : estClassic(items)); }
+
+function coachGenerate(seed) {
+  const c = UI.coach, T = c.dur || 60, goals = goalsOf(), lvl = S.profile.level;
+  const pool = coachPool(seed);
+  const names = c.muscles.map(m => MUSCLES[m]).join(', ');
+  // 1) classico
+  const classic = [];
+  for (const it of pool) { if (classic.length >= 3 && estClassic(classic.concat(it)) > T + 3) break; classic.push(Object.assign({}, it)); }
+  classic.sort((a, b) => ROLE_ORDER[a.role] - ROLE_ORDER[b.role]);
+  // 2) superserie (coppie di muscoli diversi, meglio se antagonisti)
+  const left = pool.map(i => Object.assign({}, i, { rest: Math.max(45, Math.round(i.rest * 0.8 / 15) * 15) })), supers = [];
+  let tag = 0;
+  while (left.length) {
+    const a = left.shift();
+    const mA = EX[a.ex].m;
+    let j = left.findIndex(x => EX[x.ex].m === ANTAG[mA]);
+    if (j < 0) j = left.findIndex(x => EX[x.ex].m !== mA);
+    if (j < 0) j = 0;
+    const b = left.length ? left.splice(j, 1)[0] : null;
+    const pair = b ? [a, b] : [a];
+    const L = String.fromCharCode(65 + tag);
+    const sets = Math.max(...pair.map(x => x.sets));
+    pair.forEach(x => { x.sets = sets; if (b) x.ss = L; });
+    if (supers.length >= 4 && estSuper(supers.concat(pair)) > T + 3) break;
+    supers.push(...pair); tag++;
+  }
+  // 3) circuito
+  const timeAvail = Math.max(15, T - 8 - 4);
+  let nSt = Math.max(5, Math.min(10, Math.round(T / 7)));
+  const st = pool.slice(0, nSt).map(i => { const e = EX[i.ex]; return e.type === 'time' ? { ex: i.ex, secs: 40, reps: 0 } : { ex: i.ex, reps: i.role === 'acc' || i.role === 'core' ? 15 : 12, secs: 0 }; });
+  if (goals.some(g => g === 'dimagrimento' || g === 'tonificazione' || g === 'benessere')) st.splice(Math.min(3, st.length), 0, { ex: lvl === 'principiante' ? 'jumping_jack' : 'mountain_climber', secs: 40, reps: 0 });
+  const work = 45, restEx = lvl === 'principiante' ? 20 : 15, restRound = 90;
+  const perRound = st.length * (work + restEx);
+  const rounds = Math.max(2, Math.min(6, Math.floor((timeAvail * 60 + restRound) / (perRound + restRound))));
+  const circ = { kind: 'circuito', name: 'Circuito ' + names, rounds, restEx, restRound, warm: 8, cool: 4, work, items: st };
+  const rec = goals.includes('dimagrimento') || goals.includes('tonificazione') ? 2 : T <= 40 ? 1 : 0;
+  c.result = {
+    seed, sel: c.result && c.result.seed === seed ? c.result.sel : rec, rec,
+    options: [
+      { k: 'classico', n: 'Classico', d: 'Serie complete con recuperi pieni: il migliore per crescere e aumentare i carichi.', items: classic, min: estMinutes(classic) },
+      { k: 'superserie', n: 'Superserie', d: 'Due esercizi di fila senza pausa (muscoli opposti): più lavoro in meno tempo.', items: supers, min: estMinutes(supers) },
+      { k: 'circuito', n: 'Circuito', d: 'Stazioni a giri con poche pause: battito alto, ideale per dimagrire e tonificare.', circuit: circ, items: st, min: templateMinutes(circ) }
+    ]
+  };
 }
 function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
@@ -69,19 +119,29 @@ VIEWS.coach = () => {
     '<div class="card"><h3>2. Preferisci manubri o macchinari?</h3><div class="grid3 eq-pick">' +
       COACH_EQUIP.map(k => '<button class="opt ' + (c.eq.includes(k) ? 'on' : '') + '" data-act="coachEq" data-k="' + k + '">' + ic(k === 'macchinari' ? 'gear' : 'dumbbell') + '<b>' + EQUIP[k] + '</b></button>').join('') +
       '</div><p class="muted small">Puoi sceglierne più di uno. Se non scegli, li uso tutti.' + (p.level === 'principiante' ? ' Da principiante i macchinari sono più facili e sicuri.' : '') + '</p></div>' +
-    '<button class="btn wide big" data-act="coachGo"' + (c.muscles.length ? '' : ' disabled') + '>' + ic('sparkle') + 'Proponimi l\'allenamento</button>';
+    '<div class="card"><h3>3. Quanto tempo hai?</h3><div class="chips dur">' + DURATIONS.map(d => chip(d + ' min', (c.dur || 60) === d, 'coachDur', 'data-d="' + d + '"')).join('') + '</div><p class="muted small">Riscaldamento e defaticamento compresi. Ti preparo più opzioni che stanno in questo tempo.</p></div>' +
+    '<button class="btn wide big" data-act="coachGo"' + (c.muscles.length ? '' : ' disabled') + '>' + ic('sparkle') + 'Proponimi gli allenamenti</button>';
   if (c.result) {
-    const items = c.result.items;
-    out += '<div class="card"><div class="card-h"><h3>La mia proposta</h3><button class="btn sm ghost" data-act="coachGo">' + ic('swap', 'inline') + 'Rigenera</button></div>' +
-      '<p class="muted small">' + items.length + ' esercizi · circa ' + templateMinutes({ items }) + ' min · riscaldamento incluso. Tocca un esercizio per vedere l\'animazione.</p>' +
-      '<div class="note small">' + ic('timer', 'inline') + WARMUP_TEXT + '</div>' +
-      items.map((i, n) => {
+    const R = c.result, o = R.options[R.sel];
+    out += '<div class="card" id="proposal"><div class="card-h"><h3>Le mie proposte · ' + c.dur + ' min</h3><button class="btn sm ghost" data-act="coachGo">' + ic('swap', 'inline') + 'Altre</button></div>' +
+      '<div class="opts">' + R.options.map((x, i) => '<button class="optcard ' + (i === R.sel ? 'on' : '') + '" data-act="coachOpt" data-i="' + i + '">' + (i === R.rec ? '<span class="rec">Consigliato</span>' : '') + '<b>' + x.n + '</b><small>circa ' + x.min + ' min</small><small>' + (x.circuit ? x.circuit.items.length + ' stazioni × ' + x.circuit.rounds + ' giri' : x.items.length + ' esercizi') + '</small></button>').join('') + '</div>' +
+      '<p class="small muted">' + o.d + '</p>' +
+      '<div class="note small">' + ic('timer', 'inline') + WARMUP_TEXT + '</div>';
+    if (o.circuit) {
+      out += '<p class="small"><b>' + o.circuit.rounds + ' giri</b> · ' + o.circuit.work + ' s di lavoro per stazione · ' + o.circuit.restEx + ' s di pausa tra le stazioni · ' + o.circuit.restRound + ' s tra i giri</p>' +
+        o.circuit.items.map((i, n) => { const e = EX[i.ex]; return '<div class="coach-ex"><button class="link grow" data-act="exInfo" data-id="' + i.ex + '"><b>' + (n + 1) + '. ' + esc(e.n) + '</b><small>' + muscleName(e.m) + ' · ' + EQUIP[e.eq] + ' · ' + (i.secs ? i.secs + ' sec' : i.reps + ' ripetizioni') + '</small></button></div>'; }).join('');
+    } else {
+      let lastSS = null;
+      out += o.items.map((i, n) => {
         const e = EX[i.ex], last = lastPerformance(i.ex), prog = progression(i.ex, i.rmin, i.rmax);
-        return '<div class="coach-ex"><button class="link grow" data-act="exInfo" data-id="' + i.ex + '"><b>' + (n + 1) + '. ' + esc(e.n) + ' <span class="role ' + (i.role || '') + '">' + (ROLE_N[i.role] || '') + '</span></b><small>' + muscleName(e.m) + ' · ' + EQUIP[e.eq] + ' · ' + prescText(i) + '</small>' +
+        const ssHead = i.ss && i.ss !== lastSS ? '<div class="ss-head">Superserie ' + i.ss + ' · senza pausa tra i due esercizi</div>' : '';
+        lastSS = i.ss || null;
+        return ssHead + '<div class="coach-ex' + (i.ss ? ' ss' : '') + '"><button class="link grow" data-act="exInfo" data-id="' + i.ex + '"><b>' + (i.ss ? i.ss + (o.items.filter(x => x.ss === i.ss).indexOf(i) + 1) + '. ' : (n + 1) + '. ') + esc(e.n) + ' <span class="role ' + (i.role || '') + '">' + (ROLE_N[i.role] || '') + '</span></b><small>' + muscleName(e.m) + ' · ' + EQUIP[e.eq] + ' · ' + prescText(i) + '</small>' +
           '<span class="small tip-inline">' + esc(last ? prog.text : trainerNote(i)) + '</span></button>' +
           '<button class="icon-btn sm" data-act="coachSwap" data-n="' + n + '">' + ic('swap') + '</button></div>';
-      }).join('') +
-      (goalsOf().includes('dimagrimento') ? '<div class="note small">' + ic('run', 'inline') + 'Chiudi con 15–20 minuti di cardio moderato (tapis roulant in salita o cyclette).</div>' : '') +
+      }).join('');
+    }
+    out += (goalsOf().includes('dimagrimento') && !o.circuit ? '<div class="note small">' + ic('run', 'inline') + 'Se hai ancora 15 minuti, chiudi con cardio moderato (tapis roulant in salita o cyclette).</div>' : '') +
       '<div class="grid2"><button class="btn" data-act="coachStart">' + ic('play') + 'Inizia ora</button><button class="btn ghost" data-act="coachSave">Salva come scheda</button></div></div>';
   }
   out += '<div class="card"><h3>' + ic('info', 'inline') + 'Consigli per i tuoi obiettivi</h3><ul class="tips">' + coachAdvice().map(t => '<li>' + esc(t) + '</li>').join('') + '</ul></div>' +
@@ -126,8 +186,8 @@ function bodyDataFields() {
 }
 
 function coachSwapSheet(n) {
-  const i = UI.coach.result.items[n], e = EX[i.ex];
-  const alts = alternatives(i.ex).filter(x => !UI.coach.result.items.some(y => y.ex === x.id)).slice(0, 8);
+  const items = UI.coach.result.options[UI.coach.result.sel].items, i = items[n], e = EX[i.ex];
+  const alts = alternatives(i.ex).filter(x => !items.some(y => y.ex === x.id)).slice(0, 8);
   return '<h3>Cambia ' + esc(e.n) + '</h3>' + alts.map(x => '<button class="list-item btnlike" data-act="coachDoSwap" data-n="' + n + '" data-id="' + x.id + '"><div><b>' + esc(x.n) + '</b><small>' + EQUIP[x.eq] + '</small></div>' + ic('swap') + '</button>').join('');
 }
 

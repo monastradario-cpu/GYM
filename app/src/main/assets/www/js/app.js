@@ -290,9 +290,18 @@ VIEWS.settings = () => {
     '<h3 class="sec">Coach AI (facoltativo)</h3><div class="card">' +
       '<p class="small muted">L\'app funziona al completo anche senza. Con una chiave puoi fare domande libere al coach. Gemini ha un piano gratuito.</p>' +
       '<div class="field"><span>Servizio</span><div class="chips">' + Object.keys(AI_PROVIDERS).map(k => chip(AI_PROVIDERS[k].n, ai.provider === k, 'aiProv', 'data-k="' + k + '"')).join('') + '</div></div>' +
-      field('Chiave API', '<input type="password" value="' + esc(ai.key) + '" data-in="aiKey" placeholder="Incolla qui la chiave" autocomplete="off">', '<a href="#" data-act="openUrl" data-u="' + prov.keyUrl + '">Ottieni la chiave</a>') +
-      field('Modello', '<input type="text" value="' + esc(ai.model) + '" data-in="aiModel" placeholder="' + prov.model + '">', 'Lascia vuoto per usare quello predefinito') +
-      '<button class="btn ghost wide" data-act="aiTest">Prova la connessione</button>' +
+      aiStatusBox() +
+      (ai.provider === 'gemini' ? '<ol class="steps small key-steps">' +
+        '<li>Tocca <b>Apri Google AI Studio</b> e accedi con il tuo account Google.</li>' +
+        '<li>Premi <b>Create API key</b> (Crea chiave API). Se chiede un progetto, scegli quello proposto.</li>' +
+        '<li>Copia la chiave: è una riga che inizia con <b>AIza</b>.</li>' +
+        '<li>Torna qui e premi <b>Incolla chiave</b>: la provo subito.</li></ol>' +
+        '<button class="btn wide" data-act="openUrl" data-u="' + prov.keyUrl + '">Apri Google AI Studio</button>'
+        : '<p class="small"><a href="#" data-act="openUrl" data-u="' + prov.keyUrl + '">Ottieni la chiave</a> (servizio a pagamento a consumo).</p>') +
+      '<div class="field"><span>Chiave API</span><div class="row gap"><input type="' + (UI.showKey ? 'text' : 'password') + '" class="grow" value="' + esc(ai.key) + '" data-in="aiKey" placeholder="' + (ai.provider === 'gemini' ? 'AIza…' : 'Incolla qui la chiave') + '" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn sm ghost" data-act="toggleKey">' + (UI.showKey ? 'Nascondi' : 'Mostra') + '</button></div></div>' +
+      '<div class="grid2"><button class="btn" data-act="aiPaste">Incolla chiave</button><button class="btn ghost" data-act="aiTest">Prova la connessione</button></div>' +
+      (ai.key ? '<button class="btn danger ghost wide" data-act="aiClear">Rimuovi la chiave</button>' : '') +
+      '<details class="adv"><summary class="small muted">Avanzate: modello</summary>' + field('Modello', '<input type="text" value="' + esc(ai.model) + '" data-in="aiModel" placeholder="' + prov.model + '">', 'Lascia vuoto: se il modello non è disponibile ne provo un altro da solo.') + '</details>' +
     '</div>' +
     '<h3 class="sec">Backup</h3><div class="card">' +
       '<p class="small muted">I dati restano sul telefono. Esporta un file di backup e conservalo dove vuoi (Drive, PC…).</p>' +
@@ -368,4 +377,14 @@ function homeTrainerCards(t, doneToday) {
 function mobilitySheet() {
   return '<h3>' + ic('run', 'inline') + 'Mobilità e stretching</h3><p class="small muted">Per i giorni di riposo o dopo l\'allenamento. Movimenti lenti, senza dolore.</p>' +
     MOBILITY.map((m, i) => '<div class="list-item flat"><div><b>' + (i + 1) + '. ' + m[0] + '</b><small>' + m[1] + '</small></div></div>').join('');
+}
+
+function aiStatusBox() {
+  const st = UI.aiStatus, ai = S.settings.ai;
+  if (st && st.state === 'testing') return '<div class="note">Provo la connessione…</div>';
+  if (st && st.state === 'ok') return '<div class="note good">' + ic('check', 'inline') + 'Coach AI collegato e funzionante.</div>';
+  if (st && st.state === 'err') return '<div class="note warn">' + esc(st.msg) + '</div>';
+  if (ai.key && !keyLooksValid(ai.key, ai.provider)) return '<div class="note warn">La chiave non sembra completa' + (ai.provider === 'gemini' ? ': una chiave Gemini inizia con "AIza" ed è lunga circa 39 caratteri.' : '.') + '</div>';
+  if (ai.key) return '<div class="note">Chiave salvata. Premi "Prova la connessione".</div>';
+  return '';
 }

@@ -3,7 +3,7 @@
 
 function newItem(src, kind) {
   const e = EX[src.ex] || {};
-  const it = { ex: src.ex, role: src.role || defaultRole(src.ex), rmin: src.rmin || 8, rmax: src.rmax || 12, rest: src.rest || 90, secs: src.secs || 0, reps: src.reps || 0, sets: [] };
+  const it = { ex: src.ex, ss: src.ss || null, role: src.role || defaultRole(src.ex), rmin: src.rmin || 8, rmax: src.rmax || 12, rest: src.rest || 90, secs: src.secs || 0, reps: src.reps || 0, sets: [] };
   const last = lastPerformance(src.ex);
   const n = kind === 'circuito' ? 0 : (src.sets || 3);
   for (let i = 0; i < n; i++) {
@@ -100,7 +100,9 @@ function exerciseCard(it, n) {
   const wkKg = curKg || prog.kg || (last ? Math.max(...last.sets.map(s => num(s.kg))) : 0);
   const hasWu = it.sets.some(s => s.wu);
   let wsN = 0;
-  return '<div class="card ex-card' + (it.sets.length && it.sets.every(s => s.done) ? ' done' : '') + '">' +
+  const items = S.active.items, prevSS = n > 0 && items[n - 1].ss === it.ss;
+  return (it.ss && !prevSS ? '<div class="ss-head">Superserie ' + it.ss + ': fai una serie di ciascun esercizio senza pausa, poi recupera</div>' : '') +
+    '<div class="card ex-card' + (it.ss ? ' ss' : '') + (it.sets.length && it.sets.every(s => s.done) ? ' done' : '') + '">' +
     '<div class="card-h"><button class="link" data-act="exInfo" data-id="' + it.ex + '"><h3>' + esc(e.n) + ' <span class="role ' + (it.role || '') + '">' + (ROLE_N[it.role] || '') + '</span></h3><small class="muted">' + muscleName(e.m) + ' · ' + (EQUIP[e.eq] || '') + ' · ' + (timed ? (it.secs || 40) + ' sec' : it.rmin + '–' + it.rmax + ' rip.') + ' · rec. ' + it.rest + 's</small></button>' +
       '<button class="icon-btn sm" data-act="exMenu" data-n="' + n + '">' + ic('more') + '</button></div>' +
     '<div class="last">' + (last ? 'Ultima volta (' + fmtDate(last.date) + '): <b>' + last.sets.map(s => fmtKg(num(s.kg)) + '×' + num(s.reps)).join('  ') + '</b>' : 'Prima volta con questo esercizio') + '</div>' +
