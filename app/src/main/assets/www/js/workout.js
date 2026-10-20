@@ -154,59 +154,68 @@ function exerciseThumb(id) {
 
 /* ---------- Circuito guidato ---------- */
 function circuitView(a) {
-  const c = a.circ, it = a.items[c.idx], e = it ? EX[it.ex] || { n: it.ex } : null;
+  const c = a.circ, nx = circNext(a);
   const doneCount = a.items.reduce((s, i) => s + i.sets.filter(x => x.done).length, 0), total = a.items.length * c.rounds;
-  let main = '';
-  if (c.phase === 'warm') {
-    main = '<div class="card hero"><div class="eyebrow">Prima di iniziare</div><h2>Riscaldamento</h2><p>' + WARMUP_TEXT + '</p><p class="muted small">Circa ' + (c.warm || 8) + ' minuti.</p>' +
-      '<button class="btn" data-act="circRest" data-s="' + ((c.warm || 8) * 60) + '" data-l="Riscaldamento">' + ic('timer') + 'Timer ' + (c.warm || 8) + ' min</button>' +
-      '<button class="btn big" data-act="circGo">' + ic('play') + 'Inizia il circuito</button></div>';
-  } else if (c.phase === 'cool' || c.phase === 'done') {
-    main = '<div class="card hero"><div class="eyebrow">Circuito completato!</div><h2>Defaticamento</h2><p>' + COOLDOWN_TEXT + '</p>' +
-      '<button class="btn" data-act="circRest" data-s="' + ((c.cool || 5) * 60) + '" data-l="Defaticamento">' + ic('timer') + 'Timer ' + (c.cool || 5) + ' min</button>' +
-      '<button class="btn big" data-act="finish">' + ic('check') + 'Salva e termina</button></div>';
-  } else {
-    const s = it.sets[c.round], timed = !!it.secs;
-    const next = c.idx + 1 < a.items.length ? a.items[c.idx + 1] : (c.round + 1 < c.rounds ? a.items[0] : null);
-    const resting = !!a.rest;
-    main = '<div class="card hero station' + (resting ? ' resting' : '') + '">' +
-      '<div class="eyebrow">Giro ' + (c.round + 1) + ' di ' + c.rounds + ' · stazione ' + (c.idx + 1) + ' di ' + a.items.length + '</div>' +
-      (resting ? '<h2>Pausa</h2><div class="huge" data-clock="rest">' + fmtClock((a.rest.until - Date.now()) / 1000) + '</div><p class="muted">Prossima: <b>' + esc(e.n) + '</b>' + (timed ? ' · ' + it.secs + ' sec' : ' · ' + it.reps + ' rip.') + '</p>' +
-        '<div class="row gap center"><button class="btn ghost" data-act="restAdd" data-s="15">+15 s</button><button class="btn" data-act="restSkip">Vai subito</button></div>'
-      : '<button class="link" data-act="exInfo" data-id="' + it.ex + '"><h2>' + esc(e.n) + ' ' + ic('info', 'inline') + '</h2></button>' +
-        '<div class="huge">' + (timed ? (c.workUntil ? '<span data-clock="work">' + fmtClock((c.workUntil - Date.now()) / 1000) + '</span>' : it.secs + '<small> sec</small>') : it.reps + '<small> rip.</small>') + '</div>' +
-        (e.eq && e.eq !== 'corpo' ? '<div class="field inline"><span>Carico kg</span>' + numIn(s.kg, 'data-in="setKg" data-n="' + c.idx + '" data-k="' + c.round + '"', s.pk === '' ? '0' : fmtKg(s.pk)) + '</div>' : '') +
-        '<p class="small muted">' + esc(e.tip || '') + '</p>' +
-        (timed && !c.workUntil ? '<button class="btn big" data-act="circWork">' + ic('play') + 'Via! (' + it.secs + ' sec)</button>' : '<button class="btn big" data-act="circDone">' + ic('check') + 'Fatto</button>') +
-        '<div class="row gap center"><button class="btn sm ghost" data-act="circSkip">Salta</button><button class="btn sm ghost" data-act="swapEx" data-n="' + c.idx + '">' + ic('swap', 'inline') + 'Occupato?</button></div>') +
-      (next && !resting ? '<p class="muted small">Dopo: ' + esc((EX[next.ex] || {}).n || next.ex) + '</p>' : '') +
-      '</div>';
-  }
-  const list = '<div class="card"><div class="card-h"><h3>Stazioni</h3><button class="btn sm ghost" data-act="reorder" data-k="wo">' + ic('list', 'inline') + 'Riordina</button></div><p class="small muted">Tocca una stazione per passare subito a quella.</p>' + a.items.map((i, n) => '<div class="list-item flat btnlike ' + (n === c.idx && c.phase === 'work' ? 'cur' : '') + '" data-act="circJump" data-n="' + n + '"><div><b>' + (n + 1) + '. ' + esc((EX[i.ex] || {}).n || i.ex) + '</b><small>' + (i.secs ? i.secs + ' sec' : i.reps + ' rip.') + '</small></div><div class="rounds">' + i.sets.map(s => '<i class="' + (s.done ? 'on' : s.skip ? 'skip' : '') + '"></i>').join('') + '</div></div>').join('') + '</div>';
-  return '<header class="top workout-top"><button class="icon-btn" data-act="minimize">' + ic('down') + '</button><div class="top-title"><h1>' + esc(a.name) + '</h1><div class="sub"><span data-clock="elapsed"></span> · ' + doneCount + '/' + total + '</div></div><button class="btn sm" data-act="finish">Termina</button></header>' +
+  const vol = a.items.reduce((s, i) => s + i.sets.filter(x => x.done).reduce((t, x) => t + num(x.kg) * num(x.reps), 0), 0);
+  let out = '<header class="top workout-top"><button class="icon-btn" data-act="minimize">' + ic('down') + '</button><div class="top-title"><h1>' + esc(a.name) + '</h1></div><button class="icon-btn" data-act="manualRest">' + ic('timer') + '</button><button class="btn sm" data-act="finish">Termina</button></header>' +
     '<div class="progress thin"><i style="width:' + (100 * doneCount / total) + '%"></i></div>' +
-    '<div class="pad">' + main + list +
-    '<button class="btn danger ghost wide" data-act="discard">Annulla senza salvare</button></div>';
+    '<div class="wo-stats"><div><small>Durata</small><b class="accent-t" data-clock="elapsed"></b></div><div><small>Volume</small><b>' + Math.round(vol) + ' kg</b></div><div><small>Serie</small><b>' + doneCount + '/' + total + '</b></div>' +
+      '<button class="mini-body" data-act="muscleDist" aria-label="Distribuzione dei muscoli">' + heatBody(activeMuscleLoad(), true) + '</button></div><div class="pad">';
+  out += '<div class="circ-info">' + (nx ? '<b>Giro ' + (nx.k + 1) + ' di ' + c.rounds + '</b> · ora: ' + esc((EX[a.items[nx.n].ex] || {}).n || '') : '<b>Circuito completato!</b> ' + esc(COOLDOWN_TEXT)) +
+    '<small>Pausa ' + c.restEx + ' s tra le stazioni · ' + c.restRound + ' s tra i giri</small></div>';
+  if (doneCount === 0) out += '<div class="card warm-mini"><div><b>' + ic('flame', 'inline') + 'Riscaldamento</b><small>' + esc(WARMUP_TEXT) + '</small></div><button class="btn sm ghost" data-act="circRest" data-s="' + ((c.warm || 8) * 60) + '" data-l="Riscaldamento">' + (c.warm || 8) + ' min</button></div>';
+  out += a.items.map((it, n) => circuitStationCard(a, it, n, nx)).join('');
+  if (!nx) out += '<div class="card warm-mini"><div><b>' + ic('run', 'inline') + 'Defaticamento</b><small>' + esc(COOLDOWN_TEXT) + '</small></div><button class="btn sm ghost" data-act="circRest" data-s="' + ((c.cool || 5) * 60) + '" data-l="Defaticamento">' + (c.cool || 5) + ' min</button></div>';
+  out += (a.items.length > 1 ? '<button class="btn ghost wide" data-act="reorder" data-k="wo">' + ic('list') + 'Riordina le stazioni</button>' : '') +
+    '<button class="btn wide' + (nx ? ' ghost' : ' big') + '" data-act="finish">' + ic('check') + 'Termina allenamento</button>' +
+    '<button class="btn danger ghost wide" data-act="discard">Annulla senza salvare</button></div>' + restBar(a);
+  return out;
 }
 
-function circAdvance() {
-  const a = S.active, c = a.circ;
-  if (c.idx + 1 < a.items.length) { c.idx++; return a.circ.restEx; }
-  if (c.round + 1 < c.rounds) { c.idx = 0; c.round++; return a.circ.restRound; }
-  c.phase = 'cool'; return 0;
+function circuitStationCard(a, it, n, nx) {
+  const c = a.circ, e = EX[it.ex] || { n: it.ex, m: '', eq: '' }, timed = !!it.secs;
+  const last = lastPerformance(it.ex), prev = last ? last.sets : [];
+  return '<div class="card ex-card' + (it.sets.every(s => s.done || s.skip) ? ' done' : '') + (nx && nx.n === n ? ' current' : '') + '" id="st-' + n + '">' +
+    '<div class="card-h"><button class="link ex-title" data-act="exInfo" data-id="' + it.ex + '"><span class="ex-thumb">' + exerciseThumb(it.ex) + '</span><span><h3>' + (n + 1) + '. ' + esc(e.n) + '</h3><small class="muted">' + muscleName(e.m) + ' · ' + (EQUIP[e.eq] || '') + ' · ' + (timed ? it.secs + ' sec' : it.reps + ' rip.') + '</small></span></button>' +
+      '<button class="icon-btn sm" data-act="swapEx" data-n="' + n + '">' + ic('swap') + '</button></div>' +
+    '<div class="row gap wrap ex-chips"><button class="pill" data-act="exNote" data-n="' + n + '">' + ic('edit', 'inline') + (it.note ? 'Nota' : 'Aggiungi nota') + '</button></div>' +
+    (it.note ? '<div class="ex-note">' + esc(it.note) + '</div>' : '') +
+    '<div class="sets"><div class="set-h"><span>Giro</span><span>Precedente</span><span>kg</span><span>' + (timed ? 'sec' : 'rip.') + '</span><span>' + ic('check', 'inline') + '</span></div>' +
+    it.sets.map((s, k) => {
+      const pv = prev[k] || prev[prev.length - 1], running = c.workUntil && c.idx === n && c.round === k, cur = running || (!c.workUntil && nx && nx.n === n && nx.k === k);
+      const btn = s.done ? '<button class="chk on" data-act="setDone" data-n="' + n + '" data-k="' + k + '">' + ic('check') + '</button>'
+        : timed ? (running ? '<span class="chk run" data-clock="work">' + fmtClock((c.workUntil - Date.now()) / 1000) + '</span>' : '<button class="chk play" data-act="circTimed" data-n="' + n + '" data-k="' + k + '">' + ic('play') + '</button>')
+        : '<button class="chk" data-act="setDone" data-n="' + n + '" data-k="' + k + '">' + ic('check') + '</button>';
+      return '<div class="set ' + (s.done ? 'done ' : '') + (s.skip ? 'skip ' : '') + (cur ? 'cur' : '') + '"><span class="set-n">' + (k + 1) + '</span>' +
+        '<button class="prev" data-act="usePrev" data-n="' + n + '" data-k="' + k + '"' + (pv ? ' data-kg="' + num(pv.kg) + '" data-r="' + num(pv.reps) + '"' : '') + '>' + (pv ? fmtKg(num(pv.kg)) + 'kg × ' + num(pv.reps) : '—') + '</button>' +
+        (e.eq === 'corpo' ? '<span class="prev">—</span>' : numIn(s.kg, 'data-in="setKg" data-n="' + n + '" data-k="' + k + '"', s.pk === '' ? '0' : fmtKg(s.pk))) +
+        numIn(s.reps, 'data-in="setReps" data-n="' + n + '" data-k="' + k + '"', timed ? it.secs : it.reps) + btn + '</div>';
+    }).join('') + '</div></div>';
 }
-function circDone(skip) {
-  const a = S.active; if (!a || !a.circ) return;
-  const c = a.circ, it = a.items[c.idx], s = it.sets[c.round];
+
+/* prossima serie da fare: giro per giro, stazione per stazione */
+function circNext(a) {
+  for (let k = 0; k < a.circ.rounds; k++) for (let n = 0; n < a.items.length; n++) { const s = a.items[n].sets[k]; if (s && !s.done && !s.skip) return { n, k }; }
+  return null;
+}
+/* segna una serie del circuito e avvia la pausa giusta */
+function circMark(n, k) {
+  const a = S.active, c = a.circ, it = a.items[n], s = it.sets[k];
   c.workUntil = 0;
-  if (skip) s.skip = true;
-  else { s.done = true; if (s.kg === '' && s.pk !== '') s.kg = s.pk; s.reps = it.secs || it.reps; }
-  const wasLast = c.idx + 1 >= a.items.length;
-  const rest = circAdvance();
-  if (rest && c.phase === 'work') startRest(rest, wasLast ? 'Pausa tra i giri' : 'Pausa');
-  save(); render();
+  s.done = true;
+  if (s.kg === '' && s.pk !== '') s.kg = s.pk;
+  if (s.reps === '') s.reps = it.secs || it.reps;
+  const nx = circNext(a);
+  if (nx) {
+    c.idx = nx.n; c.round = nx.k;
+    const newRound = nx.k > k;
+    startRest(newRound ? c.restRound : c.restEx, newRound ? 'Pausa tra i giri · poi ' + (EX[a.items[nx.n].ex] || {}).n : 'Pausa · poi ' + (EX[a.items[nx.n].ex] || {}).n);
+  } else { stopRest(true); toast('Circuito completato! Fai il defaticamento e termina.'); }
+  Native.vibrate(40); save(); render();
+  setTimeout(() => { const t = nx && document.getElementById('st-' + nx.n); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
 }
-function circAfterRest() { /* la pausa è finita: la stazione corrente è già quella successiva */ }
+function circDone() { const a = S.active; if (!a || !a.circ) return; const c = a.circ; circMark(c.idx, c.round); }
+function circAfterRest() { }
 
 /* ---------- Fine allenamento ---------- */
 function finishWorkout() {

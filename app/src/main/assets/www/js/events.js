@@ -72,6 +72,7 @@ const ACT = {
   /* allenamento */
   minimize: () => go('home', null, true),
   setDone: d => {
+    if (S.active.circ) { const s0 = S.active.items[+d.n].sets[+d.k]; if (s0.done) { s0.done = false; save(); render(); } else circMark(+d.n, +d.k); return; }
     const it = S.active.items[+d.n], s = it.sets[+d.k];
     s.done = !s.done;
     if (s.done) {
@@ -189,6 +190,7 @@ const ACT = {
   exNote: d => { const it = S.active.items[+d.n]; UI.noteN = +d.n; openSheet(() => '<h3>Nota</h3><p class="small muted">Es. regolazione del sedile, presa, sensazioni. La ritrovi la prossima volta.</p><textarea rows="4" id="note-in" placeholder="Scrivi una nota…">' + esc(it.note || '') + '</textarea><button class="btn wide" data-act="noteSave">Salva nota</button>'); setTimeout(() => { const t = document.getElementById('note-in'); if (t) t.focus(); }, 60); },
   noteSave: () => { const it = S.active.items[UI.noteN]; it.note = (document.getElementById('note-in').value || '').trim(); S.exNotes = S.exNotes || {}; if (it.note) S.exNotes[it.ex] = it.note; else delete S.exNotes[it.ex]; save(); closeSheet(); render(); },
   usePrev: d => { if (!d.kg) return; const s = S.active.items[+d.n].sets[+d.k]; s.kg = num(d.kg); s.reps = num(d.r); save(); render(); },
+  circTimed: d => { const a = S.active, c = a.circ, it = a.items[+d.n]; stopRest(true); c.idx = +d.n; c.round = +d.k; c.workUntil = Date.now() + it.secs * 1000; Native.restTimer(it.secs, 'Stazione finita'); save(); render(); },
   coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
   goFood: () => { UI.coachTab = 'food'; go('coach'); },
   setSex: d => { S.profile.sex = d.k; save(); render(); },

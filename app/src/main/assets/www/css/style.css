@@ -351,3 +351,16 @@ button.set-n{background:none;border:0;font:inherit;font-weight:800;color:var(--m
 [data-theme=dark]{--body:#b4bac3;--muscle:#e3e6ea;--mline:#7b828c}
 [data-theme=light]{--body:#c6cbd2;--muscle:#f4f5f7;--mline:#959ca6}
 .body-svg .sil{stroke:var(--mline);stroke-width:.9}
+/* circuito stile tabella */
+.circ-info{background:var(--card);border-radius:14px;padding:12px 14px;margin:10px 0}
+.circ-info small{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
+.warm-mini{display:flex;align-items:center;gap:10px}.warm-mini>div{flex:1}.warm-mini b{display:block}.warm-mini small{color:var(--muted);font-size:12.5px}
+.ex-card.current{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--accent) 60%,transparent)}
+.set.cur{background:color-mix(in srgb,var(--accent) 14%,transparent);border-radius:10px}
+.set.cur .set-n{color:var(--accent)}
+.set.skip{opacity:.45}
+.chk.play{background:var(--accent);color:#fff}
+.chk.run{background:var(--accent);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+span.set-n{text-align:center;font-weight:800;color:var(--muted)}
+.restbar-in{padding:10px 12px;gap:6px}.rest-mid{min-width:0}.rest-mid b{font-size:26px}.rest-mid small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.restbar .btn.sm{padding:6px 10px;flex:none}
