@@ -248,6 +248,8 @@ const ACT = {
     sd.rows.forEach(r => S.food[k].push({ name: r.f.name, g: r.g, kcal: r.f.kcal, p: r.f.p, c: r.f.c, f: r.f.f, meal: r.m, t: Date.now(), pid: r.f.id }));
     save(true); UI.foodDay = k; go('food'); toast('Giornata copiata: modifica ciò che mangi davvero');
   },
+  deloadOn: () => { S.deloadUntil = Date.now() + 7 * 864e5; S.lastDeload = Date.now(); save(); render(); toast('Settimana di scarico attiva: serie dimezzate per 7 giorni'); },
+  deloadOff: () => { S.deloadUntil = 0; save(); render(); toast('Scarico terminato'); },
   coachTab: d => { UI.coachTab = d.t === 'food' ? 'food' : 'train'; render(true); },
   goFood: () => { UI.coachTab = 'food'; go('coach'); },
   setSex: d => { S.profile.sex = d.k; save(); render(); },

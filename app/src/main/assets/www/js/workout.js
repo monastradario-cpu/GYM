@@ -5,9 +5,10 @@ function newItem(src, kind) {
   const e = EX[src.ex] || {};
   const it = { ex: src.ex, note: (S.exNotes || {})[src.ex] || '', ss: src.ss || null, role: src.role || defaultRole(src.ex), rmin: src.rmin || 8, rmax: src.rmax || 12, rest: src.rest || 90, secs: src.secs || 0, reps: src.reps || 0, sets: [] };
   const last = lastPerformance(src.ex);
-  const n = kind === 'circuito' ? 0 : (src.sets || 3);
+  const n = kind === 'circuito' ? 0 : deloadActive() ? Math.max(1, Math.ceil((src.sets || 3) / 2)) : (src.sets || 3);
   // obiettivi di oggi dal trainer (doppia progressione)
-  const tg = kind === 'circuito' ? null : (progression(src.ex, it.rmin, it.rmax).targets || null);
+  let tg = kind === 'circuito' ? null : (progression(src.ex, it.rmin, it.rmax).targets || null);
+  if (deloadActive() && last) tg = last.sets.map(s => ({ kg: num(s.kg), reps: it.rmin })); // scarico: stesso carico, meno serie, lontano dal cedimento
   for (let i = 0; i < n; i++) {
     const ls = last && (last.sets[i] || last.sets[last.sets.length - 1]);
     const t = tg && (tg[i] || tg[tg.length - 1]);
@@ -118,7 +119,7 @@ function restBar(a) {
 
 function exerciseCard(it, n) {
   const e = EX[it.ex] || { n: it.ex, eq: '', m: '' }, timed = e.type === 'time';
-  const last = lastPerformance(it.ex), prog = progression(it.ex, it.rmin, it.rmax);
+  const last = lastPerformance(it.ex), prog = deloadActive() ? { kind: 'info', text: 'Settimana di scarico: stessi carichi dell\'ultima volta, metà delle serie, fermati a 3–4 ripetizioni dal cedimento.' } : progression(it.ex, it.rmin, it.rmax);
   const curKg = Math.max(0, ...it.sets.filter(s => !s.wu).map(s => num(s.kg)));
   const wkKg = curKg || prog.kg || (last ? Math.max(...last.sets.map(s => num(s.kg))) : 0);
   const hasWu = it.sets.some(s => s.wu);

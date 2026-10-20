@@ -350,11 +350,11 @@ const GOALS = {
   massa: { n: 'Massa muscolare', desc: 'Muscoli più grandi', protein: 2.0, kcal: 300,
     scheme: { main: [4, 6, 8, 120], sec: [3, 8, 10, 90], acc: [3, 10, 15, 60], core: [3, 12, 15, 45] } },
   forza: { n: 'Forza', desc: 'Sollevare di più', protein: 1.8, kcal: 200,
-    scheme: { main: [5, 3, 5, 180], sec: [4, 5, 7, 150], acc: [3, 8, 12, 90], core: [3, 10, 15, 60] } },
+    scheme: { main: [3, 4, 6, 180], sec: [3, 5, 8, 150], acc: [3, 8, 12, 90], core: [3, 10, 15, 60] } },
   tonificazione: { n: 'Tonificazione', desc: 'Muscoli definiti e resistenti', protein: 1.8, kcal: 0,
-    scheme: { main: [3, 10, 12, 75], sec: [3, 12, 12, 60], acc: [3, 12, 15, 45], core: [3, 15, 20, 40] } },
+    scheme: { main: [3, 8, 12, 90], sec: [3, 10, 12, 75], acc: [3, 12, 15, 60], core: [3, 15, 20, 45] } },
   dimagrimento: { n: 'Dimagrimento', desc: 'Bruciare grassi, recuperi brevi', protein: 2.2, kcal: -400,
-    scheme: { main: [3, 10, 12, 60], sec: [3, 12, 15, 45], acc: [3, 15, 20, 30], core: [3, 15, 20, 30] } },
+    scheme: { main: [3, 8, 12, 90], sec: [3, 10, 15, 75], acc: [3, 12, 20, 60], core: [3, 15, 20, 45] } },
   benessere: { n: 'Salute e benessere', desc: 'Stare in forma, postura, energia', protein: 1.6, kcal: 0,
     scheme: { main: [3, 8, 12, 90], sec: [3, 10, 12, 75], acc: [2, 12, 15, 60], core: [3, 12, 15, 45] } }
 };
@@ -384,7 +384,7 @@ function prescribe(exId, role) {
   role = role || defaultRole(exId);
   const avg = i => goals.reduce((a, g) => a + GOALS[g].scheme[role][i], 0) / goals.length;
   let sets = Math.round(avg(0)), rmin = Math.round(avg(1)), rmax = Math.round(avg(2)), rest = Math.round(avg(3) / 15) * 15;
-  sets = Math.max(2, sets + lv.setsAdj + (p.level === 'avanzato' && role === 'main' ? 1 : 0));
+  sets = Math.max(2, sets + lv.setsAdj + (p.level === 'avanzato' && role === 'main' && !goals.includes('forza') ? 1 : 0));
   if (p.level === 'principiante' && role === 'main') { rmin += 2; rmax += 2; } // tecnica prima del carico
   const NICE = [3, 4, 5, 6, 8, 10, 12, 15, 20, 25], snap = v => NICE.reduce((b, x) => Math.abs(x - v) < Math.abs(b - v) ? x : b, NICE[0]);
   rmin = snap(rmin); rmax = snap(rmax);
@@ -396,16 +396,27 @@ function prescribe(exId, role) {
 }
 
 /* nota del trainer per ogni esercizio della scheda */
-function trainerNote(item) {
-  const lv = LEVELS[(typeof S !== 'undefined' && S.profile.level) || 'intermedio'] || LEVELS.intermedio;
-  const e = EX[item.ex] || {};
-  const role = item.role || defaultRole(item.ex);
-  if (e.type === 'time') return 'Qualità prima della durata: corpo in linea e respirazione regolare.';
-  if (role === 'main') return 'Esercizio principale: tecnica perfetta, lascia ' + lv.rir + ' ripetizioni di scorta. Discesa lenta (3 s), salita decisa.';
-  if (role === 'sec') return 'Complementare: carico impegnativo, ' + lv.rir + ' ripetizioni di scorta. Controlla tutta l\'escursione.';
-  if (role === 'core') return 'Movimento lento e controllato, espira nella contrazione.';
-  return 'Isolamento: carico moderato, arriva vicino al cedimento con contrazione di 1 s.';
+/* ripetizioni di scorta (RIR) secondo obiettivo e livello — Robinson 2024: più vicino al cedimento = più crescita,
+   per la forza la distanza dal cedimento conta poco; ACSM 2026: il cedimento non è necessario */
+function rirFor(role) {
+  const p = typeof S !== 'undefined' ? S.profile : {}, g = goalsOf(p), beg = p.level === 'principiante';
+  const hyp = g.some(x => x === 'massa' || x === 'tonificazione' || x === 'dimagrimento');
+  if (g.includes('forza') && (role === 'main' || role === 'sec')) return beg ? '3–4' : '2–3';
+  if (role === 'main') return beg ? '2–3' : '1–2';
+  if (role === 'sec') return beg ? '2–3' : hyp ? '1–2' : '2';
+  return beg ? '1–2' : '0–1';
 }
+function trainerNote(item) {
+  const e = EX[item.ex] || {};
+  const role = item.role || defaultRole(item.ex), rir = rirFor(role);
+  if (e.type === 'time') return 'Qualità prima della durata: corpo in linea e respirazione regolare.';
+  if (deloadActive()) return 'Settimana di scarico: metà delle serie, stesso carico o poco meno, resta a 3–4 ripetizioni dal cedimento.';
+  if (role === 'main') return 'Principale: tecnica perfetta, fermati a ' + rir + ' ripetizioni dal cedimento. Discesa controllata (2–3 s), salita decisa.';
+  if (role === 'sec') return 'Complementare: carico impegnativo, ' + rir + ' ripetizioni dal cedimento, tutta l\'escursione.';
+  if (role === 'core') return 'Movimento lento e controllato, espira nella contrazione.';
+  return 'Isolamento: arriva a ' + rir + ' ripetizioni dal cedimento, contrazione di 1 s in alto.';
+}
+const deloadActive = () => typeof S !== 'undefined' && S.deloadUntil && S.deloadUntil > Date.now();
 
 /* ===== Schede preimpostate da personal trainer =====
    ogni slot: [ruolo, esercizio, alternativa per principianti] */
@@ -447,7 +458,8 @@ function noBodyweight(id, alt) {
 function splitForDays(n, level) {
   if (n <= 1) return ['fullA'];
   if (n === 2) return ['fullA', 'fullB'];
-  if (n === 3) return level === 'avanzato' ? ['push', 'pull', 'legs'] : ['fullA', 'fullB', 'fullC'];
+  // ogni muscolo almeno 2 volte a settimana (ACSM 2026): niente split che allenano un muscolo una volta sola
+  if (n === 3) return level === 'avanzato' ? ['upperA', 'lowerA', 'fullC'] : ['fullA', 'fullB', 'fullC'];
   if (n === 4) return ['upperA', 'lowerA', 'upperB', 'lowerB'];
   if (n === 5) return ['upperA', 'lowerA', 'push', 'pull', 'legs'];
   return ['push', 'pull', 'legs', 'push', 'pull', 'legs'].slice(0, n);

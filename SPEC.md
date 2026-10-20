@@ -117,3 +117,13 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Diete: mediterranea ipocalorica, alta proteina, pochi carboidrati, digiuno 16:8; esempio di giornata scalato sulle calorie, copiabile nel diario.
 - Controllo settimanale sulla media del peso: correzione ±150 kcal.
 - Fonti: ISSN 2017, Helms 2014, DIETFITS 2018, Liu 2022, PREDIMED-Plus.
+
+## Trainer basato sugli studi (Coach → Su cosa si basa)
+- Frequenza: ogni muscolo almeno 2 volte a settimana (ACSM 2026); 3 giorni avanzato = Parte alta/Parte bassa/Full body.
+- Volume: obiettivo ~10 serie settimanali per muscolo, conteggio frazionario (secondari 0,5) — ACSM 2026, Pelland 2024.
+- Carichi: forza 3×4–6 sui principali (~80% 1RM, ACSM 2026); massa/tonificazione/dimagrimento 8–20 ripetizioni (Schoenfeld 2017).
+- Ripetizioni di scorta per ruolo e obiettivo: crescita 0–2, forza 2–4 (Robinson 2024); cedimento non obbligatorio.
+- Recupero minimo 60 s fuori dai circuiti, 2–3 min sui principali (Singer 2024).
+- Doppia progressione (Plotkin 2022). Scarico ogni 4–8 settimane o su richiesta: serie dimezzate per 7 giorni, stessi carichi, lontano dal cedimento (Bell 2023).
+- Cardio: 150–300 min/settimana (OMS 2020), mostrato in home; nei giorni di gambe bici/ellittica (Schumann 2022).
+- Figura del corpo: disegno originale in stile tavola anatomica a china, muscoli colorati quando selezionati o allenati.

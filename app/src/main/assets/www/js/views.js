@@ -91,13 +91,13 @@ function coachGenerate(seed) {
 function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
 function coachAdvice() {
-  const goals = goalsOf(), t = [];
+  const goals = goalsOf(), t = ['Ogni muscolo almeno 2 volte a settimana e circa 10 serie settimanali per muscolo (di più aiuta ancora, con guadagni minori). Le tue schede sono già impostate così.'];
   const pr = prescribe('panca_piana_bil', 'main'), ac = prescribe('alzate_laterali', 'acc');
   t.push('Con i tuoi obiettivi: esercizi principali ' + pr.sets + '×' + pr.rmin + '–' + pr.rmax + ' con ' + pr.rest + ' s di recupero, isolamento ' + ac.sets + '×' + ac.rmin + '–' + ac.rmax + ' con ' + ac.rest + ' s.');
   if (goals.includes('massa')) t.push('Massa: 10–20 serie a settimana per muscolo, aumenta il carico appena completi tutte le ripetizioni.');
   if (goals.includes('forza')) t.push('Forza: riscaldamento progressivo prima delle serie pesanti, recuperi lunghi (2–3 minuti).');
   if (goals.includes('tonificazione')) t.push('Tonificazione: ripetizioni controllate con 2–3 secondi in discesa e contrazione in alto.');
-  if (goals.includes('dimagrimento')) t.push('Dimagrimento: 15–20 minuti di cardio a fine seduta o i circuiti da un\'ora; mantieni carichi impegnativi per non perdere muscolo.');
+  if (goals.includes('dimagrimento')) t.push('Dimagrimento: mantieni carichi impegnativi per non perdere muscolo e aggiungi cardio (150–300 min a settimana, OMS). Il cardio non frena i guadagni di forza e massa; nei giorni di gambe preferisci bici o ellittica alla corsa.');
   if (goals.includes('benessere')) t.push('Benessere: cura la mobilità ogni giorno e non trascurare dorso e glutei per una postura migliore.');
   return t;
 }
@@ -143,10 +143,10 @@ VIEWS.coach = () => {
           '<button class="icon-btn sm" data-act="coachSwap" data-n="' + n + '">' + ic('swap') + '</button></div>';
       }).join('');
     }
-    out += (goalsOf().includes('dimagrimento') && !o.circuit ? '<div class="note small">' + ic('run', 'inline') + 'Se hai ancora 15 minuti, chiudi con cardio moderato (tapis roulant in salita o cyclette).</div>' : '') +
+    out += (goalsOf().includes('dimagrimento') && !o.circuit ? '<div class="note small">' + ic('run', 'inline') + 'Se hai ancora 15 minuti, chiudi con cardio moderato: cyclette o ellittica (meglio della corsa nei giorni di gambe).</div>' : '') +
       '<div class="grid2"><button class="btn" data-act="coachStart">' + ic('play') + 'Inizia ora</button><button class="btn ghost" data-act="coachSave">Salva come scheda</button></div></div>';
   }
-  out += '<div class="card"><h3>' + ic('info', 'inline') + 'Consigli per i tuoi obiettivi</h3><ul class="tips">' + coachAdvice().map(t => '<li>' + esc(t) + '</li>').join('') + '</ul></div>' +
+  out += '<div class="card"><h3>' + ic('info', 'inline') + 'Consigli per i tuoi obiettivi</h3><ul class="tips">' + coachAdvice().map(t => '<li>' + esc(t) + '</li>').join('') + '</ul><button class="btn ghost wide" data-act="go" data-v="science">' + ic('book') + 'Su cosa si basa il trainer (studi)</button></div>' +
     '<button class="btn ghost wide" data-act="openAI">' + ic('sparkle') + (aiReady() ? 'Chiedi al coach AI' : 'Coach AI: attivalo nelle impostazioni') + '</button></div>';
   return out;
 };
@@ -282,11 +282,11 @@ PROG.settimana = () => {
     '<div class="stats3"><div><b>' + s.count + '</b><small>allenamenti</small></div><div><b>' + fmtDur(s.time) + '</b><small>tempo</small></div><div><b>' + s.sets + '</b><small>serie</small></div></div>' +
     '<div class="stats3"><div><b>' + (s.vol >= 1000 ? fmtKg(Math.round(s.vol / 100) / 10) + ' t' : Math.round(s.vol) + ' kg') + '</b><small>volume</small></div><div><b>' + Math.round(s.cardioMin) + ' min</b><small>cardio</small></div><div><b>' + fmtKg(Math.round(s.km * 10) / 10) + ' km</b><small>distanza</small></div></div></div>' +
     '<div class="card"><h3>Volume (tonnellate) per settimana</h3>' + barChart(bars, { fmt: v => fmtKg(v) }) + '</div>' +
-    '<div class="card"><h3>Serie per muscolo</h3>' + muscleBars(s.musc) + '</div>';
+    '<div class="card"><h3>Serie per muscolo</h3><p class="small muted">Obiettivo: almeno 10 serie a settimana per muscolo (ACSM 2026); di più aiuta ancora la crescita ma con guadagni via via minori. Le serie in cui il muscolo lavora da aiuto contano metà.</p>' + muscleBars(s.musc, 10) + '</div>';
 };
-function muscleBars(musc) {
-  const max = Math.max(1, ...Object.values(musc));
-  return Object.keys(MUSCLES).map(m => { const v = Math.round((musc[m] || 0) * 10) / 10; return '<div class="mbar"><span>' + MUSCLES[m] + '</span><div><i style="width:' + (100 * v / max) + '%"></i></div><b>' + fmtKg(v) + '</b></div>'; }).join('');
+function muscleBars(musc, target) {
+  const max = Math.max(target || 1, ...Object.values(musc));
+  return Object.keys(MUSCLES).map(m => { const v = Math.round((musc[m] || 0) * 10) / 10; return '<div class="mbar' + (target && v < target ? ' under' : '') + '"><span>' + MUSCLES[m] + '</span><div>' + (target ? '<s style="left:' + (100 * target / max) + '%"></s>' : '') + '<i style="width:' + (100 * v / max) + '%"></i></div><b>' + fmtKg(v) + '</b></div>'; }).join('');
 }
 
 PROG.muscoli = () => {

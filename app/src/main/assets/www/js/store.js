@@ -40,7 +40,7 @@ function startOfWeek(d) { d = new Date(d); d.setHours(0, 0, 0, 0); const wd = (d
 /* ---------- Stato ---------- */
 function defaultState() {
   return {
-    v: 2,
+    v: 3,
     onboarded: false,
     profile: { goals: ['massa'], level: 'intermedio', days: [1, 3, 5], waterGoal: 8, sex: '', age: '', height: '' },
     settings: { theme: 'dark', accent: 'arancio', keepScreen: false, sound: true, autoRest: true,
@@ -72,9 +72,9 @@ function migrate(st) {
   if (p.goal && GOALS[p.goal] && (st.v || 1) < 2) p.goals = [p.goal];
   if (!Array.isArray(p.goals) || !p.goals.length) p.goals = [p.goal && GOALS[p.goal] ? p.goal : 'massa'];
   delete p.goal;
-  if ((st.v || 1) < 2) {
-    st.v = 2;
-    st.needRegen = true; // le schede preimpostate vengono rifatte con il nuovo metodo
+  if ((st.v || 1) < 3) {
+    st.v = 3;
+    st.needRegen = true; // le schede preimpostate vengono rifatte con il metodo aggiornato agli studi
   }
   return st;
 }

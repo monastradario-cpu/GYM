@@ -158,7 +158,7 @@ VIEWS.home = () => {
         const k = dayKey(d), planned = S.profile.days.includes(d.getDay()), done = trained.has(k), today = k === todayKey();
         return '<div class="wd ' + (done ? 'done ' : '') + (planned ? 'plan ' : '') + (today ? 'today' : '') + '"><small>' + WEEKDAYS[d.getDay()][0] + '</small><i>' + (done ? ic('check') : d.getDate()) + '</i></div>';
       }).join('') + '</div>' +
-      '<div class="stats3"><div><b>' + fmtDur(ws.time) + '</b><small>tempo</small></div><div><b>' + (ws.vol >= 1000 ? fmtKg(Math.round(ws.vol / 100) / 10) + ' t' : Math.round(ws.vol) + ' kg') + '</b><small>volume</small></div><div><b>' + Math.round(ws.cardioMin) + ' min</b><small>cardio</small></div></div>' +
+      '<div class="stats3"><div><b>' + fmtDur(ws.time) + '</b><small>tempo</small></div><div><b>' + (ws.vol >= 1000 ? fmtKg(Math.round(ws.vol / 100) / 10) + ' t' : Math.round(ws.vol) + ' kg') + '</b><small>volume</small></div><div><b>' + Math.round(ws.cardioMin) + '<small>/150</small> min</b><small>cardio (OMS)</small></div></div>' + weekVolumeNote() +
     '</div>' +
     '<div class="grid2">' +
       '<div class="card mini"><div class="mini-h">' + ic('scale') + 'Peso</div><b class="big-num">' + (w ? fmtKg(w.kg) + '<small> kg</small>' : '—') + '</b>' +
@@ -380,7 +380,8 @@ function homeTrainerCards2(t, doneToday) {
     out += '<button class="card meal-mini" data-act="goFood"><div class="eyebrow">' + ic('dumbbell', 'inline') + 'Recupero</div><p>Pasto di recupero entro 2 ore: ' + (n.protein ? Math.round(n.protein / 4) + ' g di proteine' : '25–40 g di proteine') + ' e carboidrati (es. yogurt greco con frutta e avena, o pasta con tonno e verdure).</p><small class="muted">Tocca per l\'alimentazione completa</small></button>';
   }
   const st = streaks();
-  if (st.weekStreak >= 6 && st.weekStreak % 6 === 0) out += '<div class="note warn">' + ic('info', 'inline') + 'Sei a ' + st.weekStreak + ' settimane di fila: questa settimana fai uno <b>scarico</b> (stessi esercizi, circa 60% del carico) per recuperare e ripartire più forte.</div>';
+  if (deloadActive()) out += '<div class="note warn">' + ic('info', 'inline') + '<b>Settimana di scarico attiva</b> fino a ' + fmtDateLong(S.deloadUntil) + ': metà delle serie, carichi uguali o poco più bassi, lontano dal cedimento. <button class="link-inline" data-act="deloadOff">Termina</button></div>';
+  else if (st.weekStreak >= 5 && (!S.lastDeload || Date.now() - S.lastDeload > 35 * 864e5)) out += '<div class="note warn">' + ic('info', 'inline') + 'Ti alleni da ' + st.weekStreak + ' settimane di fila. Se ti senti stanco o i carichi non salgono, fai una <b>settimana di scarico</b> (ogni 4–8 settimane): metà delle serie e lontano dal cedimento. <button class="link-inline" data-act="deloadOn">Attiva per 7 giorni</button></div>';
   return out;
 }
 function mobilitySheet() {
@@ -473,3 +474,16 @@ function moveItem(k, from, to) {
   };
   document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
 })();
+
+/* volume settimanale per muscolo: almeno ~10 serie (ACSM 2026), con rendimenti decrescenti oltre (Pelland 2024) */
+function weekVolumeAdvice() {
+  const m = weekStats().musc, low = Object.keys(MUSCLES).filter(k => k !== 'addome' && (m[k] || 0) < 10);
+  return { m, low };
+}
+function weekVolumeNote() {
+  const st = weekStats(); if (!st.count) return '';
+  const { m, low } = weekVolumeAdvice(), d = new Date().getDay();
+  if (!low.length) return '<p class="small good">Tutti i muscoli hanno almeno 10 serie questa settimana.</p>';
+  if (d >= 1 && d <= 3) return '';
+  return '<p class="small muted">Sotto le 10 serie settimanali: ' + low.slice(0, 5).map(k => MUSCLES[k] + ' ' + fmtKg(Math.round((m[k] || 0) * 10) / 10)).join(', ') + '.</p>';
+}
