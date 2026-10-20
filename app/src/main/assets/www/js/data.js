@@ -337,9 +337,98 @@ const EXERCISES = [
   E('swing_man', 'Swing con manubrio', 'glutei', ['femorali', 'dorso'], 'manubri', 'hinge',
     ['Manubrio tenuto con due mani tra le gambe.', 'Spingi le anche avanti con forza facendo salire il manubrio all\'altezza del petto.', 'Lascialo ridiscendere tra le gambe e ripeti.'],
     ['Alzare con le braccia.', 'Schiena curva.'],
-    'La forza viene dai glutei, non dalle braccia.', T)
+    'La forza viene dai glutei, non dalle braccia.', T),
+  // ===== CASA (corpo libero) =====
+  E('affondi_corpo', 'Affondi a corpo libero', 'quadricipiti', ['glutei', 'femorali'], 'corpo', 'affondo',
+    ['In piedi, mani sui fianchi.', 'Fai un passo lungo in avanti e scendi finché il ginocchio dietro sfiora terra.', 'Spingi col piede davanti e torna su; alterna le gambe.'],
+    ['Ginocchio davanti che crolla verso l\'interno.', 'Busto che cade in avanti.'],
+    'Tieni il peso sul tallone della gamba davanti.'),
+  E('piegamenti_ginocchia', 'Piegamenti sulle ginocchia', 'petto', ['tricipiti', 'spalle'], 'corpo', 'spinta_orizz',
+    ['Mani poco più larghe delle spalle, ginocchia a terra.', 'Corpo dritto dalle ginocchia alla testa.', 'Scendi col petto verso terra e spingi.'],
+    ['Bacino alto o che cede.', 'Gomiti troppo aperti.'],
+    'Versione più facile dei piegamenti: quando arrivi a 15 passa a quelli classici.'),
+  E('sedia_muro', 'Sedia al muro', 'quadricipiti', ['glutei'], 'corpo', 'isometria',
+    ['Schiena appoggiata al muro.', 'Scendi finché le cosce sono parallele a terra, ginocchia sopra le caviglie.', 'Mantieni respirando con calma.'],
+    ['Ginocchia oltre le punte.', 'Mani appoggiate sulle cosce.'],
+    'Se brucia troppo, sali un po\': conta la durata più della profondità.', T),
+  E('skip', 'Skip sul posto', 'quadricipiti', ['polpacci', 'addome'], 'corpo', 'condizionamento',
+    ['Corri sul posto portando le ginocchia all\'altezza delle anche.', 'Braccia che accompagnano il movimento.', 'Atterra morbido sugli avampiedi.'],
+    ['Busto all\'indietro.', 'Atterrare sui talloni.'],
+    'Se abiti in un condominio fai la versione camminata, senza saltare.', T),
+  E('superman', 'Superman', 'dorso', ['glutei'], 'corpo', 'estensione_schiena',
+    ['A pancia in giù, braccia tese avanti.', 'Solleva insieme braccia, petto e gambe di pochi centimetri.', 'Tieni 2 secondi e scendi lento.'],
+    ['Sollevare la testa guardando avanti.', 'Movimento a scatti.'],
+    'Ottimo contro la schiena curva da scrivania.'),
+  E('calf_corpo', 'Polpacci in piedi', 'polpacci', [], 'corpo', 'calf',
+    ['In piedi, appoggiati a un muro o a una sedia.', 'Sali sulle punte il più possibile.', 'Scendi lento.'],
+    ['Rimbalzare.', 'Piegare le ginocchia.'],
+    'Si può fare ovunque, anche in coda o in ufficio.'),
+  E('dip_sedia', 'Dip alla sedia', 'tricipiti', ['petto', 'spalle'], 'corpo', 'spinta_vert_giu',
+    ['Mani sul bordo di una sedia stabile, gambe avanti.', 'Scendi piegando i gomiti fino a 90°.', 'Spingi fino a braccia tese.'],
+    ['Gomiti aperti.', 'Scendere troppo (stress sulle spalle).'],
+    'Usa una sedia senza rotelle, appoggiata al muro.'),
+  // ===== UFFICIO (pause attive) =====
+  E('alzati_siediti', 'Alzati e siediti', 'quadricipiti', ['glutei'], 'corpo', 'ufficio',
+    ['Seduto sul bordo della sedia, piedi alla larghezza delle anche.', 'Braccia avanti, alzati in piedi senza aiutarti con le mani.', 'Torna a sederti piano, sfiorando appena la sedia.'],
+    ['Lasciarsi cadere sulla sedia.', 'Ginocchia che si avvicinano.'],
+    'L\'esercizio più semplice per spezzare la sedentarietà: tutti i muscoli delle gambe al lavoro.'),
+  E('piegamenti_scrivania', 'Piegamenti alla scrivania', 'petto', ['tricipiti', 'spalle'], 'corpo', 'ufficio',
+    ['Mani sul bordo della scrivania (ferma!), piedi indietro.', 'Corpo dritto, scendi col petto verso il bordo.', 'Spingi fino a braccia tese.'],
+    ['Bacino che cede.', 'Scrivania o tavolo che si muove.'],
+    'Più i piedi sono lontani, più è difficile.'),
+  E('retrazione_scapole', 'Stringi le scapole', 'dorso', ['spalle'], 'corpo', 'ufficio',
+    ['In piedi o seduto, braccia avanti.', 'Porta i gomiti indietro e stringi le scapole tra loro.', 'Tieni 2 secondi e rilascia.'],
+    ['Alzare le spalle verso le orecchie.', 'Inarcare la schiena.'],
+    'Rinforza i muscoli che tengono su le spalle: utile contro il dolore al collo.'),
+  E('circonduzioni_braccia', 'Circonduzioni delle braccia', 'spalle', [], 'corpo', 'ufficio',
+    ['In piedi, braccia aperte all\'altezza delle spalle.', 'Fai piccoli cerchi in avanti, poi all\'indietro.', 'Respira con calma.'],
+    ['Alzare le spalle.'],
+    'Scioglie le spalle dopo molto tempo al computer.', T),
+  E('cammina', 'Cammina o fai le scale', 'quadricipiti', ['polpacci', 'glutei'], 'corpo', 'ufficio',
+    ['Alzati e cammina a passo svelto, anche solo in corridoio.', 'Se ci sono scale, salile: è ancora meglio.', 'Torna a sederti dopo il tempo indicato.'],
+    ['Restare seduti per ore senza pause.'],
+    'Gli studi mostrano che bastano pochi minuti ogni tanto per abbassare pressione e zuccheri nel sangue.', T),
+  // ===== MOBILITÀ / STRETCHING =====
+  E('allunga_collo', 'Allungamento del collo', 'spalle', [], 'corpo', 'mobilita',
+    ['Seduto o in piedi, spalle basse.', 'Inclina l\'orecchio verso la spalla, senza alzarla.', 'Tieni, poi cambia lato.'],
+    ['Tirare con forza la testa.', 'Alzare la spalla.'],
+    'Movimento lento: deve tirare, non fare male.', T),
+  E('apri_petto', 'Apertura del petto', 'petto', ['spalle'], 'corpo', 'mobilita',
+    ['In piedi, mani intrecciate dietro la schiena.', 'Allunga le braccia indietro e apri il petto, sguardo avanti.', 'Respira profondo e mantieni.'],
+    ['Inarcare la zona lombare.'],
+    'Contrasta la postura con le spalle chiuse in avanti.', T),
+  E('allungamento_laterale', 'Allungamento laterale', 'addome', ['dorso'], 'corpo', 'mobilita',
+    ['In piedi, braccia sopra la testa.', 'Piegati lentamente di lato, senza ruotare il busto.', 'Tieni e cambia lato.'],
+    ['Piegarsi in avanti.'],
+    'Allunga i fianchi e il dorso.', T),
+  E('torsione_seduta', 'Torsione del busto da seduto', 'addome', ['dorso'], 'corpo', 'mobilita',
+    ['Seduto dritto, piedi a terra.', 'Ruota il busto da un lato aiutandoti con lo schienale.', 'Tieni, torna al centro e cambia lato.'],
+    ['Forzare la rotazione col collo.'],
+    'Ruota con la schiena, non solo con la testa.', T),
+  E('estensione_schiena', 'Estensione della schiena', 'dorso', ['addome'], 'corpo', 'mobilita',
+    ['In piedi, mani sui fianchi.', 'Spingi il bacino leggermente avanti e porta il busto un po\' indietro.', 'Torna dritto. Ripeti piano.'],
+    ['Piegarsi troppo indietro.', 'Bloccare il respiro.'],
+    'Il contrario della posizione seduta: ottima dopo ore alla scrivania.', T),
+  E('allunga_femorali', 'Allungamento femorali', 'femorali', ['dorso'], 'corpo', 'mobilita',
+    ['In piedi, ginocchia morbide.', 'Piega il busto in avanti portando le anche indietro, schiena lunga.', 'Lascia scendere le mani verso le gambe e mantieni.'],
+    ['Curvare la schiena per arrivare più giù.'],
+    'Senti tirare dietro le cosce, non nella schiena.', T),
+  E('allunga_flessori', 'Allungamento flessori dell\'anca', 'quadricipiti', ['glutei'], 'corpo', 'mobilita',
+    ['Affondo con il ginocchio dietro appoggiato a terra.', 'Stringi il gluteo della gamba dietro e porta il bacino avanti.', 'Tieni e cambia gamba.'],
+    ['Inarcare la schiena.'],
+    'Allunga i muscoli che si accorciano stando seduti.', T),
+  E('gatto_mucca', 'Gatto e mucca', 'dorso', ['addome'], 'corpo', 'mobilita',
+    ['A quattro zampe, mani sotto le spalle e ginocchia sotto le anche.', 'Inspira: pancia giù e sguardo avanti. Espira: schiena tonda e mento al petto.', 'Alterna lentamente.'],
+    ['Movimenti veloci.'],
+    'Mobilizza tutta la colonna vertebrale.', T),
+  E('posizione_bambino', 'Posizione del bambino', 'dorso', ['spalle'], 'corpo', 'mobilita',
+    ['In ginocchio, siediti sui talloni.', 'Porta il busto a terra in avanti con le braccia tese.', 'Respira profondo e rilassa la schiena.'],
+    ['Forzare se fa male alle ginocchia.'],
+    'Posizione di riposo: perfetta per finire.', T),
 ];
 
+/* esercizi da pausa attiva (ufficio e mobilità): fuori da Coach e schede palestra */
+const isBreakEx = e => e && (e.pat === 'ufficio' || e.pat === 'mobilita');
 const EX = {};
 EXERCISES.forEach(e => { EX[e.id] = e; });
 
@@ -514,6 +603,48 @@ function circuitMinutes(c) {
   const per = c.st.reduce((a, s) => a + (s.secs || c.work) + c.restEx, 0);
   return Math.round((c.rounds * per + (c.rounds - 1) * c.restRound) / 60 + (c.warm || 0) + (c.cool || 0));
 }
+
+
+/* ===== Casa e lavoro: routine brevi, tutte a tempo e con guida automatica =====
+   Basate su: circuiti a corpo libero ad alta intensità 30 s lavoro / 10 s pausa (Klika & Jordan, ACSM HFJ 2013);
+   "exercise snacks" ≤5 min almeno 2 volte al giorno migliorano la forma cardiorespiratoria (meta-analisi BJSM 2025);
+   spezzare la seduta con 1–5 min di movimento abbassa pressione e glicemia (Duran, Diaz e coll., MSSE 2023);
+   rinforzo collo-spalle sul lavoro riduce il dolore al collo negli impiegati (Coombes e coll., Phys Ther 2018). */
+const QUICK_ZONES = {
+  casa: { n: 'Casa', d: 'Senza attrezzi, in salotto. Valgono come allenamento.' },
+  ufficio: { n: 'Ufficio', d: 'Pause attive di 2–5 minuti, anche in giacca. Ogni pausa vale una stella.' },
+  mobilita: { n: 'Mobilità e stretching', d: 'Per schiena, anche e spalle: al mattino o la sera.' }
+};
+const QUICK_ROUTINES = [
+  { key: 'q_casa10', zone: 'casa', n: 'Casa 10 minuti · total body', desc: '7 esercizi da 30 secondi, 10 s di pausa, 2 giri. Più ripetizioni possibili con buona tecnica.',
+    rounds: 2, restEx: 10, restRound: 30, warm: 0, cool: 0,
+    st: [['jumping_jack', 30], ['squat_corpo', 30], ['piegamenti', 30], ['affondi_corpo', 30], ['plank', 30], ['skip', 30], ['ponte_glutei', 30]] },
+  { key: 'q_casa10c', zone: 'casa', n: 'Casa 10 minuti · cardio brucia grassi', desc: 'Battito alto: 6 esercizi da 35 s, 15 s di pausa, 2 giri.',
+    rounds: 2, restEx: 15, restRound: 30, warm: 0, cool: 0,
+    st: [['skip', 35], ['squat_corpo', 35], ['mountain_climber', 35], ['jumping_jack', 35], ['burpees', 35], ['sedia_muro', 35]] },
+  { key: 'q_casa18', zone: 'casa', n: 'Casa 20 minuti · completo', desc: 'Riscaldamento, poi 6 esercizi da 35 s con 15 s di pausa, 3 giri.',
+    rounds: 3, restEx: 15, restRound: 60, warm: 2, cool: 0,
+    st: [['squat_corpo', 35], ['piegamenti_ginocchia', 35], ['superman', 35], ['affondi_corpo', 35], ['mountain_climber', 35], ['plank', 35]] },
+  { key: 'q_uff2', zone: 'ufficio', n: 'Ufficio 2 minuti · express', desc: 'Il minimo indispensabile tra una riunione e l\'altra.',
+    rounds: 1, restEx: 5, restRound: 0, warm: 0, cool: 0,
+    st: [['alzati_siediti', 40], ['piegamenti_scrivania', 30], ['allunga_collo', 30]] },
+  { key: 'q_uff3g', zone: 'ufficio', n: 'Ufficio 3 minuti · gambe e circolazione', desc: 'Contro le gambe pesanti dopo ore seduto.',
+    rounds: 1, restEx: 5, restRound: 0, warm: 0, cool: 0,
+    st: [['cammina', 60], ['alzati_siediti', 40], ['calf_corpo', 40], ['allunga_flessori', 30]] },
+  { key: 'q_uff3p', zone: 'ufficio', n: 'Ufficio 3 minuti · postura e collo', desc: 'Spalle aperte e collo sciolto davanti al computer.',
+    rounds: 1, restEx: 5, restRound: 0, warm: 0, cool: 0,
+    st: [['retrazione_scapole', 40], ['apri_petto', 30], ['circonduzioni_braccia', 30], ['allunga_collo', 40], ['estensione_schiena', 30]] },
+  { key: 'q_uff5', zone: 'ufficio', n: 'Ufficio 5 minuti · pausa attiva completa', desc: 'Cammini, rinforzi e sciogli la schiena.',
+    rounds: 1, restEx: 5, restRound: 0, warm: 0, cool: 0,
+    st: [['cammina', 120], ['alzati_siediti', 40], ['piegamenti_scrivania', 40], ['retrazione_scapole', 30], ['torsione_seduta', 40]] },
+  { key: 'q_mob7', zone: 'mobilita', n: 'Mobilità 7 minuti · mattina', desc: 'Sveglia la colonna, le anche e le spalle.',
+    rounds: 1, restEx: 5, restRound: 0, warm: 0, cool: 0,
+    st: [['gatto_mucca', 60], ['allungamento_laterale', 60], ['allunga_flessori', 60], ['allunga_femorali', 60], ['circonduzioni_braccia', 40], ['apri_petto', 40], ['posizione_bambino', 60]] },
+  { key: 'q_mob5', zone: 'mobilita', n: 'Stretching 5 minuti · schiena e collo', desc: 'Per la sera o dopo una giornata alla scrivania.',
+    rounds: 1, restEx: 5, restRound: 0, warm: 0, cool: 0,
+    st: [['allunga_collo', 60], ['torsione_seduta', 60], ['gatto_mucca', 60], ['estensione_schiena', 40], ['posizione_bambino', 60]] }
+];
+const quickMinutes = q => Math.max(1, Math.round((q.rounds * q.st.reduce((a, s) => a + s[1] + q.restEx, 0) - q.restEx + (q.rounds - 1) * q.restRound) / 60 + (q.warm || 0)));
 
 const WARMUP_TEXT = 'Riscaldamento: 5 minuti di cardio leggero (cyclette o tapis roulant), poi rotazioni di spalle, anche e caviglie e qualche ripetizione leggera del primo esercizio.';
 const COOLDOWN_TEXT = 'Defaticamento: 3–5 minuti di cammino lento e allungamento dei muscoli lavorati, 20–30 secondi per posizione.';

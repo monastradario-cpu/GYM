@@ -500,3 +500,88 @@ span.set-n{text-align:center;font-weight:800;color:var(--muted)}
 .body-svg.b2.mini{width:72px;max-width:72px}
 .dist-body .body-svg.b2{max-width:340px}.body-prev .body-svg.b2{max-width:280px}
 .b2.clickable .b2-mu{cursor:pointer}
+
+/* ===== Allenamento v4: lista essenziale + una serie alla volta ===== */
+.wo-mode{margin:10px 16px 2px}
+.wo-mode .chip{display:flex;align-items:center;justify-content:center;gap:6px}
+.exl-wrap{padding:0 0 4px}
+.exl{padding:14px 16px 10px;border-bottom:1px solid var(--line);background:transparent}
+.exl.done{opacity:.7}
+.exl.ss{border-left:3px solid #38bdf8;padding-left:13px}
+.exl-wrap .ss-head{margin:14px 16px 0}
+.exl-h{display:flex;align-items:center;gap:8px}
+.exl-h .ex-title{flex:1;min-width:0}
+.exl-h .ex-thumb{width:40px;height:40px}
+.exl-h h3{font-size:16px;line-height:1.25}
+.exl-sub{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 4px 48px;font-size:13px}
+.exl-rest{display:inline-flex;align-items:center;gap:3px;color:var(--muted);font-weight:600;padding:4px 0}
+.exl-obj{color:var(--accent);font-weight:700;text-align:left;padding:4px 0}
+.exl-obj.down{color:#f59e0b}
+.exl-note{display:block;margin:2px 0 4px 48px;font-size:12.5px;color:#eab308;text-align:left}
+.rr{display:inline-flex;align-items:center;gap:3px;color:var(--muted)}
+.rr i{font-style:normal}
+.rr small{font-size:12px;margin-left:2px}
+.rr-in{width:38px;padding:5px 2px;text-align:center;font-weight:700;font-size:14px;border-radius:8px}
+.exl .sets{margin-top:4px}
+.exl .set-h span{font-size:10.5px}
+.exl .set input{padding:9px 2px;font-size:16px;background:var(--card2)}
+.exl .set.done input{background:transparent;border-color:transparent}
+.exl .chk{width:40px;height:40px}
+.exl-add{display:block;width:100%;text-align:center;color:var(--muted);font-weight:700;font-size:14px;padding:10px 0 4px}
+.danger-t{color:var(--bad)}
+.good-t{color:var(--good)}
+.link.wide.center{display:block;text-align:center;padding:12px 0}
+.ex-thumb.sm{width:36px;height:36px}
+.ex-thumb.sm svg{width:48px}
+
+.fo-card{padding:18px}
+.fo-top{display:flex;align-items:center;gap:8px}
+.fo-name{flex:1;font-size:20px;font-weight:800;text-align:left}
+.fo-sn{color:var(--accent);font-weight:800;font-size:12.5px;letter-spacing:.07em;margin-top:2px}
+.fo-sn.wu{color:#eab308}
+.fo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:16px 0 10px}
+.fo-box{background:var(--card2);border-radius:16px;padding:10px 8px;text-align:center}
+.fo-box small{color:var(--muted);font-size:12px}
+.fo-num{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:4px}
+.fo-num button{flex:none;width:38px;height:38px;border-radius:50%;background:var(--card);font-size:22px;font-weight:700;color:var(--text)}
+.fo-num input{background:transparent;border:0;text-align:center;font-size:32px;font-weight:800;padding:2px 0;min-width:0}
+.fo-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 12px}
+.fo-done{margin:0}
+.fo-prev{display:block;width:100%;text-align:center;font-size:13px;color:var(--muted);margin-top:10px}
+.fo-prev b{color:var(--accent)}
+.fo-dots{display:flex;justify-content:center;gap:9px;margin-top:12px;align-items:center}
+.fo-dots button{width:14px;height:14px;border-radius:50%;background:var(--card2);border:1px solid var(--line);padding:0}
+.fo-dots button.wu{border-color:#eab308}
+.fo-dots button.on{background:var(--good);border-color:var(--good)}
+.fo-dots button.cur{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 45%,transparent);border-color:var(--accent)}
+.fo-dots button.add{width:22px;height:22px;font-size:15px;line-height:1;color:var(--muted);display:grid;place-items:center}
+.fo-list{padding:6px 10px}
+.fo-row,.qk-row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 4px;border-bottom:1px solid var(--line)}
+.fo-row:last-child,.qk-row:last-child{border-bottom:0}
+.fo-row small,.qk-row small{display:block;color:var(--muted);font-size:12px}
+.fo-row.on,.qk-row.on{background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:10px}
+.fo-row.done b,.qk-row.done b{opacity:.6}
+
+/* ===== Casa e lavoro ===== */
+.qk-now{text-align:center;padding:16px}
+.qk-phase{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
+.qk-phase span{color:var(--muted);font-weight:600;letter-spacing:0;margin-left:4px}
+.qk-name{font-size:22px;margin:4px 0 0}
+.qk-clock{font-size:56px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1;margin:4px 0}
+.qk-clock.rest{color:var(--good)}
+.qk-demo .demo-stage{max-width:320px;margin:0 auto}
+.qk-demo .demo-cue{justify-content:center}
+.qk-how{margin:6px 0 10px}
+.qk-ctrl{display:flex;gap:8px;margin-top:6px}
+.qk-ctrl .btn{margin:0}
+.qk-after{font-size:13px;color:var(--muted);margin-top:10px}
+.qk-list{padding:6px 10px}
+.qk-th{flex:none;width:36px;height:36px;border-radius:50%;background:var(--card2);overflow:hidden;display:grid;place-items:center}
+.qk-th svg{width:48px;height:auto}
+.stars{display:flex;gap:4px;font-size:22px;line-height:1;margin-top:6px}
+.stars.big{justify-content:center;font-size:40px;margin:6px 0 8px}
+.star{color:color-mix(in srgb,var(--muted) 35%,transparent)}
+.star.on{color:#facc15;-webkit-text-stroke:0;text-shadow:0 0 12px rgba(250,204,21,.35)}
+.brk{background:linear-gradient(135deg,color-mix(in srgb,#facc15 14%,var(--card)),var(--card) 70%)}
+.brk-n{font-size:22px}
+.brk .btn{margin:0}

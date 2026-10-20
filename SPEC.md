@@ -127,3 +127,13 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Doppia progressione (Plotkin 2022). Scarico ogni 4–8 settimane o su richiesta: serie dimezzate per 7 giorni, stessi carichi, lontano dal cedimento (Bell 2023).
 - Cardio: 150–300 min/settimana (OMS 2020), mostrato in home; nei giorni di gambe bici/ellittica (Schumann 2022).
 - Figura del corpo: disegno originale in stile tavola anatomica a china, muscoli colorati quando selezionati o allenati.
+
+## Allenamento v4 (layout scelto: A + C)
+- Lista essenziale: nome, recupero, intervallo di ripetizioni in due riquadri (min–max, ricalcola gli obiettivi), obiettivo di oggi, tabella serie, "+ Aggiungi serie". Consiglio del trainer, riscaldamento, nota, "Occupato?", dischi, sposta/rimuovi nel menu ⋯.
+- Modalità "Una serie alla volta": numeri grandi con + e −, "Serie fatta", ultima volta e obiettivo, pallini delle serie, elenco esercizi per saltare.
+
+## Casa e lavoro
+- Routine pronte con guida automatica a tempo: Casa 10 (total body, cardio), Casa 20, Ufficio 2/3/3/5 min, Mobilità 7 min, Stretching 5 min. Nuovi esercizi con animazioni.
+- Stelle: ogni routine completata = 1 stella, obiettivo giornaliero = numero di promemoria (3 o 4). Card in Home e in Schede › Casa e lavoro.
+- Promemoria pause attive nei giorni e nell'orario di lavoro, 3–4 al giorno (nativo, tipo "breaks").
+- Basi: Klika & Jordan 2013 (30 s/10 s), meta-analisi BJSM 2025 sugli exercise snacks, Duran/Diaz MSSE 2023 (spezzare la seduta), Coombes Phys Ther 2018 (collo negli impiegati).

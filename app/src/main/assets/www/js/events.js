@@ -36,6 +36,7 @@ const ACT = {
 
   /* schede */
   schedeTab: d => { UI.schede = d.t; render(); },
+  goQuick: () => { UI.schede = 'casa'; ACT.tab({ v: 'schede' }); },
   presets: () => openSheet(presetsSheet),
   addPreset: d => { S.templates.push(makeTemplateFromPreset(d.k, [])); save(); closeSheet(); UI.schede = 'schede'; render(); toast('Scheda aggiunta'); },
   addCircuit: d => { S.templates.push(makeCircuit(PRESET_CIRCUITS.find(c => c.key === d.k))); save(); closeSheet(); UI.schede = 'circuiti'; render(); toast('Circuito aggiunto'); },
@@ -86,6 +87,10 @@ const ACT = {
       if (!s.wu && mateFirst && mateSet && !mateSet.done) { stopRest(true); toast('Superserie: ora ' + (EX[mate.ex] || {}).n + ', senza pausa'); setTimeout(() => { const el = document.querySelectorAll('.ex-card')[items.indexOf(mate)]; if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); }
       else if (S.settings.autoRest && !isLast) startRest(s.wu ? 60 : it.rest, (mate ? 'Superserie ' + it.ss : (EX[it.ex] || {}).n));
       Native.vibrate(40);
+      // modalità una serie alla volta: in superserie passa all'altro esercizio, altrimenti resta qui
+      UI.focusK = null;
+      if (it.ss && !s.wu) { const m2 = items.find((x, j) => j !== idx && x.ss === it.ss && x.sets.some(z => !z.done && !z.wu)); UI.focusN = m2 ? items.indexOf(m2) : idx; }
+      else UI.focusN = idx;
     }
     save(); render();
   },
@@ -108,6 +113,17 @@ const ACT = {
   },
   toggleWu: d => { const s = S.active.items[+d.n].sets[+d.k]; s.wu = !s.wu; const it = S.active.items[+d.n]; it.sets.sort((a, b) => (b.wu ? 1 : 0) - (a.wu ? 1 : 0)); save(); render(); toast(s.wu ? 'Segnata come riscaldamento (non conta nei record)' : 'Segnata come serie di lavoro'); },
   exMenu: d => openSheet(() => exMenuSheet(+d.n)),
+  menuDo: d => { closeSheet(); const fn = ACT[d.a]; if (fn) fn(d); },
+  trainerTip: d => { const it = S.active.items[+d.n], prog = exProg(it); openSheet(() => '<h3>' + ic('coach', 'inline') + 'Consiglio del trainer</h3><p class="muted small">' + exLine(it.ex) + '</p><div class="tip ' + prog.kind + '">' + esc(prog.text) + '</div><p class="small">' + esc(trainerNote(it)) + '</p><p class="small muted">Puoi cambiare l\'intervallo di ripetizioni nei due riquadri: gli obiettivi delle serie si ricalcolano.</p>'); },
+  woMode: d => { S.settings.woMode = d.m; UI.focusN = null; UI.focusK = null; save(); render(true); },
+  focSet: d => { UI.focusN = +d.n; UI.focusK = +d.k; render(); },
+  focEx: d => { UI.focusN = +d.n; UI.focusK = null; render(true); },
+  focStep: d => {
+    const t = focusTarget(S.active); if (!t) return;
+    const it = S.active.items[t.n], s = it.sets[t.k], f = d.f, timed = (EX[it.ex] || {}).type === 'time';
+    const cur = s[f] !== '' ? num(s[f]) : num(f === 'kg' ? s.pk : s.pr), step = f === 'kg' ? stepFor(it.ex) : timed ? 5 : 1;
+    s[f] = Math.max(0, Math.round((cur + (+d.d) * step) * 100) / 100); save(); render();
+  },
   woMove: d => { const a = S.active.items, n = +d.n, m = n + (+d.d); if (m < 0 || m >= a.length) return; [a[n], a[m]] = [a[m], a[n]]; save(); closeSheet(); render(); },
   woDel: d => { S.active.items.splice(+d.n, 1); save(); closeSheet(); render(); },
   woAdd: () => pickExercise(id => { S.active.items.push(newItem(prescribe(id), 'scheda')); save(); render(); setTimeout(() => { const v = $('#view'); v.scrollTop = v.scrollHeight; }, 30); }),
@@ -119,7 +135,12 @@ const ACT = {
     else { const fresh = newItem({ ex: d.id, rmin: it.rmin, rmax: it.rmax, rest: it.rest, sets: Math.max(1, it.sets.filter(s => !s.wu).length) }, 'scheda'); a.items[+d.n] = fresh; }
     save(); closeSheet(); render(); toast('Esercizio cambiato');
   },
-  restSkip: () => { stopRest(true); render(); },
+  restSkip: () => { stopRest(true); circAfterRest(); render(); },
+  qkGo: () => { const a = S.active, nx = circNext(a); if (nx) { circStartWork(nx.n, nx.k); Native.vibrate(40); } render(); },
+  qkPause: () => { const a = S.active, c = a.circ; if (c.workUntil) { c.paused = { left: Math.max(1, (c.workUntil - Date.now()) / 1000), n: c.idx, k: c.round }; c.workUntil = 0; Native.cancelRest(); } else { c.paused = { left: 0 }; stopRest(true); } save(); render(); },
+  qkResume: () => { const a = S.active, c = a.circ, p = c.paused; c.paused = null; if (p && p.left) { c.idx = p.n; c.round = p.k; c.workUntil = Date.now() + p.left * 1000; Native.restTimer(Math.round(p.left), 'Stazione finita'); save(); } else ACT.qkGo(); render(); },
+  qkSkip: () => { const a = S.active, c = a.circ; if (c.workUntil) { circMark(c.idx, c.round); return; } c.paused = null; stopRest(true); ACT.qkGo(); },
+  quickStart: d => { const q = QUICK_ROUTINES.find(x => x.key === d.k); if (q) startWorkout(makeQuick(q)); },
   restAdd: d => { const r = S.active.rest; if (!r) return; r.until = Math.max(Date.now() + 1000, r.until + (+d.s) * 1000); r.total = Math.max(r.total, (r.until - Date.now()) / 1000); Native.restTimer(Math.round((r.until - Date.now()) / 1000), r.label); save(); render(); },
   manualRest: () => openSheet(() => '<h3>' + ic('timer', 'inline') + 'Timer</h3><div class="grid3">' + [30, 45, 60, 90, 120, 180].map(s => '<button class="btn ghost" data-act="startRestN" data-s="' + s + '">' + fmtClock(s) + '</button>').join('') + '</div>'),
   startRestN: d => { closeSheet(); startRest(+d.s, 'Timer'); render(); },
@@ -284,6 +305,8 @@ const ACT = {
   setDay: d => { const x = +d.d, p = S.profile; p.days = p.days.includes(x) ? p.days.filter(y => y !== x) : p.days.concat(x); save(); if (S.onboarded) syncReminders(); render(); },
   setFlag: d => { S.settings[d.k] = !S.settings[d.k]; save(); if (d.k === 'keepScreen' && S.active) Native.keepScreen(S.settings.keepScreen); render(); },
   remOn: d => { S.reminders[d.k].on = !S.reminders[d.k].on; save(); if (S.onboarded) syncReminders(); render(); },
+  brkDay: d => { const b = S.reminders.breaks, x = +d.d; b.days = b.days.includes(x) ? b.days.filter(y => y !== x) : b.days.concat(x); save(); syncReminders(); render(); },
+  brkCount: d => { S.reminders.breaks.count = +d.n; save(); syncReminders(); render(); },
   weighDay: d => { S.reminders.weigh.day = +d.d; save(); syncReminders(); render(); },
   askNotif: () => { Native.askNotifications(); syncReminders(); toast('Promemoria aggiornati'); },
   aiProv: d => { const ai = S.settings.ai; ai.keys = ai.keys || {}; ai.keys[ai.provider] = ai.key; ai.provider = d.k; ai.key = ai.keys[d.k] || ''; ai.model = ''; UI.aiStatus = null; save(); render(); },
@@ -361,6 +384,7 @@ document.addEventListener('input', ev => {
     case 'cardio': UI.cardio[d.k] = v; break;
     case 'plates': UI.plates[d.k] = v; { const b = $('#sheet-body'), f = document.activeElement, name = f && f.dataset.k; b.innerHTML = platesSheet(); const nf = b.querySelector('[data-in="plates"][data-k="' + name + '"]'); if (nf) { nf.focus(); nf.setSelectionRange(nf.value.length, nf.value.length); } } break;
     case 'waterGoal': S.profile.waterGoal = Math.max(1, Math.min(20, num(v) | 0)); save(); break;
+    case 'brkNum': S.reminders.breaks[d.k] = Math.max(0, Math.min(24, num(v) | 0)); save(); break;
     case 'remNum': S.reminders.water[d.k] = num(v) | 0; save(); syncReminders(); break;
     case 'aiKey': S.settings.ai.key = cleanKey(v, S.settings.ai.provider); UI.aiStatus = null; save(); break;
     case 'aiModel': S.settings.ai.model = v.trim(); save(); break;
@@ -381,6 +405,19 @@ document.addEventListener('change', async ev => {
     if (last && dayKey(last.d) === todayKey()) { last.kg = v; last.d = Date.now(); } else S.weights.push({ d: Date.now(), kg: v });
     save(true); toast('Peso aggiornato: ' + fmtKg(v) + ' kg'); render();
   }
+  if (k === 'woItem' && S.active && (el.dataset.k === 'rmin' || el.dataset.k === 'rmax' || el.dataset.k === 'secs')) {
+    // nuovo intervallo di ripetizioni: ricalcola gli obiettivi delle serie non ancora fatte
+    const it = S.active.items[+el.dataset.n]; if (!it) return;
+    if (el.dataset.k === 'secs') { it.secs = Math.max(5, it.secs | 0); it.sets.forEach(x => { if (!x.done && x.reps === '') x.pr = it.secs; }); save(); render(); return; }
+    it.rmin = Math.max(1, Math.min(100, it.rmin | 0)); it.rmax = Math.max(1, Math.min(100, it.rmax | 0));
+    if (it.rmin > it.rmax) [it.rmin, it.rmax] = [it.rmax, it.rmin];
+    const tg = deloadActive() ? null : progression(it.ex, it.rmin, it.rmax).targets;
+    let wi = 0;
+    it.sets.forEach(x => { if (x.wu) return; const tt = tg && (tg[wi] || tg[tg.length - 1]); wi++; if (x.done) return;
+      if (tt) { if (x.kg === '' && tt.kg) x.pk = tt.kg; x.pr = Math.min(it.rmax, Math.max(it.rmin, tt.reps)); } else x.pr = Math.min(it.rmax, Math.max(it.rmin, num(x.pr) || it.rmax)); });
+    save(); render(); return;
+  }
+  if (k === 'brkNum') { const b = S.reminders.breaks; if (b.to <= b.from) b.to = Math.min(24, b.from + 1); save(); syncReminders(); render(); }
   if (k === 'remTime') { const [h, m] = el.value.split(':').map(Number); const r = S.reminders[el.dataset.k]; r.hour = h || 0; r.min = m || 0; save(); syncReminders(); }
   if (k === 'editNum' || k === 'editItem') render();
   if (k === 'importB' && el.files[0]) {

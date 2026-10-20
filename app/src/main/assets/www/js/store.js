@@ -48,8 +48,10 @@ function defaultState() {
     reminders: {
       workout: { on: true, hour: 18, min: 0 },
       water: { on: true, from: 9, to: 21, every: 2 },
-      weigh: { on: true, day: 1, hour: 8, min: 0 }
+      weigh: { on: true, day: 1, hour: 8, min: 0 },
+      breaks: { on: true, days: [1, 2, 3, 4, 5], from: 9, to: 18, count: 4 }
     },
+    breaks: [],
     templates: [],
     history: [],
     weights: [],
@@ -103,6 +105,21 @@ function makeCircuit(c) {
     rounds: c.rounds, restEx: c.restEx, restRound: c.restRound, warm: c.warm, cool: c.cool, work: c.work,
     items: c.st.map(s => { const id = noBodyweight(s.ex), timed = EX[id].type === 'time'; return id === s.ex ? { ex: s.ex, reps: s.reps || 0, secs: s.secs || 0 } : { ex: id, reps: timed ? 0 : 15, secs: timed ? 40 : 0 }; }) };
 }
+/* routine Casa e lavoro -> scheda da avviare (guida automatica, tutto a tempo) */
+function makeQuick(q) {
+  return { id: q.key, kind: 'circuito', name: q.n, desc: q.desc, zone: q.zone, quick: q.key, days: [],
+    rounds: q.rounds, restEx: q.restEx, restRound: q.restRound, warm: q.warm || 0, cool: q.cool || 0, work: 30,
+    items: q.st.map(([ex, secs]) => ({ ex, reps: 0, secs })) };
+}
+/* stelle delle pause attive */
+const starGoal = () => Math.max(1, S.reminders.breaks.count | 0 || 4);
+const starsOn = k => (S.breaks || []).filter(b => dayKey(b.d) === (k || todayKey())).length;
+/* prossima pausa d'ufficio da proporre: gira tra quelle disponibili */
+function nextBreak() {
+  const list = QUICK_ROUTINES.filter(q => q.zone === 'ufficio'), last = (S.breaks || []).slice(-1)[0];
+  const i = last ? list.findIndex(q => q.key === last.key) : -1;
+  return list[(i + 1) % list.length];
+}
 function templateMinutes(t) {
   if (t.kind === 'circuito') {
     return circuitMinutes({ rounds: t.rounds, restEx: t.restEx, restRound: t.restRound, warm: t.warm, cool: t.cool, work: t.work || 45,
@@ -136,6 +153,7 @@ function exerciseHistory(exId) {
   const out = [];
   for (let i = S.history.length - 1; i >= 0; i--) {
     const h = S.history[i];
+    if (h.quick) continue; // le routine a tempo di casa non contano per carichi e ripetizioni
     (h.items || []).forEach(it => { if (it.ex === exId) { const ws = workSets(it); if (ws.length) out.push({ date: h.start, sets: ws, item: it }); } });
   }
   return out;
@@ -311,7 +329,7 @@ function streaks() {
 /* alternative a un esercizio */
 function alternatives(exId, avoidEq) {
   const e = EX[exId]; if (!e) return [];
-  return EXERCISES.filter(x => x.id !== exId && x.m === e.m && x.pat !== 'condizionamento')
+  return EXERCISES.filter(x => x.id !== exId && x.m === e.m && x.pat !== 'condizionamento' && !isBreakEx(x))
     .map(x => ({ x, score: (x.pat === e.pat ? 3 : 0) + (x.eq !== (avoidEq || e.eq) ? 1 : 0) + (x.comp === e.comp ? 1 : 0) }))
     .sort((a, b) => b.score - a.score).map(a => a.x);
 }
@@ -323,8 +341,16 @@ function syncReminders() {
   Native.setReminders({
     workout: { on: r.workout.on, days: S.profile.days.map(d => d + 1), hour: r.workout.hour, min: r.workout.min, names },
     water: { on: r.water.on, from: r.water.from, to: r.water.to, every: r.water.every },
-    weigh: { on: r.weigh.on, day: r.weigh.day + 1, hour: r.weigh.hour, min: r.weigh.min }
+    weigh: { on: r.weigh.on, day: r.weigh.day + 1, hour: r.weigh.hour, min: r.weigh.min },
+    breaks: { on: r.breaks.on, days: r.breaks.days.map(d => d + 1), times: breakTimes() }
   });
+}
+/* orari delle pause attive: distribuiti nell'orario di lavoro, al quarto d'ora */
+function breakTimes() {
+  const b = S.reminders.breaks, from = Math.max(0, Math.min(23, b.from | 0)), to = Math.max(from + 1, Math.min(24, b.to | 0)), n = Math.max(1, Math.min(8, b.count | 0));
+  const out = [];
+  for (let i = 0; i < n; i++) { const m = Math.round((from * 60 + (to - from) * 60 * (i + 0.5) / n) / 15) * 15; if (!out.includes(m)) out.push(m); }
+  return out;
 }
 
 /* ---------- Foto (IndexedDB) ---------- */

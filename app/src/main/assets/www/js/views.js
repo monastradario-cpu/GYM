@@ -13,8 +13,8 @@ function coachPool(seed) {
   const eqs = coachEquip(), rnd = mulberry(seed || Date.now());
   const per = {};
   muscles.forEach(m => {
-    let pool = EXERCISES.filter(e => e.m === m && eqs.includes(e.eq) && e.pat !== 'condizionamento');
-    if (!pool.length) pool = EXERCISES.filter(e => e.m === m && e.pat !== 'condizionamento' && (eqs.includes('corpo') || e.eq !== 'corpo'));
+    let pool = EXERCISES.filter(e => e.m === m && eqs.includes(e.eq) && e.pat !== 'condizionamento' && !isBreakEx(e));
+    if (!pool.length) pool = EXERCISES.filter(e => e.m === m && e.pat !== 'condizionamento' && !isBreakEx(e) && (eqs.includes('corpo') || e.eq !== 'corpo'));
     pool = pool.map(e => ({ e, r: rnd() + (e.comp ? 0.6 : 0) + (goalsOf().includes('forza') && e.comp ? 0.5 : 0) + (p.level === 'principiante' && e.eq === 'macchinari' ? 0.4 : 0) })).sort((a, b) => b.r - a.r).map(x => x.e);
     // movimenti diversi prima, poi il resto
     const seen = new Set(), first = [], rest = [];

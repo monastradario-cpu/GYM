@@ -143,11 +143,12 @@ VIEWS.home = () => {
       '<div class="ex-preview">' + t.items.slice(0, 4).map(i => '<span>' + exLine(i.ex) + '</span>').join('') + (t.items.length > 4 ? '<span>+' + (t.items.length - 4) + '</span>' : '') + '</div>' +
       '<button class="btn big" data-act="startTemplate" data-id="' + t.id + '">' + ic('play') + (S.active ? 'Riprendi allenamento' : 'Inizia') + '</button></div>';
   } else {
-    todayCard = '<div class="card hero rest"><div class="eyebrow">Oggi</div><h2>Giorno di riposo</h2><div class="muted">Il muscolo cresce mentre recuperi. Oggi: camminata e 10 minuti di mobilità. Se vuoi allenarti lo stesso, scegli una scheda o un circuito.</div>' +
-      '<button class="btn ghost wide" data-act="mobility">' + ic('run') + 'Mobilità e stretching (10 min)</button>' +
+    todayCard = '<div class="card hero rest"><div class="eyebrow">Oggi</div><h2>Giorno di riposo</h2><div class="muted">Il muscolo cresce mentre recuperi. Oggi: camminata e qualche minuto di mobilità. Se vuoi allenarti lo stesso, scegli una scheda o un circuito.</div>' +
+      '<button class="btn ghost wide" data-act="quickStart" data-k="q_mob7">' + ic('run') + 'Mobilità guidata (7 min)</button>' +
       '<button class="btn big ghost" data-act="tab" data-v="schede">' + ic('list') + 'Scegli una scheda</button></div>';
   }
   return header('GYM', { sub: fmtDateLong(now) }) + '<div class="pad">' + todayCard +
+    breakCard() +
     homeKcalCard() +
     '<div class="grid2">' +
       '<button class="tile" data-act="startEmpty">' + ic('plus') + '<b>Allenamento vuoto</b><small>Aggiungi gli esercizi mentre vai</small></button>' +
@@ -174,10 +175,28 @@ VIEWS.home = () => {
 };
 
 /* =================== SCHEDE =================== */
+function quickList() {
+  return breakCard(true) + Object.keys(QUICK_ZONES).map(z => '<h3 class="sec">' + QUICK_ZONES[z].n + '</h3><p class="small muted">' + QUICK_ZONES[z].d + '</p>' +
+    QUICK_ROUTINES.filter(q => q.zone === z).map(q => '<div class="card tpl qk-tpl"><div class="card-h"><div><h3>' + esc(q.n) + '</h3><div class="muted small">' + q.st.length + ' esercizi' + (q.rounds > 1 ? ' · ' + q.rounds + ' giri' : '') + ' · ' + quickMinutes(q) + ' min · guida automatica</div></div></div>' +
+      '<p class="small muted">' + esc(q.desc) + '</p>' +
+      '<div class="ex-preview">' + q.st.map(x => '<span>' + esc((EX[x[0]] || {}).n || x[0]) + '</span>').join('') + '</div>' +
+      '<button class="btn" data-act="quickStart" data-k="' + q.key + '">' + ic('play') + 'Inizia</button></div>').join('')).join('') +
+    '<p class="small muted">Perché funziona: brevi "spuntini" di movimento di pochi minuti, più volte al giorno, migliorano la forma fisica (meta-analisi BJSM 2025); alzarsi e muoversi qualche minuto ogni 30–60 minuti abbassa pressione e glicemia (Columbia University, 2023); rinforzare collo e spalle sul lavoro riduce il dolore al collo (Physical Therapy, 2018).</p>';
+}
+/* card delle pause attive con le stelle di oggi */
+function breakCard(inSchede) {
+  const n = starsOn(), g = starGoal(), nb = nextBreak();
+  return '<div class="card brk"><div class="card-h"><div><div class="eyebrow">⭐ Pause attive di oggi</div><div class="stars">' + starRow(n, g) + '</div></div><b class="brk-n">' + n + '/' + g + '</b></div>' +
+    '<p class="small muted">' + (n >= g ? 'Obiettivo raggiunto! Ogni pausa in più fa comunque bene.' : 'Ogni pausa di 2–5 minuti vale una stella. Prossima consigliata: <b>' + esc(nb.n) + '</b>.') + '</p>' +
+    '<div class="row gap"><button class="btn grow" data-act="quickStart" data-k="' + nb.key + '">' + ic('play') + 'Pausa di ' + quickMinutes(nb) + ' min</button>' +
+    (inSchede ? '' : '<button class="btn ghost" data-act="goQuick">Altre</button>') + '</div></div>';
+}
 VIEWS.schede = () => {
+  const tabs = '<div class="seg">' + chip('Le mie schede', UI.schede === 'schede', 'schedeTab', 'data-t="schede"') + chip('Circuiti 1 ora', UI.schede === 'circuiti', 'schedeTab', 'data-t="circuiti"') + chip('Casa e lavoro', UI.schede === 'casa', 'schedeTab', 'data-t="casa"') + '</div>';
+  if (UI.schede === 'casa') return header('Schede') + '<div class="pad">' + tabs + quickList() + '</div>';
   const list = S.templates.filter(t => UI.schede === 'circuiti' ? t.kind === 'circuito' : t.kind !== 'circuito');
   return header('Schede') + '<div class="pad">' +
-    '<div class="seg">' + chip('Le mie schede', UI.schede === 'schede', 'schedeTab', 'data-t="schede"') + chip('Circuiti 1 ora', UI.schede === 'circuiti', 'schedeTab', 'data-t="circuiti"') + '</div>' +
+    tabs +
     (UI.schede === 'circuiti' ? '<p class="muted small">Circuiti pronti da circa un\'ora, riscaldamento e defaticamento inclusi. Puoi modificarli o crearne di nuovi.</p>' : '') +
     (list.length ? list.map(t => '<div class="card tpl">' +
       '<div class="card-h"><div><h3>' + esc(t.name) + '</h3><div class="muted small">' +
@@ -289,6 +308,10 @@ VIEWS.settings = () => {
       (r.water.on ? '<div class="grid3">' + field('Dalle', numIn(r.water.from, 'data-in="remNum" data-k="from"')) + field('Alle', numIn(r.water.to, 'data-in="remNum" data-k="to"')) + field('Ogni (ore)', numIn(r.water.every, 'data-in="remNum" data-k="every"')) + '</div>' : '') +
       '<div class="list-item flat"><div><b>Pesata</b></div>' + toggle(r.weigh.on, 'remOn', 'data-k="weigh"') + '</div>' +
       (r.weigh.on ? '<div class="field"><span>Giorno</span>' + '<div class="chips days">' + [1, 2, 3, 4, 5, 6, 0].map(d => chip(WEEKDAYS[d], r.weigh.day === d, 'weighDay', 'data-d="' + d + '"')).join('') + '</div></div>' + field('Ora', timeIn(r.weigh.hour, r.weigh.min, 'weigh')) : '') +
+      '<div class="list-item flat"><div><b>Pause attive al lavoro ⭐</b><small>' + (r.breaks.on ? 'Alle ' + breakTimes().map(m => pad(m / 60 | 0) + ':' + pad(m % 60)).join(' · ') : 'Ti ricorda di muoverti 2–5 minuti') + '</small></div>' + toggle(r.breaks.on, 'remOn', 'data-k="breaks"') + '</div>' +
+      (r.breaks.on ? '<div class="field"><span>Giorni di lavoro</span>' + daysChips(r.breaks.days, 'brkDay') + '</div>' +
+        '<div class="grid3">' + field('Dalle (ora)', numIn(r.breaks.from, 'data-in="brkNum" data-k="from"')) + field('Alle (ora)', numIn(r.breaks.to, 'data-in="brkNum" data-k="to"')) +
+        '<div class="field"><span>Volte al giorno</span><div class="seg">' + [3, 4].map(n => chip(String(n), r.breaks.count === n, 'brkCount', 'data-n="' + n + '"')).join('') + '</div></div></div>' : '') +
       '<button class="btn ghost wide" data-act="askNotif">Consenti le notifiche</button>' +
     '</div>' +
     '<h3 class="sec">Coach AI (facoltativo)</h3><div class="card">' +
@@ -408,7 +431,7 @@ function openSwap(cur, act, n, opts) {
 }
 function swapListSheet() {
   const w = UI.swap, e = EX[w.cur] || {}, pref = w.eqs || null;
-  const list = EXERCISES.filter(x => x.m === w.m && x.id !== w.cur)
+  const list = EXERCISES.filter(x => x.m === w.m && x.id !== w.cur && (isBreakEx(x) === isBreakEx(e)))
     .map(x => ({ x, s: (x.pat === e.pat ? 4 : 0) + (pref && pref.includes(x.eq) ? 6 : 0) + (x.eq === 'corpo' && !bodyweightOn() ? -5 : 0) + (x.comp === e.comp ? 1 : 0) }))
     .sort((a, b) => b.s - a.s).map(a => a.x);
   return '<h3>Sostituisci ' + esc(e.n || '') + '</h3>' +

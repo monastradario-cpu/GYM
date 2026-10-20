@@ -16,7 +16,7 @@ const LIE = o => P(Object.assign({ t: 180, n: 180, th: -25, sh: -92, anchor: { j
 const PRONE = o => P(Object.assign({ t: 180, n: 190, th: 0, sh: 0, ft: -60, anchor: { j: 'hip', x: 165, y: 139 } }, o));
 const FLOOR = o => P(Object.assign({ t: 178, n: 178, th: 50, sh: -60, anchor: { j: 'hip', x: 175, y: 188 } }, o));
 /* vista frontale */
-const FBASE = { f: true, uaR: -82, faR: -86, thR: -88, shR: -88, uaS: 1, thS: 1, tS: 1 };
+const FBASE = { f: true, uaR: -82, faR: -86, thR: -88, shR: -88, uaS: 1, thS: 1, tS: 1, lean: 0, hx: 0 };
 const F = o => Object.assign({}, FBASE, { anchor: { j: 'feet', x: 160, y: AY } }, o);
 const FSEAT = o => F(Object.assign({ thS: 0.35, anchor: { j: 'hip', x: 160, y: 150 } }, o));
 
@@ -88,7 +88,31 @@ const ANIMS = {
     P({ t: 160, n: 150, ua: -90, fa: -90, th: -20, sh: -20, ft: -70, anchor: { j: 'hand', x: 100, y: 197 } }),
     P({ t: 160, n: 150, ua: -90, fa: -90, th: -20, sh: -20, th2: -160, sh2: -75, ft: -70, anchor: { j: 'hand', x: 100, y: 197 } })],
     dur: [0.6, 0.6, 0.6, 0.6], cues: ['Ginocchio destro al petto', 'Torna in plank', 'Ginocchio sinistro al petto', 'Torna in plank'] },
-  swing: { props: [], keys: [P({ t: 25, n: 0, th: -62, sh: -100, ua: -112, fa: -118 }), P({ ua: 0, fa: 2 })], dur: [0.9, 0.9], cues: ['Spingi le anche avanti con forza', 'Lascia scendere il peso tra le gambe'] }
+  swing: { props: [], keys: [P({ t: 25, n: 0, th: -62, sh: -100, ua: -112, fa: -118 }), P({ ua: 0, fa: 2 })], dur: [0.9, 0.9], cues: ['Spingi le anche avanti con forza', 'Lascia scendere il peso tra le gambe'] },
+  wall_sit: { props: ['wall'], keys: [P({ t: 92, n: 90, th: 0, sh: -90, ua: -80, fa: -80, anchor: { j: 'hip', x: 128, y: 155 } }), P({ t: 91, n: 90, th: 0, sh: -90, ua: -80, fa: -80, anchor: { j: 'hip', x: 128, y: 155 } })], dur: [2, 2], cues: ['Schiena al muro, cosce parallele a terra', 'Respira e mantieni'] },
+  high_knees: { props: [], seq: true, keys: [
+    P({ t: 92, th: 0, sh: -95, th2: -92, sh2: -92, ua: -150, fa: -40, ua2: -40, fa2: 60, anchor: { j: 'ankle2', x: 160, y: AY } }),
+    P({ t: 92, th: -92, sh: -92, th2: 0, sh2: -95, ua: -40, fa: 60, ua2: -150, fa2: -40, anchor: { j: 'ankle', x: 160, y: AY } })],
+    dur: [0.45, 0.45], cues: ['Ginocchio alto, braccio opposto avanti', 'Cambia gamba, atterra morbido'] },
+  superman: { props: ['mat'], keys: [PRONE({ ua: 180, fa: 180, ft: -80, anchor: { j: 'hip', x: 170, y: 186 } }), PRONE({ t: 170, n: 175, ua: 168, fa: 168, th: 8, sh: 8, ft: -70, anchor: { j: 'hip', x: 170, y: 186 } })], order: 1, cues: ['Solleva braccia, petto e gambe insieme', 'Scendi lento'] },
+  calf_floor: { props: [], keys: [P({ ft: -10, anchor: { j: 'toe', x: 175, y: 199 } }), P({ ft: 38, anchor: { j: 'toe', x: 175, y: 199 } })], order: 1, cues: ['Sali sulle punte il più possibile', 'Scendi lento'] },
+  sit_stand: { props: ['chair'], keys: [P({ t: 100, n: 92, th: 0, sh: -90, ua: 0, fa: 0, anchor: { j: 'ankle', x: 192, y: AY } }), P({ ua: 0, fa: 0, anchor: { j: 'ankle', x: 192, y: AY } })], order: 1, cues: ['Alzati spingendo coi talloni, senza mani', 'Siediti piano, sfiora la sedia'] },
+  desk_pushup: { props: ['desk'], keys: [P({ t: 135, n: 130, ua: 225, fa: 225, th: -45, sh: -45, ft: -80, anchor: { j: 'hand', x: 86, y: 136 } }), P({ t: 150, n: 145, ua: 150, fa: -72, th: -30, sh: -30, ft: -80, anchor: { j: 'hand', x: 86, y: 136 } })], cues: ['Scendi col petto verso il bordo, corpo dritto', 'Spingi fino a braccia tese'] },
+  scap_squeeze: { props: [], keys: [P({ ua: -10, fa: 0 }), P({ ua: 205, fa: 20 })], order: 1, cues: ['Gomiti indietro, stringi le scapole', 'Rilascia avanti'] },
+  arm_circles: { props: [], seq: true, keys: [F({ uaR: 0, faR: 0 }), F({ uaR: 14, faR: 14 }), F({ uaR: 0, faR: 0 }), F({ uaR: -14, faR: -14 })], dur: [0.5, 0.5, 0.5, 0.5], front: true, cues: ['Piccoli cerchi', 'Braccia all\'altezza delle spalle', 'Spalle basse', 'Respira'] },
+  walk: { props: [], seq: true, keys: [
+    P({ th: -68, sh: -98, th2: -112, sh2: -100, ua: -112, fa: -95, ua2: -68, fa2: -50, anchor: { j: 'hip', x: 160, y: 114 } }),
+    P({ th: -112, sh: -100, th2: -68, sh2: -98, ua: -68, fa: -50, ua2: -112, fa2: -95, anchor: { j: 'hip', x: 160, y: 114 } })],
+    dur: [0.6, 0.6], cues: ['Passo svelto', 'Braccia che accompagnano'] },
+  neck_tilt: { props: [], keys: [F({ hx: 9 }), F({ hx: -9 })], dur: [2.5, 2.5], front: true, cues: ['Orecchio verso la spalla destra, spalle basse', 'Lento verso l\'altro lato'] },
+  chest_open: { props: [], keys: [P({ ua: -100, fa: -100 }), P({ t: 95, n: 100, ua: -135, fa: -128 })], dur: [2.5, 2.5], cues: ['Mani dietro, apri il petto', 'Rilassa e ripeti'] },
+  side_bend: { props: [], keys: [F({ uaR: 82, faR: 88, lean: 0 }), F({ uaR: 82, faR: 88, lean: 16 })], dur: [2.5, 2.5], front: true, cues: ['Braccia in alto, piegati di lato', 'Torna al centro e cambia lato'] },
+  twist_chair: { props: ['seatF'], keys: [FSEAT({ uaR: -55, faR: -100, uaL: -30, faL: -60 }), FSEAT({ uaR: -150, faR: -120, uaL: -125, faL: -80 })], dur: [2, 2], front: true, cues: ['Ruota il busto da un lato', 'Ruota dall\'altro lato, schiena dritta'] },
+  back_ext: { props: [], keys: [P({ ua: -115, fa: -20 }), P({ t: 104, n: 112, ua: -128, fa: -30 })], dur: [2, 2], cues: ['Bacino avanti, busto un po\' indietro', 'Torna dritto'] },
+  ham_stretch: { props: [], keys: [P({ ua: -90, fa: -90 }), P({ t: 22, n: 0, th: -84, sh: -93, ua: -100, fa: -100 })], dur: [2.5, 2.5], cues: ['Anche indietro, schiena lunga', 'Risali lento'] },
+  hip_flexor: { props: ['mat'], keys: [P({ t: 88, th: -15, sh: -95, th2: -110, sh2: 180, ft2: 180, ua: -90, fa: -90, anchor: { j: 'ankle', x: 205, y: AY } }), P({ t: 95, n: 95, th: -8, sh: -98, th2: -120, sh2: 178, ft2: 180, ua: -90, fa: -90, anchor: { j: 'ankle', x: 205, y: AY } })], dur: [2.5, 2.5], cues: ['Bacino avanti, gluteo stretto', 'Rilassa e ripeti'] },
+  cat_cow: { props: ['mat'], keys: [P({ t: 165, n: 210, ua: -92, fa: -92, th: -90, sh: 0, ft: 0, anchor: { j: 'hip', x: 190, y: 155 } }), P({ t: 167, n: 150, ua: -92, fa: -92, th: -90, sh: 0, ft: 0, anchor: { j: 'hip', x: 190, y: 155 } })], dur: [2.5, 2.5], cues: ['Espira: schiena tonda, mento al petto', 'Inspira: pancia giù, sguardo avanti'] },
+  child_pose: { props: ['mat'], keys: [P({ t: 200, n: 205, ua: 180, fa: 180, th: -132, sh: 0, ft: 0, anchor: { j: 'knee', x: 182, y: 194 } }), P({ t: 196, n: 200, ua: 178, fa: 178, th: -132, sh: 0, ft: 0, anchor: { j: 'knee', x: 182, y: 194 } })], dur: [3, 3], cues: ['Busto a terra, braccia lunghe', 'Respira profondo e rilassa'] }
 };
 
 /* esercizio -> animazione */
@@ -107,7 +131,11 @@ const ANIM_FOR = {
   hack_squat: 'squat_bw', squat_corpo: 'squat_bw', stacco_rumeno_bil: 'rdl', stacco_rumeno_man: 'rdl', leg_curl: 'leg_curl_lying',
   leg_curl_seduto: 'leg_curl_seated', good_morning: 'good_morning', hip_thrust_bil: 'hip_thrust', hip_thrust_man: 'hip_thrust',
   glute_machine: 'kickback_leg', abductor: 'abduction', ponte_glutei: 'bridge', calf_piedi: 'calf', calf_man: 'calf', calf_bil: 'calf',
-  calf_seduto: 'calf_seated', burpees: 'burpee', jumping_jack: 'jumping_jack', mountain_climber: 'mountain', swing_man: 'swing'
+  calf_seduto: 'calf_seated', burpees: 'burpee', jumping_jack: 'jumping_jack', mountain_climber: 'mountain', swing_man: 'swing',
+  affondi_corpo: 'lunge', piegamenti_ginocchia: 'pushup', sedia_muro: 'wall_sit', skip: 'high_knees', superman: 'superman', calf_corpo: 'calf_floor', dip_sedia: 'dip',
+  alzati_siediti: 'sit_stand', piegamenti_scrivania: 'desk_pushup', retrazione_scapole: 'scap_squeeze', circonduzioni_braccia: 'arm_circles', cammina: 'walk',
+  allunga_collo: 'neck_tilt', apri_petto: 'chest_open', allungamento_laterale: 'side_bend', torsione_seduta: 'twist_chair', estensione_schiena: 'back_ext',
+  allunga_femorali: 'ham_stretch', allunga_flessori: 'hip_flexor', gatto_mucca: 'cat_cow', posizione_bambino: 'child_pose'
 };
 
 /* ---------- cinematica ---------- */
@@ -141,6 +169,11 @@ function solveFront(p) {
   const leg = (h, th, sh) => { const k = add(h, vec(th, LEN.th * p.thS)); return [k, add(k, vec(sh, LEN.sh))]; };
   [J.kneeR, J.ankleR] = leg(J.hipR, p.thR, p.shR);
   [J.kneeL, J.ankleL] = leg(J.hipL, thL, shL);
+  if (p.hx) J.head = [J.head[0] + p.hx, J.head[1] + Math.abs(p.hx) * 0.25];
+  if (p.lean) { // busto inclinato di lato (ruota tutto quello sopra il bacino)
+    const c = Math.cos(rad(p.lean)), sn = Math.sin(rad(p.lean));
+    ['sh', 'head', 'shoulderR', 'shoulderL', 'elbowR', 'elbowL', 'handR', 'handL'].forEach(k => { const [x, y] = J[k]; J[k] = [x * c - y * sn, x * sn + y * c]; });
+  }
   return J;
 }
 /* posizione del bacino per ogni fotogramma chiave (rispettando l'appoggio) */
@@ -256,6 +289,9 @@ function drawProps(def, J, front, gear, layer) {
       if (k === 'benchLow') o.push('<rect x="190" y="150" width="90" height="9" rx="3" fill="' + pc + '"/>', seg([205, 159], [205, GY], 6, pd), seg([265, 159], [265, GY], 6, pd));
       if (k === 'benchBack') o.push('<rect x="50" y="150" width="62" height="9" rx="3" fill="' + pc + '"/>', seg([62, 159], [62, GY], 6, pd), seg([100, 159], [100, GY], 6, pd));
       if (k === 'box') o.push('<rect x="170" y="162" width="55" height="38" rx="4" fill="' + pc + '"/>');
+      if (k === 'chair') o.push('<rect x="120" y="166" width="52" height="8" rx="3" fill="' + pc + '"/>', seg([126, 174], [126, GY], 5, pd), seg([166, 174], [166, GY], 5, pd), seg([123, 168], [117, 110], 7, pc));
+      if (k === 'desk') o.push('<rect x="36" y="136" width="78" height="8" rx="3" fill="' + pc + '"/>', seg([46, 144], [46, GY], 6, pd), seg([104, 144], [104, GY], 6, pd));
+      if (k === 'wall') o.push('<rect x="96" y="40" width="8" height="160" rx="2" fill="' + pc + '"/>');
       if (k === 'step') o.push('<rect x="150" y="183" width="45" height="17" rx="3" fill="' + pc + '"/>');
       if (k === 'mat' || k === 'matF') o.push('<rect x="60" y="197" width="210" height="4" rx="2" fill="' + pc + '"/>');
       if (k === 'seat' && !front) { const h = J.hip; o.push('<rect x="' + (h[0] - 26) + '" y="' + (h[1] + 11) + '" width="46" height="8" rx="3" fill="' + pc + '"/>', seg([h[0] - 4, h[1] + 19], [h[0] - 4, GY], 6, pd), seg([h[0] - 22, h[1] + 11], [h[0] - 22, h[1] - 52], 7, pc)); }
@@ -332,11 +368,12 @@ const Demo = {
   mount(el, exId, opts) {
     this.stop();
     const e = EX[exId], def = animDef(exId);
-    const st = this.st = { el, e, def, speed: (opts && opts.speed) || 0.6, t0: performance.now(), paused: false, pausedAt: 0 };
-    el.innerHTML = '<div class="demo-stage"><svg viewBox="0 -16 320 224" class="demo-svg"></svg><div class="demo-view">' + (def.keys[0].f ? 'vista frontale' : 'vista laterale') + '</div></div>' +
-      '<div class="demo-cue"><span class="demo-phase"></span><b class="demo-text"></b></div><div class="demo-bar"><i></i></div>' +
+    const st = this.st = { el, e, def, speed: (opts && opts.speed) || (el.dataset.compact ? 0.8 : 0.6), t0: performance.now(), paused: false, pausedAt: 0 };
+    const compact = el.dataset.compact;
+    el.innerHTML = '<div class="demo-stage"><svg viewBox="0 -16 320 224" class="demo-svg"></svg>' + (compact ? '' : '<div class="demo-view">' + (def.keys[0].f ? 'vista frontale' : 'vista laterale') + '</div>') + '</div>' +
+      '<div class="demo-cue"><span class="demo-phase"></span><b class="demo-text"></b></div><div class="demo-bar"><i></i></div>' + (compact ? '' :
       '<div class="demo-ctrl"><button class="btn sm ghost" data-demo="pause">Pausa</button>' +
-      [0.35, 0.6, 1].map(s => '<button class="btn sm ghost' + (s === st.speed ? ' on' : '') + '" data-demo="speed" data-s="' + s + '">' + (s === 0.35 ? 'Molto lento' : s === 0.6 ? 'Lento' : 'Normale') + '</button>').join('') + '</div>';
+      [0.35, 0.6, 1].map(s => '<button class="btn sm ghost' + (s === st.speed ? ' on' : '') + '" data-demo="speed" data-s="' + s + '">' + (s === 0.35 ? 'Molto lento' : s === 0.6 ? 'Lento' : 'Normale') + '</button>').join('') + '</div>');
     el.onclick = ev => {
       const b = ev.target.closest('[data-demo]'); if (!b) return;
       if (b.dataset.demo === 'pause') { st.paused = !st.paused; if (st.paused) st.pausedAt = performance.now(); else st.t0 += performance.now() - st.pausedAt; b.textContent = st.paused ? 'Riprendi' : 'Pausa'; }

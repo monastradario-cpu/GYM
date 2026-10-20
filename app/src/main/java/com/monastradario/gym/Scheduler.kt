@@ -20,6 +20,7 @@ object Notify {
     const val ID_WORKOUT = 2
     const val ID_WATER = 3
     const val ID_WEIGH = 4
+    const val ID_BREAK = 5
 
     fun channels(ctx: Context) {
         val nm = ctx.getSystemService(NotificationManager::class.java)
@@ -77,7 +78,7 @@ object Scheduler {
         }
 
     fun scheduleAll(ctx: Context) {
-        listOf("workout", "water", "weigh").forEach { schedule(ctx, it) }
+        listOf("workout", "water", "weigh", "breaks").forEach { schedule(ctx, it) }
     }
 
     fun schedule(ctx: Context, type: String) {
@@ -110,6 +111,19 @@ object Scheduler {
                     t.add(Calendar.DAY_OF_YEAR, add)
                     t.set(Calendar.HOUR_OF_DAY, c.optInt("hour", 8)); t.set(Calendar.MINUTE, c.optInt("min", 0))
                     if (t.get(Calendar.DAY_OF_WEEK) == c.optInt("day", 2) && t.timeInMillis > now) return t.timeInMillis
+                }
+            }
+            "breaks" -> {
+                val days = c.optJSONArray("days") ?: return null
+                val times = c.optJSONArray("times") ?: return null
+                if (days.length() == 0 || times.length() == 0) return null
+                val set = (0 until days.length()).map { days.getInt(it) }.toSet()
+                val mins = (0 until times.length()).map { times.getInt(it) }.sorted()
+                for (add in 0..7) for (m in mins) {
+                    val t = cal.clone() as Calendar
+                    t.add(Calendar.DAY_OF_YEAR, add)
+                    t.set(Calendar.HOUR_OF_DAY, (m / 60).coerceIn(0, 23)); t.set(Calendar.MINUTE, m % 60)
+                    if (t.get(Calendar.DAY_OF_WEEK) in set && t.timeInMillis > now) return t.timeInMillis
                 }
             }
             "water" -> {
@@ -151,6 +165,10 @@ class AlarmReceiver : BroadcastReceiver() {
             }
             "water" -> {
                 Notify.show(ctx, Notify.ID_WATER, Notify.CH_REM, "Bevi un bicchiere d'acqua 💧", "Restare idratati aiuta l'allenamento e il recupero")
+                Scheduler.schedule(ctx, type)
+            }
+            "breaks" -> {
+                Notify.show(ctx, Notify.ID_BREAK, Notify.CH_REM, "Pausa attiva ⭐", "2–3 minuti per muoverti e sgranchirti: guadagna una stella")
                 Scheduler.schedule(ctx, type)
             }
             "weigh" -> {
