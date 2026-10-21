@@ -683,3 +683,52 @@ span.set-n{text-align:center;font-weight:800;color:var(--muted)}
 .wo-stats b{white-space:nowrap}
 .workout-top + .wo-prog + .wo-stats>div:first-child{flex:1.6}
 button.link.center,.link.wide.center{text-align:center;display:block;width:100%}
+/* figura anatomica: stile Moderno (piatto, muscoli separati) */
+.b2-moderno .b2-sil,.b2-chiaro .b2-sil{fill:#596170}
+.b2-moderno .b2-mu,.b2-chiaro .b2-mu{stroke:var(--b2-gap,#171a1f);stroke-width:1.1;stroke-linejoin:round}
+.b2-moderno .b2-mu:not(.on){fill:#6b7381}.b2-moderno .b2-mu.xx:not(.on){fill:#5f6775}
+.b2-chiaro .b2-sil{fill:#9aa2ae}.b2-chiaro .b2-mu:not(.on){fill:#c4cad3}.b2-chiaro .b2-mu.xx:not(.on){fill:#b4bbc5}
+.b2-moderno .b2-out,.b2-chiaro .b2-out{stroke:none}.b2-moderno .b2-d,.b2-chiaro .b2-d{display:none}
+[data-theme=light] .b2-moderno .b2-sil{fill:#aeb5bf}[data-theme=light] .b2-moderno .b2-mu:not(.on){fill:#cdd2d9}
+[data-theme=light]{--b2-gap:#fff}
+.card .b2{--b2-gap:var(--card)}
+
+.b2-morbido .b2-sil{fill:#838c99}.b2-morbido .b2-mu{stroke:#7a828f;stroke-width:.6}.b2-morbido .b2-mu:not(.on){fill:#a3abb6}.b2-morbido .b2-mu.xx:not(.on){fill:#959daa}
+.b2-morbido .b2-mu.on{stroke:none;filter:drop-shadow(0 0 3px color-mix(in srgb,var(--accent) 60%,transparent))}.b2-morbido .b2-out{stroke:none}.b2-morbido .b2-d{display:none}
+/* modalità immagini: mappa dei muscoli */
+svg.body-svg.mthumb{width:100%!important;max-width:none!important;height:100%}
+.hv-th:has(.mthumb),.ex-thumb:has(.mthumb),.qk-th:has(.mthumb){background:var(--card2)}
+.ex-map{text-align:center}.ex-map .body-svg.b2{max-width:330px;margin:0 auto}
+.mchips.center{justify-content:center}
+.qk-map .body-svg.b2{max-width:230px;margin:6px auto}
+.qk-steps{text-align:left;font-size:14px;margin:6px 0 4px}
+.water-bar{height:10px;margin:8px 0 10px}.water-bar i{background:#38bdf8}
+.water-row{gap:5px;flex-wrap:nowrap}.water-row .btn{white-space:nowrap;font-size:12.5px;padding:8px 6px;flex:1;margin:0}.water-row .btn:first-child{flex:0 0 30px}
+.b2-realistico .b2-sil{fill:#a3a9b2}
+.b2-realistico .b2-mu{stroke:#5f656e;stroke-width:.75;stroke-linejoin:round}
+.b2-realistico .b2-mu.on{stroke:#8e2a1c}
+.b2-realistico .b2-mu.xx:not(.on){fill:#b4b9c0}
+.b2-realistico .b2-out{stroke:#4d535b;stroke-width:1}
+.b2-realistico .b2-d{stroke:#5f656e;stroke-width:.7}
+.body-svg.b2-realistico{background:#fff;border-radius:14px}
+.b2-realistico .svg-lbl{fill:#555}
+.demo-stage.real,.kf svg.real{background:#fff}
+.demo-stage.real .demo-view{color:#666}
+.hv-th svg:not(.mthumb),.ex-thumb svg:not(.mthumb),.qk-th svg:not(.mthumb){width:100%;height:100%}
+.ex-thumb,.qk-th{background:#f3f5f8}
+/* disegni Everkinetic */
+.ek-card{padding:0;overflow:hidden}
+.ek-stage{position:relative;background:#fff;height:300px;cursor:pointer}
+.ek-stage.compact{height:210px;border-radius:14px;margin:6px 0}
+.ek-stage img{position:absolute;inset:14px 14px 30px;width:calc(100% - 28px);height:calc(100% - 44px);object-fit:contain}
+.ek-stage .ek-b{animation:ekB 3.6s ease-in-out infinite}
+.ek-stage .ek-a{animation:ekA 3.6s ease-in-out infinite}
+@keyframes ekB{0%,38%{opacity:0}50%,88%{opacity:1}100%{opacity:0}}
+@keyframes ekA{0%,38%{opacity:1}50%,88%{opacity:0}100%{opacity:1}}
+.ek-lbl{position:absolute;left:12px;bottom:8px;font-size:12.5px;font-weight:800;color:#333;background:#eef1f5;border-radius:99px;padding:3px 10px}
+.ek-lbl.a{animation:ekA 3.6s ease-in-out infinite}.ek-lbl.b{animation:ekB 3.6s ease-in-out infinite}
+.ek-stage.paused img,.ek-stage.paused .ek-lbl{animation-play-state:paused}
+.ek-credit{display:block;width:100%;text-align:center;font-size:11px;color:var(--muted);padding:6px 0 8px;background:var(--card)}
+.kf img{width:100%;height:150px;object-fit:contain;background:#fff;display:block;margin-bottom:6px;padding:6px}
+img.ek-th{width:100%;height:100%;object-fit:contain;background:#fff;padding:3px}
+.hv-th:has(img.ek-th){background:#fff}

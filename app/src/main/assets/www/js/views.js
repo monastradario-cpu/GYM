@@ -211,16 +211,19 @@ function libList() {
 
 const EX_TABS = [['esecuzione', 'Esecuzione'], ['muscoli', 'Muscoli'], ['errori', 'Errori'], ['dati', 'I miei dati']];
 /* fotogramma fermo di una posa dell'animazione */
-function keyFrame(id, k) { const d = animDef(id); return '<svg viewBox="40 -10 240 216">' + frameSvg(d, EX[id], k, k, 0) + '</svg>'; }
+function keyFrame(id, k) { const d = animDef(id); return '<svg viewBox="40 -10 240 216"' + (mqStyle() === 'realistico' ? ' class="real"' : '') + '>' + frameSvg(d, EX[id], k, k, 0) + '</svg>'; }
 VIEWS.exercise = p => {
   const e = EX[p.id]; if (!e) return VIEWS.library();
-  const tab = UI.exTab || 'esecuzione', d = animDef(e.id), presc = prescribe(e.id);
+  const md = mediaMode(), showAnim = md === 'omino' || (md === 'mappa_anim' && UI.showAnim);
+  let tab = UI.exTab || 'esecuzione'; if (md !== 'omino' && tab === 'muscoli') tab = 'esecuzione';
+  const d = animDef(e.id), presc = prescribe(e.id);
   const yt = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(e.n + ' esecuzione corretta');
   const keys = d.seq ? d.keys.map((_, i) => i).slice(0, 4) : [0, 1];
   const keyLbl = i => d.seq ? (i + 1) + ' · ' + d.cues[i] : i === 0 ? '1 · Inizio' : '2 · ' + (d.order === 1 ? 'Contrazione' : 'Fine movimento');
   let body = '';
   if (tab === 'esecuzione') {
-    body = '<div class="kf-grid' + (keys.length > 2 ? ' four' : '') + '">' + keys.map(k => '<div class="kf">' + keyFrame(e.id, k) + '<span>' + esc(keyLbl(k)) + '</span></div>').join('') + '</div>' +
+    body = (ekImgs(e.id) ? '<div class="kf-grid">' + ekImgs(e.id).map((u, i) => '<div class="kf"><img src="' + u + '" alt=""><span>' + (i ? '2 · Fine movimento' : '1 · Inizio') + '</span></div>').join('') + '</div>' : '') +
+      (showAnim && !ekImgs(e.id) ? '<div class="kf-grid' + (keys.length > 2 ? ' four' : '') + '">' + keys.map(k => '<div class="kf">' + keyFrame(e.id, k) + '<span>' + esc(keyLbl(k)) + '</span></div>').join('') + '</div>' : '') +
       '<div class="card"><ol class="steps num">' + e.steps.map(x => '<li>' + esc(x) + '</li>').join('') + '</ol>' +
       '<p class="small muted">' + (e.type === 'time' ? 'Mantieni la posizione respirando con calma.' : d.seq ? 'Movimento continuo e controllato.' : 'Ritmo: fase di sforzo in circa 2 secondi, ritorno lento in 3. Espira durante lo sforzo.') + '</p></div>' +
       '<div class="card"><p class="small"><b>Per i tuoi obiettivi:</b> ' + prescText(presc) + '</p><p class="small muted">' + esc(trainerNote(presc)) + '</p></div>';
@@ -238,9 +241,11 @@ VIEWS.exercise = p => {
       : '<div class="card"><p class="muted">Non hai ancora fatto questo esercizio. Quando lo segni in un allenamento qui trovi record, grafico e consigli di progressione.</p><div class="tip info">' + esc(pg.text) + '</div></div>');
   }
   return header(esc(e.n), { back: true, sub: muscleName(e.m) + ' · ' + (EQUIP[e.eq] || '') }) + '<div class="pad">' +
-    '<div class="card demo-card ex-demo"><div id="demo" data-ex="' + e.id + '"></div></div>' +
-    '<div class="mchips"><span class="on">' + muscleName(e.m) + '</span>' + e.s.map(m => '<span>' + muscleName(m) + '</span>').join('') + '</div>' +
-    '<div class="seg ex-tabs">' + EX_TABS.map(t => chip(t[1], tab === t[0], 'exTab', 'data-t="' + t[0] + '"')).join('') + '</div>' + body +
+    (md !== 'omino' ? '<div class="card ex-map">' + exerciseBody(e) + '<div class="mchips center"><span class="on">' + muscleName(e.m) + '</span>' + e.s.map(m => '<span>' + muscleName(m) + '</span>').join('') + '</div>' +
+      (md === 'mappa_anim' ? '<button class="btn ghost wide" data-act="toggleAnim">' + ic(showAnim ? 'close' : 'play') + (showAnim ? 'Nascondi l\'animazione' : 'Guarda l\'animazione') + '</button>' : '') + '</div>' : '') +
+    (showAnim ? (ekImgs(e.id) && !UI.forceMq ? '<div class="card demo-card ex-demo ek-card">' + ekPlayer(e.id) + '</div>' : '<div class="card demo-card ex-demo"><div id="demo" data-ex="' + e.id + '"></div></div>') : '') +
+    (md === 'omino' ? '<div class="mchips"><span class="on">' + muscleName(e.m) + '</span>' + e.s.map(m => '<span>' + muscleName(m) + '</span>').join('') + '</div>' : '') +
+    '<div class="seg ex-tabs">' + EX_TABS.filter(t => md === 'omino' || t[0] !== 'muscoli').map(t => chip(t[1], tab === t[0], 'exTab', 'data-t="' + t[0] + '"')).join('') + '</div>' + body +
     '<div class="card"><h3>Alternative</h3>' + alternatives(e.id).slice(0, 5).map(x => '<button class="list-item btnlike" data-act="exInfo" data-id="' + x.id + '"><div><b>' + esc(x.n) + '</b><small>' + (EQUIP[x.eq] || '') + '</small></div>' + ic('back', 'flip') + '</button>').join('') + '</div>' +
     '<button class="btn ghost wide" data-act="openUrl" data-u="' + yt + '">' + ic('video') + 'Cerca anche un video su YouTube</button>' +
     (S.active && !S.active.circ ? '<button class="btn wide" data-act="addToActive" data-id="' + e.id + '">' + ic('plus') + 'Aggiungi all\'allenamento in corso</button>' : '') +

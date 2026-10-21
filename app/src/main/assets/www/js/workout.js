@@ -242,7 +242,14 @@ function focusView(a) {
 
 /* miniatura animata ferma dell'esercizio */
 function exerciseThumb(id) {
-  try { const def = animDef(id), k = def.seq ? 1 : 1; return '<svg viewBox="40 -10 240 220">' + frameSvg(def, EX[id], k, k, 0) + '</svg>'; } catch (e) { return ''; }
+  if (mediaMode() !== 'omino') return muscleThumb(id);
+  const ek = ekImgs(id); if (ek) return '<img class="ek-th" src="' + ek[0] + '" alt="" loading="lazy">';
+  try {
+    const def = animDef(id), k = Math.min(1, def.keys.length - 1), pose = def.keys[k], r = rootOf(pose), J = pose.f ? solveFront(pose) : solveSide(pose);
+    const xs = [], ys = []; for (const j in J) { xs.push(J[j][0] + r[0]); ys.push(J[j][1] + r[1]); }
+    const x0 = Math.min(...xs) - 14, x1 = Math.max(...xs) + 14, y0 = Math.min(...ys) - 14, y1 = Math.max(...ys) + 12, sz = Math.max(x1 - x0, y1 - y0), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    return '<svg viewBox="' + Math.round(cx - sz / 2) + ' ' + Math.round(cy - sz / 2) + ' ' + Math.round(sz) + ' ' + Math.round(sz) + '">' + frameSvg(def, EX[id], k, k, 0) + '</svg>';
+  } catch (e) { return ''; }
 }
 
 /* ---------- Circuito guidato ---------- */
@@ -346,8 +353,8 @@ function quickView(a) {
       '<h2 class="qk-name">' + esc(e.n || '') + '</h2>' +
       '<div class="qk-clock' + (resting ? ' rest' : '') + '"' + (working ? ' data-clock="work"' : resting ? ' data-clock="rest"' : '') + '>' +
         fmtClock(working ? (c.workUntil - Date.now()) / 1000 : resting ? (a.rest.until - Date.now()) / 1000 : paused && c.paused.left ? c.paused.left : it.secs) + '</div>' +
-      '<div id="demo" class="qk-demo" data-ex="' + it.ex + '" data-compact="1"></div>' +
-      (e.steps ? '<p class="small muted qk-how">' + esc(e.steps[1] || e.steps[0]) + '</p>' : '') +
+      (mediaMode() === 'omino' ? (ekImgs(it.ex) ? ekPlayer(it.ex, true) : '<div id="demo" class="qk-demo" data-ex="' + it.ex + '" data-compact="1"></div>') : '<div class="qk-map">' + exerciseBody(e) + '</div>') +
+      (e.steps ? (mediaMode() === 'omino' ? '<p class="small muted qk-how">' + esc(e.steps[1] || e.steps[0]) + '</p>' : '<ol class="steps num qk-steps">' + e.steps.slice(0, 3).map(x => '<li>' + esc(x) + '</li>').join('') + '</ol>') : '') +
       '<div class="qk-ctrl">' +
         (!started ? '<button class="btn wide big" data-act="qkGo">' + ic('play') + 'Inizia</button>'
         : paused ? '<button class="btn big grow" data-act="qkResume">' + ic('play') + 'Riprendi</button>'

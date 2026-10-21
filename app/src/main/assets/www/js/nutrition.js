@@ -119,3 +119,12 @@ function pairSuggestions(selected) {
   selected.forEach(m => (PAIRS[m] || []).forEach(x => { if (!selected.includes(x) && !out.some(o => o.m === x)) out.push({ m: x, why: PAIR_WHY[m] }); }));
   return out.slice(0, 4);
 }
+
+/* acqua in litri (salvata in ml al giorno) */
+function waterAuto() { const n = nutritionTargets(); const train = S.profile.days.includes(new Date().getDay()); return n.water ? Math.round((n.water + (train ? 0.5 : 0)) * 10) / 10 : 2; }
+function waterGoalL() { return S.profile.waterL > 0 ? S.profile.waterL : waterAuto(); }
+function waterToday() {
+  S.waterMl = S.waterMl || {};
+  if (!S.waterMigrated) { Object.keys(S.water || {}).forEach(k => { if (!S.waterMl[k] && S.water[k]) S.waterMl[k] = S.water[k] * 250; }); S.waterMigrated = true; }
+  return S.waterMl[todayKey()] || 0;
+}

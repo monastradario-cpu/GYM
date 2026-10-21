@@ -146,3 +146,10 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - 718 esercizi (elenco da free-exercise-db, pubblico dominio), muscolo Avambracci, attrezzi Cavi, Kettlebell, Elastici, Smith, EZ.
 - Alimentazione: avvisi sui macro, preferenze, piano pasti 7 giorni (3/4/5 pasti), 36 ricette, lista spesa, integratori basati sugli studi.
 - Palestra: programma a cicli (5 settimane, deciso dal trainer), massimali e tabella %, misure corporee con grasso % US Navy, statistiche avanzate.
+
+## Versione 1.0.20
+- Acqua in litri: obiettivo automatico (35 ml/kg, +0,5 L nei giorni di allenamento) o manuale; Home con −250 / +250 ml / +500 ml e barra di avanzamento.
+- Omino "realistico" (figura grigia sfumata, muscoli lavorati in rosso, pantaloncini neri) come stile predefinito delle animazioni; stili precedenti ancora selezionabili.
+- Figura anatomica: nuovi stili realistico (predefinito), moderno, chiaro, morbido.
+- Impostazioni → "Immagini negli esercizi": omino animato, disegni o mappa muscolare.
+- Disegni degli esercizi di Everkinetic (245 esercizi, posizione iniziale e finale con dissolvenza), licenza CC BY-SA 4.0, credito in Impostazioni e nella scheda esercizio.

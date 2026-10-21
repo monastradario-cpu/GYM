@@ -8,7 +8,7 @@ const MQ_STYLES = {
   linee: { n: 'Disegno a linee', d: 'Bianco con contorno, muscoli allenati colorati.' },
   classico: { n: 'Classico', d: 'L\'omino semplice di prima.' }
 };
-const mqStyle = () => (typeof S !== 'undefined' && S.settings && S.settings.mq) || 'vettoriale';
+const mqStyle = () => (typeof S !== 'undefined' && S.settings && S.settings.mq) || 'realistico';
 
 const V2 = {
   sub: (a, b) => [a[0] - b[0], a[1] - b[1]],

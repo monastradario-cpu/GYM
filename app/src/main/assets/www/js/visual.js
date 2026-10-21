@@ -162,7 +162,7 @@ function daVinciSvg(fill, opts) {
 function bodySvg(fill, opts) {
   opts = opts || {};
   // figura v2 (stile scelto: vettoriale)
-  if (typeof bodySvg2 === 'function') return bodySvg2(m => { const r = fill(m); return r ? { op: r.op } : null; }, Object.assign({ style: (typeof S !== 'undefined' && S.settings && S.settings.body2) || 'vettoriale' }, opts));
+  if (typeof bodySvg2 === 'function') return bodySvg2(m => { const r = fill(m); return r ? { op: r.op } : null; }, Object.assign({ style: (typeof S !== 'undefined' && S.settings && S.settings.body2) || 'realistico' }, opts));
   const st = opts.style || bodyStyle(), uid0 = ++_bodyN;
   if (st === 'davinci') return daVinciSvg(fill, opts);
   const sel = m => fill(m) || null;
@@ -246,4 +246,16 @@ function barChart(bars, opts) {
       (b.value ? '<text x="' + (x + bw * 0.32).toFixed(1) + '" y="' + (y - 4).toFixed(1) + '" text-anchor="middle" class="axis">' + (opts.fmt ? opts.fmt(b.value) : b.value) + '</text>' : '') +
       '<text x="' + (x + bw * 0.32).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" class="axis">' + b.label + '</text>';
   }).join('') + '</svg>';
+}
+
+/* immagini negli esercizi: 'mappa' (solo muscoli), 'mappa_anim' (muscoli + animazione a richiesta), 'omino' (come prima) */
+const mediaMode = () => (typeof S !== 'undefined' && S.settings && S.settings.media) || 'omino';
+const BACK_MUSCLES = ['dorso', 'glutei', 'femorali', 'tricipiti', 'polpacci'];
+const LOW_MUSCLES = ['quadricipiti', 'femorali', 'glutei', 'polpacci'];
+/* miniatura: la parte del corpo con il muscolo allenato */
+function muscleThumb(id) {
+  const e = EX[id]; if (!e) return '';
+  const svg = bodySvg(m => m === e.m ? { op: 1 } : e.s.includes(m) ? { op: 0.4 } : null, { mini: true });
+  const x = BACK_MUSCLES.includes(e.m) ? 220 : 0, y = LOW_MUSCLES.includes(e.m) ? 236 : 52;
+  return svg.replace(/viewBox="[^"]*"/, 'viewBox="' + (x + 10) + ' ' + y + ' 180 200"').replace('class="body-svg', 'class="body-svg mthumb');
 }

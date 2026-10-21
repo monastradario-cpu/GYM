@@ -50,6 +50,10 @@ const B2_BACK = [
 const B2_STYLES = {
   medico: { n: 'Tavola medica', d: 'Corpo grigio, muscoli allenati rossi con le fibre, come le tavole di anatomia.' },
   lineare: { n: 'Disegno a linee', d: 'Bianco con contorni neri sottili, il muscolo allenato colorato.' },
+  realistico: { n: 'Realistico', d: 'Muscoli grigi con ombre e pantaloncini, il muscolo allenato in rosso.' },
+  moderno: { n: 'Moderno', d: 'Piatto e pulito: muscoli separati da linee sottili, quello allenato colorato.' },
+  chiaro: { n: 'Moderno chiaro', d: 'Come Moderno, con il corpo più chiaro.' },
+  morbido: { n: 'Morbido', d: 'Sfumature leggere, nessun riflesso, muscolo allenato luminoso.' },
   vettoriale: { n: 'Vettoriale', d: 'Forme piene a due toni, stile illustrazione moderna.' },
   rilievo: { n: 'Rilievo 3D', d: 'Grigio con ombre e fibre, muscolo allenato in evidenza.' }
 };
@@ -61,6 +65,9 @@ function bodySvg2(fill, opts) {
   const st = opts.style || 'medico', u = ++_b2n;
   const sel = m => m !== 'x' ? fill(m) : null;
   let defs = '';
+  if (st === 'realistico') defs += '<linearGradient id="b2rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f5f7"/><stop offset=".6" stop-color="#c8ccd2"/><stop offset="1" stop-color="#8f959e"/></linearGradient>' +
+    '<linearGradient id="b2rr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffab8c"/><stop offset=".5" stop-color="#f0583a"/><stop offset="1" stop-color="#b8261a"/></linearGradient>' +
+    '<linearGradient id="b2rk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#45484e"/><stop offset="1" stop-color="#16171a"/></linearGradient>';
   if (st === 'rilievo' || st === 'medico') defs +=
     '<radialGradient id="b2g' + u + '" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="var(--b2-hi)"/><stop offset="1" stop-color="var(--b2-lo)"/></radialGradient>' +
     '<radialGradient id="b2a' + u + '" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="var(--b2-ahi)"/><stop offset="1" stop-color="var(--b2-alo)"/></radialGradient>';
@@ -74,12 +81,19 @@ function bodySvg2(fill, opts) {
         let f = '';
         if (st === 'rilievo') f = r ? 'fill="url(#b2a' + u + ')" fill-opacity="' + (0.35 + 0.65 * op) + '"' : 'fill="url(#b2g' + u + ')"';
         else if (st === 'medico') f = r ? 'fill="url(#b2a' + u + ')" fill-opacity="' + (0.3 + 0.7 * op) + '"' : '';
+        else if (st === 'realistico') f = r ? 'fill="url(#b2rr)" fill-opacity="' + (0.45 + 0.55 * op) + '"' : 'fill="url(#b2rg)"';
         else if (r) f = 'fill="var(--accent)" fill-opacity="' + (0.3 + 0.7 * op) + '"';
         g += '<path' + dm + ' d="' + d + '" ' + f + ' class="b2-mu' + (r ? ' on' : '') + (m === 'x' ? ' xx' : '') + '"/>';
         if (st === 'vettoriale') { const cx = P.reduce((a, p) => a + p[0], 0) / P.length, cy = P.reduce((a, p) => a + p[1], 0) / P.length; g += '<path d="' + smoothPath(P.map(p => [cx + (p[0] - cx) * 0.62 - 1.2, cy + (p[1] - cy) * 0.62 - 1.6]), true) + '" class="b2-hl' + (r ? ' on' : '') + '" pointer-events="none"/>'; }
         if (!opts.mini && (st === 'medico' ? r : st === 'rilievo')) g += '<clipPath id="b2c' + u + '_' + (++_b2n) + '"><path d="' + d + '"/></clipPath><path d="' + b2Fibers(P, st === 'medico' ? 2.2 : 3) + '" class="b2-fib' + (r ? ' on' : '') + '" clip-path="url(#b2c' + u + '_' + _b2n + ')"/>';
       });
     });
+    // pantaloncini (stile realistico)
+    if (st === 'realistico') {
+      const SH = back ? [[100, 238], [84, 236], [68, 238], [61, 250], [61, 272], [63, 300], [80, 306], [96, 303], [100, 298]] : [[100, 240], [84, 238], [70, 240], [62, 252], [61, 272], [63, 300], [80, 305], [95, 301], [100, 282]];
+      g += '<path d="' + smoothPath(SH.concat(B2M(SH.slice(1, -1)).reverse()), true) + '" fill="url(#b2rk)" stroke="#111" stroke-width=".8" class="b2-shorts"/>';
+      if (back && sel('glutei')) list.filter(([m]) => m === 'glutei').forEach(([m, pts]) => { [pts, B2M(pts)].forEach(P => { g += '<path d="' + smoothPath(P, true) + '" fill="url(#b2rr)" fill-opacity="' + (0.45 + 0.55 * (sel('glutei').op == null ? 1 : sel('glutei').op)) + '" class="b2-mu on"/>'; }); });
+    }
     // dettagli
     if (!opts.mini) {
       if (!back) g += '<path d="M68 96.5 Q84 93 98 97 M132 96.5 Q116 93 102 97 M100 98 L100 150 M97 236 q3 3 6 0 M74 362 q4 -6 8 0 q0 7 -4 9 q-4 -2 -4 -9 M126 362 q-4 -6 -8 0 q0 7 4 9 q4 -2 4 -9" class="b2-d"/>';

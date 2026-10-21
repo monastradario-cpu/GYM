@@ -20,7 +20,7 @@ const ACT = {
   startTemplate: d => { if (S.active) { go('workout'); return; } startWorkout(S.templates.find(t => t.id === d.id)); },
   startEmpty: () => { if (S.active) { go('workout'); return; } startWorkout(null); },
   openWorkout: () => go('workout'),
-  water: d => { const k = todayKey(); S.water[k] = Math.max(0, (S.water[k] || 0) + (+d.d)); save(); render(); },
+  water: d => { const k = todayKey(); S.waterMl = S.waterMl || {}; S.waterMl[k] = Math.max(0, (S.waterMl[k] || 0) + (+d.d)); save(); render(); },
   addWeight: () => { openSheet(weightSheet); setTimeout(() => { const i = document.getElementById('w-in'); if (i) i.focus(); }, 50); },
   saveWeight: () => { const v = num((document.getElementById('w-in') || {}).value); if (v < 20 || v > 400) { toast('Inserisci un peso valido'); return; } S.weights.push({ d: Date.now(), kg: v }); save(true); closeSheet(); render(); toast('Peso salvato'); },
   delWeight: d => ask('Eliminare questa pesata?', 'Elimina', () => { S.weights.splice(+d.n, 1); save(); render(); }, true),
@@ -356,7 +356,10 @@ const ACT = {
   woGroup: d => { const ms = d.q.split(','); pickExercise(id => { S.active.items.push(newItem(prescribe(id), 'scheda')); save(); render(); }, { m: ms[0], group: ms }); },
 
   /* libreria / esercizio */
-  exInfo: d => { closeSheet(); UI.exTab = 'esecuzione'; go('exercise', { id: d.id }); },
+  exInfo: d => { closeSheet(); UI.exTab = 'esecuzione'; UI.showAnim = false; go('exercise', { id: d.id }); },
+  ekPause: (d, el) => { el.classList.toggle('paused'); },
+  toggleAnim: () => { UI.showAnim = !UI.showAnim; render(); },
+  setMedia: d => { S.settings.media = d.k; save(); render(); },
   exTab: d => { UI.exTab = d.t; const v = $('#view'), y = v.scrollTop; render(); v.scrollTop = y; },
   libM: d => { UI.lib.m = d.m; render(); },
   libEq: d => { UI.lib.eq = d.e; render(); },
@@ -461,7 +464,7 @@ document.addEventListener('input', ev => {
     case 'libQ': UI.lib.q = v; document.getElementById('lib-list').innerHTML = libList(); break;
     case 'cardio': UI.cardio[d.k] = v; break;
     case 'plates': UI.plates[d.k] = v; { const b = $('#sheet-body'), f = document.activeElement, name = f && f.dataset.k; b.innerHTML = platesSheet(); const nf = b.querySelector('[data-in="plates"][data-k="' + name + '"]'); if (nf) { nf.focus(); nf.setSelectionRange(nf.value.length, nf.value.length); } } break;
-    case 'waterGoal': S.profile.waterGoal = Math.max(1, Math.min(20, num(v) | 0)); save(); break;
+    case 'waterL': S.profile.waterL = v === '' ? 0 : Math.max(0.5, Math.min(8, num(v))); save(); break;
     case 'maxKg': UI.maxIn.kg = v; break;
     case 'meas': UI.meas[d.k] = v; break;
     case 'rx': UI.rx[d.k] = num(v); break;
@@ -541,6 +544,7 @@ if (S.onboarded && S.needRegen) {
   setTimeout(() => toast('Schede aggiornate dal trainer: dai un\'occhiata in "Schede"'), 800);
 }
 delete S.needRegen;
+if (!S.b2real) { S.settings.body2 = 'realistico'; S.settings.mq = 'realistico'; S.settings.media = 'omino'; S.b2real = true; save(); } // stile scelto dall'utente: realistico
 if (S.onboarded) cycleState();
 UI.stack = [{ v: S.active ? 'workout' : 'home' }];
 render(true);

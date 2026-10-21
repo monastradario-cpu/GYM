@@ -164,7 +164,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 Scheduler.schedule(ctx, type)
             }
             "water" -> {
-                Notify.show(ctx, Notify.ID_WATER, Notify.CH_REM, "Bevi un bicchiere d'acqua 💧", "Restare idratati aiuta l'allenamento e il recupero")
+                Notify.show(ctx, Notify.ID_WATER, Notify.CH_REM, "È ora di bere 💧", "Mezzo bicchiere o un bicchiere (circa 250 ml): segnalo in GYM")
                 Scheduler.schedule(ctx, type)
             }
             "breaks" -> {

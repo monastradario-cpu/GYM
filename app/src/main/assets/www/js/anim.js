@@ -379,10 +379,12 @@ function frameSvg(def, e, ka, kb, k) {
   const kk = ease(k), p = lerpPose(pa, pb, kk), root = [ra[0] + (rb[0] - ra[0]) * kk, ra[1] + (rb[1] - ra[1]) * kk];
   const front = !!p.f;
   const v2 = typeof drawSide2 === 'function' && mqStyle() !== 'classico';
-  const fig = front ? (v2 ? drawFront2(p, root, e) : drawFront(p, root, e)) : (v2 ? drawSide2(p, root, e, def) : drawSide(p, root, e, def));
+  const v3 = v2 && mqStyle() === 'realistico' && typeof drawSide3 === 'function';
+  const fig = v3 ? (front ? drawFront3(p, root, e) : drawSide3(p, root, e)) : front ? (v2 ? drawFront2(p, root, e) : drawFront(p, root, e)) : (v2 ? drawSide2(p, root, e, def) : drawSide(p, root, e, def));
   const gear = gearOf(e, def);
-  return '<line x1="0" y1="' + (GY + 1) + '" x2="320" y2="' + (GY + 1) + '" stroke="var(--line)" stroke-width="2"/>' +
+  const body = '<line x1="0" y1="' + (GY + 1) + '" x2="320" y2="' + (GY + 1) + '" stroke="var(--line)" stroke-width="2"/>' +
     drawProps(def, fig.J, front, gear, 'back') + fig.svg + drawProps(def, fig.J, front, gear, 'front');
+  return v3 ? '<g style="--prop:#3a3e45;--prop2:#1f2226;--line:#d5d9df">' + body + '</g>' : body;
 }
 
 /* giocatore: monta l'animazione in un contenitore */
@@ -393,7 +395,7 @@ const Demo = {
     const e = EX[exId], def = animDef(exId);
     const st = this.st = { el, e, def, speed: (opts && opts.speed) || (el.dataset.compact ? 0.8 : 0.6), t0: performance.now(), paused: false, pausedAt: 0 };
     const compact = el.dataset.compact;
-    el.innerHTML = '<div class="demo-stage"><svg viewBox="35 -14 250 218" class="demo-svg"></svg>' + (compact ? '' : '<div class="demo-view">' + (def.keys[0].f ? 'vista frontale' : 'vista laterale') + '</div>') + '</div>' +
+    el.innerHTML = '<div class="demo-stage' + (mqStyle() === 'realistico' ? ' real' : '') + '"><svg viewBox="35 -14 250 218" class="demo-svg"></svg>' + (compact ? '' : '<div class="demo-view">' + (def.keys[0].f ? 'vista frontale' : 'vista laterale') + '</div>') + '</div>' +
       '<div class="demo-cue"><span class="demo-phase"></span><b class="demo-text"></b></div><div class="demo-bar"><i></i></div>' + (compact ? '' :
       '<div class="demo-ctrl"><button class="btn sm ghost" data-demo="pause">Pausa</button>' +
       [0.35, 0.6, 1].map(s => '<button class="btn sm ghost' + (s === st.speed ? ' on' : '') + '" data-demo="speed" data-s="' + s + '">' + (s === 0.35 ? 'Molto lento' : s === 0.6 ? 'Lento' : 'Normale') + '</button>').join('') + '</div>');

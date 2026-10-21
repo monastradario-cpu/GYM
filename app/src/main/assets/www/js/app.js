@@ -133,7 +133,7 @@ VIEWS.home = () => {
   const t = todayTemplate(), ws = weekStats(), now = new Date();
   const doneToday = S.history.some(h => dayKey(h.start) === todayKey() && h.kind !== 'cardio');
   const w = S.weights[S.weights.length - 1], w0 = S.weights[S.weights.length - 2];
-  const water = S.water[todayKey()] || 0, wg = S.profile.waterGoal || 8;
+  const water = waterToday() / 1000, wg = waterGoalL();
   const sow = startOfWeek(now);
   const week = [...Array(7)].map((_, i) => { const d = new Date(sow); d.setDate(d.getDate() + i); return d; });
   const trained = new Set(S.history.map(h => dayKey(h.start)));
@@ -167,9 +167,9 @@ VIEWS.home = () => {
       '<div class="card mini"><div class="mini-h">' + ic('scale') + 'Peso</div><b class="big-num">' + (w ? fmtKg(w.kg) + '<small> kg</small>' : '—') + '</b>' +
         (w && w0 ? '<small class="' + (w.kg <= w0.kg ? 'good' : 'muted') + '">' + (w.kg - w0.kg > 0 ? '+' : '') + fmtKg(Math.round((w.kg - w0.kg) * 10) / 10) + ' kg</small>' : '<small class="muted">' + (w ? fmtDate(w.d) : 'non registrato') + '</small>') +
         '<button class="btn sm ghost" data-act="addWeight">Registra</button></div>' +
-      '<div class="card mini"><div class="mini-h">' + ic('water') + 'Acqua oggi</div><b class="big-num">' + water + '<small> / ' + wg + '</small></b>' +
-        '<div class="water-dots">' + [...Array(wg)].map((_, i) => '<i class="' + (i < water ? 'on' : '') + '"></i>').join('') + '</div>' +
-        '<div class="row gap"><button class="btn sm ghost" data-act="water" data-d="-1">−</button><button class="btn sm" data-act="water" data-d="1">+ bicchiere</button></div></div>' +
+      '<div class="card mini"><div class="mini-h">' + ic('water') + 'Acqua oggi</div><b class="big-num">' + fmtKg(Math.round(water * 100) / 100) + '<small> / ' + fmtKg(wg) + ' L</small></b>' +
+        '<div class="progress water-bar"><i style="width:' + Math.min(100, 100 * water / wg) + '%"></i></div>' +
+        '<div class="row water-row"><button class="btn sm ghost" data-act="water" data-d="-250">−</button><button class="btn sm" data-act="water" data-d="250">+250 ml</button><button class="btn sm ghost" data-act="water" data-d="500">+500 ml</button></div></div>' +
     '</div>' +
     '<button class="btn ghost wide" data-act="cardio">' + ic('run') + 'Registra cardio</button>' +
     homeTrainerCards(t, doneToday) +
@@ -287,10 +287,11 @@ VIEWS.settings = () => {
       updateBox() + '</div>' +
     '<h3 class="sec">Aspetto</h3><div class="card">' +
       '<div class="field"><span>Tema</span><div class="seg">' + [['light', 'Chiaro'], ['dark', 'Scuro'], ['system', 'Sistema']].map(x => chip(x[1], st.theme === x[0], 'setTheme', 'data-t="' + x[0] + '"')).join('') + '</div></div>' +
-      '<div class="field"><span>Figura del corpo</span><div class="chips">' + Object.keys(B2_STYLES).map(k => chip(B2_STYLES[k].n, ((S.settings.body2) || 'vettoriale') === k, 'setBodyStyle', 'data-k="' + k + '"')).join('') + '</div></div>' +
+      '<div class="field"><span>Figura del corpo</span><div class="chips">' + Object.keys(B2_STYLES).map(k => chip(B2_STYLES[k].n, ((S.settings.body2) || 'realistico') === k, 'setBodyStyle', 'data-k="' + k + '"')).join('') + '</div></div>' +
       '<div class="body-prev">' + bodySvg(m => m === 'petto' ? { color: 'var(--accent)' } : m === 'tricipiti' ? { color: 'var(--accent)', op: .45 } : null) + '</div>' +
-      '<div class="field"><span>Omino degli esercizi</span><div class="chips">' + Object.keys(MQ_STYLES).map(k => chip(MQ_STYLES[k].n, mqStyle() === k, 'setMq', 'data-k="' + k + '"')).join('') + '</div><small>' + esc(MQ_STYLES[mqStyle()].d) + '</small></div>' +
-      '<div class="mq-prev">' + ['squat_bil', 'curl_man', 'lat_machine'].map(id => { const d = animDef(id); return '<svg viewBox="70 0 190 205">' + frameSvg(d, EX[id], 0, d.seq ? 0 : 1, d.seq ? 0 : 0.7) + '</svg>'; }).join('') + '</div>' +
+      '<div class="field"><span>Immagini negli esercizi</span><div class="chips">' + [['mappa', 'Solo mappa dei muscoli'], ['mappa_anim', 'Mappa + animazione a richiesta'], ['omino', 'Omino animato']].map(([k, l]) => chip(l, mediaMode() === k, 'setMedia', 'data-k="' + k + '"')).join('') + '</div></div>' +
+      (mediaMode() === 'mappa' ? '' : '<div class="field"><span>Omino degli esercizi</span><div class="chips">' + Object.keys(MQ_STYLES).map(k => chip(MQ_STYLES[k].n, mqStyle() === k, 'setMq', 'data-k="' + k + '"')).join('') + '</div><small>' + esc(MQ_STYLES[mqStyle()].d) + '</small></div>' +
+      '<div class="mq-prev">' + ['squat_bil', 'curl_man', 'lat_machine'].map(id => { const d = animDef(id); return '<svg viewBox="70 0 190 205">' + frameSvg(d, EX[id], 0, d.seq ? 0 : 1, d.seq ? 0 : 0.7) + '</svg>'; }).join('') + '</div>') +
       '<div class="field"><span>Colore</span><div class="swatches">' + Object.keys(ACCENTS).map(k => '<button class="sw ' + (st.accent === k ? 'on' : '') + '" style="background:' + ACCENTS[k] + '" data-act="setAccent" data-k="' + k + '" aria-label="' + k + '"></button>').join('') + '</div></div>' +
     '</div>' +
     '<h3 class="sec">Profilo</h3><div class="card">' +
@@ -298,7 +299,7 @@ VIEWS.settings = () => {
       bodyDataFields() +
       '<div class="field"><span>Livello</span><div class="chips">' + Object.keys(LEVELS).map(k => chip(LEVELS[k].n, p.level === k, 'setLevel', 'data-k="' + k + '"')).join('') + '</div></div>' +
       '<div class="field"><span>Giorni di allenamento</span>' + daysChips(p.days, 'setDay') + '</div>' +
-      field('Bicchieri d\'acqua al giorno', numIn(p.waterGoal, 'data-in="waterGoal"')) +
+      field('Acqua al giorno (litri)', numIn(p.waterL ? fmtKg(p.waterL) : '', 'data-in="waterL"', fmtKg(waterGoalL())), 'Consigliati per te: ' + fmtKg(waterAuto()) + ' L (35 ml per kg, +0,5 L nei giorni di allenamento)') +
       '<button class="btn ghost wide" data-act="regen">' + ic('swap') + 'Rigenera le schede con questo profilo</button>' +
     '</div>' +
     '<h3 class="sec">Allenamento</h3><div class="card">' +
@@ -321,6 +322,11 @@ VIEWS.settings = () => {
         '<div class="field"><span>Volte al giorno</span><div class="seg">' + [3, 4].map(n => chip(String(n), r.breaks.count === n, 'brkCount', 'data-n="' + n + '"')).join('') + '</div></div></div>' : '') +
       '<button class="btn ghost wide" data-act="askNotif">Consenti le notifiche</button>' +
     '</div>' +
+    '<h3 class="sec">Crediti</h3><div class="card small">' +
+      '<button class="list-item btnlike" data-act="openUrl" data-u="' + EK_URL + '"><div><b>Disegni degli esercizi</b><small>Everkinetic (Greg Priday) · licenza CC BY-SA 4.0</small></div>' + ic('back', 'flip') + '</button>' +
+      '<button class="list-item btnlike" data-act="openUrl" data-u="https://github.com/yuhonas/free-exercise-db"><div><b>Elenco esercizi</b><small>free-exercise-db · pubblico dominio (testi riscritti in italiano)</small></div>' + ic('back', 'flip') + '</button>' +
+      '<button class="list-item btnlike" data-act="openUrl" data-u="https://world.openfoodfacts.org"><div><b>Prodotti alimentari</b><small>Open Food Facts · licenza ODbL</small></div>' + ic('back', 'flip') + '</button>' +
+      '<div class="list-item flat"><div><b>Figure e animazioni senza disegno</b><small>Create per GYM</small></div></div></div>' +
     '<h3 class="sec">Coach AI (facoltativo)</h3><div class="card">' +
       '<p class="small muted">L\'app funziona al completo anche senza. Con una chiave puoi fare domande libere al coach. Gemini ha un piano gratuito.</p>' +
       '<div class="field"><span>Servizio</span><div class="chips">' + Object.keys(AI_PROVIDERS).map(k => chip(AI_PROVIDERS[k].n, ai.provider === k, 'aiProv', 'data-k="' + k + '"')).join('') + '</div></div>' +
