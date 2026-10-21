@@ -47,7 +47,51 @@ const B2_BACK = [
   ['x', [[80.5, 440], [79, 456], [86, 456], [86, 440]]]
 ];
 
+/* ===== figura anatomica realistica (immagini fig/corpo_*.webp) con zone toccabili tracciate sopra ===== */
+const AN_W = 256, AN_H = 495;
+const AN_FRONT = { cx: 128, m: [
+  ['spalle', [[90, 88], [76, 89], [66, 96], [61, 108], [61, 122], [66, 126], [72, 116], [80, 104], [90, 96]]],
+  ['petto', [[127, 96], [112, 91], [96, 92], [86, 100], [82, 112], [84, 125], [93, 134], [107, 138], [120, 136], [127, 131]]],
+  ['bicipiti', [[66, 126], [60, 133], [56, 146], [54, 160], [56, 170], [62, 169], [67, 157], [71, 143], [74, 131]]],
+  ['avambracci', [[57, 172], [50, 179], [43, 196], [37, 213], [34, 225], [40, 228], [48, 214], [56, 197], [64, 178]]],
+  ['addome', [[127, 137], [112, 136], [100, 139], [91, 149], [89, 168], [94, 188], [106, 200], [127, 204]]],
+  ['quadricipiti', [[79, 284], [76, 300], [80, 318], [86, 334], [96, 341], [108, 338], [116, 320], [122, 297], [124, 284]]],
+  ['polpacci', [[102, 357], [97, 372], [97, 392], [100, 410], [106, 404], [110, 384], [108, 364]]],
+  ['polpacci', [[80, 352], [76, 370], [77, 392], [81, 400], [84, 380], [84, 360]]]
+] };
+const AN_BACK = { cx: 125, m: [
+  ['dorso', [[125, 62], [112, 66], [104, 76], [86, 88], [96, 96], [106, 110], [116, 140], [125, 168]]],
+  ['spalle', [[78, 88], [64, 94], [55, 106], [52, 120], [58, 127], [66, 117], [74, 105], [84, 96]]],
+  ['dorso', [[98, 100], [82, 110], [73, 121], [76, 141], [86, 166], [96, 190], [110, 198], [120, 172], [112, 140], [104, 118]]],
+  ['dorso', [[125, 170], [116, 176], [114, 198], [125, 204]]],
+  ['tricipiti', [[64, 119], [56, 125], [50, 141], [48, 160], [52, 171], [60, 168], [66, 151], [72, 131]]],
+  ['avambracci', [[50, 173], [42, 185], [34, 205], [30, 226], [36, 236], [44, 220], [52, 201], [60, 181]]],
+  ['glutei', [[125, 214], [104, 212], [88, 218], [80, 236], [82, 258], [96, 272], [112, 274], [124, 270]]],
+  ['femorali', [[70, 282], [68, 300], [74, 322], [84, 340], [96, 346], [108, 338], [116, 316], [120, 290], [118, 282]]],
+  ['polpacci', [[78, 346], [70, 360], [66, 380], [70, 402], [80, 412], [92, 412], [100, 400], [102, 380], [98, 360], [92, 348]]]
+] };
+function anatomicSvg(fill, opts) {
+  opts = opts || {};
+  const u = ++_b2n, mir = (P, cx) => P.map(p => [2 * cx - p[0], p[1]]);
+  const side = (ox, F, img) => {
+    let g = '<g transform="translate(' + ox + ',0)"><image href="fig/' + img + '.webp" x="0" y="0" width="' + AN_W + '" height="' + AN_H + '" preserveAspectRatio="none"/>';
+    F.m.forEach(([m, pts]) => {
+      const r = fill(m);
+      [pts, mir(pts, F.cx)].forEach(P => {
+        const d = smoothPath(P, true), op = r ? (r.op == null ? 1 : r.op) : 0;
+        g += '<path data-m="' + m + '" d="' + d + '" class="an-mu' + (r ? ' on' : '') + '" fill="#e8402a" fill-opacity="' + (r ? (0.28 + 0.5 * op).toFixed(2) : 0) + '"' + (r ? ' filter="url(#anb' + u + ')"' : '') + '/>';
+      });
+    });
+    return g + '</g>';
+  };
+  const H = opts.mini ? AN_H : AN_H + 22;
+  const lbl = opts.mini ? '' : '<text x="' + AN_W / 2 + '" y="' + (AN_H + 16) + '" text-anchor="middle" class="svg-lbl">Fronte</text><text x="' + (AN_W * 1.5) + '" y="' + (AN_H + 16) + '" text-anchor="middle" class="svg-lbl">Retro</text>';
+  return '<svg class="body-svg b2 b2-anatomico' + (opts.click ? ' clickable' : '') + (opts.mini ? ' mini' : '') + '" viewBox="0 0 ' + (AN_W * 2) + ' ' + H + '" xmlns="http://www.w3.org/2000/svg"><defs><filter id="anb' + u + '" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.6"/></filter></defs>' +
+    '<rect x="0" y="0" width="' + (AN_W * 2) + '" height="' + AN_H + '" rx="14" fill="#fff"/>' + side(0, AN_FRONT, 'corpo_fronte') + side(AN_W, AN_BACK, 'corpo_retro') + lbl + '</svg>';
+}
+
 const B2_STYLES = {
+  anatomico: { n: 'Anatomico realistico', d: 'Figura anatomica dettagliata, i muscoli allenati si accendono in rosso.' },
   medico: { n: 'Tavola medica', d: 'Corpo grigio, muscoli allenati rossi con le fibre, come le tavole di anatomia.' },
   lineare: { n: 'Disegno a linee', d: 'Bianco con contorni neri sottili, il muscolo allenato colorato.' },
   realistico: { n: 'Realistico', d: 'Muscoli grigi con ombre e pantaloncini, il muscolo allenato in rosso.' },
@@ -62,6 +106,7 @@ let _b2n = 0;
 function b2Fibers(P, gap) { return hatchLines(P, 0, gap || 2.4); }
 function bodySvg2(fill, opts) {
   opts = opts || {};
+  if ((opts.style || 'anatomico') === 'anatomico') return anatomicSvg(fill, opts);
   const st = opts.style || 'medico', u = ++_b2n;
   const sel = m => m !== 'x' ? fill(m) : null;
   let defs = '';

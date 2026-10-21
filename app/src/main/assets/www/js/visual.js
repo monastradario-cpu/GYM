@@ -162,7 +162,7 @@ function daVinciSvg(fill, opts) {
 function bodySvg(fill, opts) {
   opts = opts || {};
   // figura v2 (stile scelto: vettoriale)
-  if (typeof bodySvg2 === 'function') return bodySvg2(m => { const r = fill(m); return r ? { op: r.op } : null; }, Object.assign({ style: (typeof S !== 'undefined' && S.settings && S.settings.body2) || 'realistico' }, opts));
+  if (typeof bodySvg2 === 'function') return bodySvg2(m => { const r = fill(m); return r ? { op: r.op } : null; }, Object.assign({ style: (typeof S !== 'undefined' && S.settings && S.settings.body2) || 'anatomico' }, opts));
   const st = opts.style || bodyStyle(), uid0 = ++_bodyN;
   if (st === 'davinci') return daVinciSvg(fill, opts);
   const sel = m => fill(m) || null;

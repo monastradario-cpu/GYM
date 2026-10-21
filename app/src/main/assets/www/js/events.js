@@ -358,6 +358,7 @@ const ACT = {
   /* libreria / esercizio */
   exInfo: d => { closeSheet(); UI.exTab = 'esecuzione'; UI.showAnim = false; go('exercise', { id: d.id }); },
   ekPause: (d, el) => { el.classList.toggle('paused'); },
+  ekSpeed: d => { UI.ekSpeed = num(d.v); render(); },
   toggleAnim: () => { UI.showAnim = !UI.showAnim; render(); },
   setMedia: d => { S.settings.media = d.k; save(); render(); },
   exTab: d => { UI.exTab = d.t; const v = $('#view'), y = v.scrollTop; render(); v.scrollTop = y; },
@@ -545,6 +546,7 @@ if (S.onboarded && S.needRegen) {
 }
 delete S.needRegen;
 if (!S.b2real) { S.settings.body2 = 'realistico'; S.settings.mq = 'realistico'; S.settings.media = 'omino'; S.b2real = true; save(); } // stile scelto dall'utente: realistico
+if (!S.b2anat) { S.settings.body2 = 'anatomico'; S.b2anat = true; save(); } // nuova figura anatomica realistica
 if (S.onboarded) cycleState();
 UI.stack = [{ v: S.active ? 'workout' : 'home' }];
 render(true);

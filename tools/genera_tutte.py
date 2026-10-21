@@ -67,7 +67,8 @@ def salva_webp(data, path):
 
 
 def git_commit(msg):
-    subprocess.run(["git", "add", OUT, DESC_F, "tools/esito_figure.json"], check=False)
+    subprocess.run([sys.executable, "tools/esporta_desc.py"], check=False)
+    subprocess.run(["git", "add", OUT, DESC_F, "tools/esito_figure.json", "app/src/main/assets/www/js/figdesc.js"], check=False)
     if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
         return
     subprocess.run(["git", "commit", "-q", "-m", msg + " [skip ci]"], check=False)

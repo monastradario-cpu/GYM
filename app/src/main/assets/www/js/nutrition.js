@@ -61,12 +61,12 @@ function goalNutritionTips(goals) {
 }
 
 const TRAINER_TIPS = [
-  'Il riscaldamento non è facoltativo: 5–10 minuti riducono gli infortuni e ti fanno sollevare di più.',
+  'Il riscaldamento non è facoltativo: 5–10 minuti di attività leggera e serie di avvicinamento preparano muscoli e articolazioni.',
   'Progressione: quando completi tutte le serie al massimo delle ripetizioni, aumenta il carico la volta dopo.',
   'Dormi 7–9 ore: è durante il sonno che i muscoli crescono e si riparano.',
   'Bevi acqua durante l\'allenamento: anche una leggera disidratazione riduce la forza.',
   'La tecnica viene prima del carico: un\'esecuzione pulita allena meglio il muscolo e protegge le articolazioni.',
-  'Ogni 6–8 settimane fai una settimana di scarico: stessi esercizi con il 60% del carico.',
+  'Ogni 4–8 settimane, o quando la forza cala, fai una settimana di scarico: metà delle serie, carico uguale o poco più basso, lontano dal cedimento.',
   'Espira durante lo sforzo, inspira durante la fase di ritorno.',
   'Allenare ogni muscolo 2 volte a settimana è più efficace che una volta sola.',
   'Le proteine vanno distribuite: 20–40 g in ogni pasto principale.',
@@ -78,7 +78,7 @@ const TRAINER_TIPS = [
   'La costanza batte l\'intensità: meglio 3 allenamenti a settimana per un anno che 6 per un mese.',
   'Cammina ogni giorno: 7.000–10.000 passi aiutano recupero e dimagrimento.',
   'Non saltare le gambe: sono più della metà dei muscoli del corpo.',
-  'Stretching leggero dopo l\'allenamento, mobilità prima.',
+  'Prima dei pesi mobilità e movimenti dinamici; lo stretching statico lungo (oltre 60 s) meglio a fine allenamento.',
   'Mangia frutta e verdura colorate: vitamine e minerali aiutano il recupero.',
   'Se una settimana non migliori, non scoraggiarti: i progressi non sono mai una linea dritta.'
 ];

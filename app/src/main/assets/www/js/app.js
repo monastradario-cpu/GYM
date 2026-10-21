@@ -287,7 +287,7 @@ VIEWS.settings = () => {
       updateBox() + '</div>' +
     '<h3 class="sec">Aspetto</h3><div class="card">' +
       '<div class="field"><span>Tema</span><div class="seg">' + [['light', 'Chiaro'], ['dark', 'Scuro'], ['system', 'Sistema']].map(x => chip(x[1], st.theme === x[0], 'setTheme', 'data-t="' + x[0] + '"')).join('') + '</div></div>' +
-      '<div class="field"><span>Figura del corpo</span><div class="chips">' + Object.keys(B2_STYLES).map(k => chip(B2_STYLES[k].n, ((S.settings.body2) || 'realistico') === k, 'setBodyStyle', 'data-k="' + k + '"')).join('') + '</div></div>' +
+      '<div class="field"><span>Figura del corpo</span><div class="chips">' + Object.keys(B2_STYLES).map(k => chip(B2_STYLES[k].n, ((S.settings.body2) || 'anatomico') === k, 'setBodyStyle', 'data-k="' + k + '"')).join('') + '</div></div>' +
       '<div class="body-prev">' + bodySvg(m => m === 'petto' ? { color: 'var(--accent)' } : m === 'tricipiti' ? { color: 'var(--accent)', op: .45 } : null) + '</div>' +
       '<div class="field"><span>Immagini negli esercizi</span><div class="chips">' + [['mappa', 'Solo mappa dei muscoli'], ['mappa_anim', 'Mappa + animazione a richiesta'], ['omino', 'Omino animato']].map(([k, l]) => chip(l, mediaMode() === k, 'setMedia', 'data-k="' + k + '"')).join('') + '</div></div>' +
       (mediaMode() === 'mappa' ? '' : '<div class="field"><span>Omino degli esercizi</span><div class="chips">' + Object.keys(MQ_STYLES).map(k => chip(MQ_STYLES[k].n, mqStyle() === k, 'setMq', 'data-k="' + k + '"')).join('') + '</div><small>' + esc(MQ_STYLES[mqStyle()].d) + '</small></div>' +
