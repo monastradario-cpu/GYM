@@ -200,6 +200,7 @@ def fase1(c, todo):
                 break
             except Exception as e:  # noqa: BLE001
                 print("descrizioni errore:", e, flush=True)
+                LOG.setdefault("messaggi", []).append(f"testi {lotto[0]['id']}: {str(e)[:200]}")
                 if QUOTA.search(str(e)):
                     STOP.set()
                     LOG["fermato"] = f"fase 1: {e}"
