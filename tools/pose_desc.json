@@ -5204,5 +5204,1461 @@
 "Spingi con i talloni e torna in piedi."
 ],
 "view": "side view"
+},
+"squat_panca_manubri": {
+"end": "Right hip and knee fully extended, standing tall on bench with left foot brought up beside right; torso upright, shoulders stacked, arms straight holding dumbbells at sides.",
+"end_img": "standing tall on bench holding dumbbells at sides, both feet on the bench, arms straight, dumbbells at hip level beside legs",
+"errors_it": [
+"Spingere con la punta del piede",
+"Inclinare eccessivamente il tronco"
+],
+"muscles": "Quadriceps, glutes",
+"setup": "Flat padded bench ~40–50cm high to your right; hold a black hex dumbbell in each hand at sides, palms facing thighs, feet hip-width on the floor.",
+"start": "Right foot flat on bench, left foot on floor; right hip/knee slightly flexed (~20–30°), torso upright, shoulders neutral, arms straight holding dumbbells at sides.",
+"start_img": "standing upright holding dumbbells at sides, right foot flat on bench to the side, left foot on floor, arms straight, dumbbells beside thighs",
+"steps_it": [
+"Posizionati davanti alla panca con i manubri ai lati.",
+"Appoggia il piede destro sulla panca, tallone pieno a contatto.",
+"Spingi estendendo anca e ginocchio destro fino a salire sulla panca.",
+"Scendi controllando, poi ripeti e alterna lato."
+],
+"view": "side view"
+},
+"estensioni_tricipiti_manubri_presa_prona": {
+"end": "Elbows flexed, forearms lowered so dumbbells sit beside ears/near forehead, upper arms vertical and stationary, chest on bench, shoulders stable.",
+"end_img": "lying supine on bench with elbows bent and upper arms vertical, dumbbells lowered beside the ears/forehead, hands holding weights near head",
+"errors_it": [
+"Allargare i gomiti lateralmente",
+"Usare slancio del busto"
+],
+"muscles": "Triceps",
+"setup": "Flat bench; lie supine holding a pair of black hex dumbbells above shoulders, palms facing forward (pronated), elbows tucked under wrists.",
+"start": "Supine with arms fully extended perpendicular to floor, elbows locked/tucked near temples, shoulders neutral, wrists aligned, dumbbells directly over chest.",
+"start_img": "lying supine on flat bench holding dumbbells above shoulders, arms straight and vertical, palms facing forward, dumbbells over chest",
+"steps_it": [
+"Sdraiati sul banco con i manubri sopra le spalle, braccia estese.",
+"Tieni i gomiti vicini e fermi, scapole stabili.",
+"Abbassa lentamente i manubri verso le tempie controllando il movimento.",
+"Estendi i gomiti usando i tricipiti per tornare su."
+],
+"view": "side view"
+},
+"curl_bilanciere_ez": {
+"end": "Forearms flexed, bar at shoulder level, biceps fully contracted, elbows fixed at torso, wrists slightly supinated, torso upright.",
+"end_img": "standing with EZ bar curled to shoulder level, forearms vertical, elbows tucked at ribs, bar held in front of shoulders",
+"errors_it": [
+"Oscillazione del busto",
+"Sollevare i gomiti in avanti"
+],
+"muscles": "Biceps brachii",
+"setup": "Stand upright holding an EZ curl bar in the wide outer angled grips, palms facing forward and slightly inward, feet hip-width, elbows close to torso.",
+"start": "Standing, arms fully extended, bar at mid-thigh, shoulders neutral, elbows locked beside ribs, wrists neutral, torso upright.",
+"start_img": "standing upright holding EZ bar at mid-thigh with both hands in outer grips, arms straight, elbows close to torso, bar over thighs",
+"steps_it": [
+"Posizionati eretto con il bilanciere EZ nelle impugnature esterne.",
+"Mantieni i gomiti fermi vicini al busto.",
+"Fletti gli avambracci portando il bilanciere alle spalle.",
+"Abbassa lentamente controllando il movimento."
+],
+"view": "side view"
+},
+"french_press_bilanciere_ez": {
+"end": "Elbows flexed, forearms lowered so the bar is directly above the forehead, upper arms stationary and vertical, shoulders and torso on bench.",
+"end_img": "lying supine with elbows bent and bar lowered to hover above forehead, upper arms vertical, hands gripping the EZ bar near head",
+"errors_it": [
+"Allargare le braccia durante la discesa",
+"Lasciare che le spalle si sollevino"
+],
+"muscles": "Triceps",
+"setup": "Flat bench; lie supine holding an EZ curl bar with a close grip, bar over chest, elbows tucked, feet flat on floor.",
+"start": "Supine with arms extended perpendicular to floor, elbows locked and close to temples, bar held above chest, shoulders stable.",
+"start_img": "lying supine on bench holding EZ bar in close grip above chest, arms straight and vertical, hands on the bar over shoulders",
+"steps_it": [
+"Sdraiati con il bilanciere EZ sopra il petto, presa stretta.",
+"Mantieni i gomiti vicini e fermi altrimenti.",
+"Abbassa il bilanciere piegando i gomiti verso la fronte.",
+"Estendi i gomiti per tornare alla posizione iniziale."
+],
+"view": "side view"
+},
+"gomito_ginocchio": {
+"end": "Spine flexed and rotated bringing left elbow toward right knee; right hip flexed drawing right knee up, left foot remains on floor, hands behind head.",
+"end_img": "torso rotated and flexed with left elbow reaching to touch raised right knee, right leg drawn toward chest, hands still behind head",
+"errors_it": [
+"Tirare il collo con le mani",
+"Lasciare la zona lombare staccata dal suolo"
+],
+"muscles": "Abdominals, obliques",
+"setup": "No equipment; lie supine on the floor, hands clasped behind head, shoulder blades contacting floor, right leg crossed over bent left knee.",
+"start": "Supine, shoulder blades on floor, hands behind head, left knee bent with left foot on floor, right ankle resting on left thigh near knee.",
+"start_img": "lying supine on floor with hands clasped behind head, left knee bent foot on floor, right ankle resting across left thigh, shoulder blades on ground",
+"steps_it": [
+"Sdraiati supino con le mani dietro la testa e le scapole a terra.",
+"Posiziona la gamba destra incrociata sul ginocchio sinistro piegato.",
+"Fletti il tronco ruotando per avvicinare il gomito sinistro al ginocchio destro.",
+"Ritorna lentamente alla posizione di partenza e ripeti."
+],
+"view": "side view"
+},
+"affondo_indietro_rialzo": {
+"end": "Right leg stepped back into rear lunge: left knee flexed ~90° with left foot on platform, right knee lowered near floor, torso upright, barbell on upper back.",
+"end_img": "stepping back into a rear lunge with right foot on floor behind, left knee bent deeply on platform, barbell remaining on upper back",
+"errors_it": [
+"Lasciare che il ginocchio anteriore superi le dita",
+"Inclinare il busto in avanti"
+],
+"muscles": "Quadriceps, glutes",
+"setup": "Short raised platform behind (~4–6in); position barbell on upper back (high-bar), feet together on platform, grip hands shoulder-width, torso braced.",
+"start": "Standing on platform with bar on upper back, both feet shoulder-width, knees slightly soft, torso upright, shoulders tight, core braced.",
+"start_img": "standing on small raised platform with barbell across upper back, feet together on platform, hands gripping bar, torso upright",
+"steps_it": [
+"Sistema il bilanciere sulle spalle e posizionati sulla pedana.",
+"Fai un passo indietro controllato con una gamba.",
+"Scendi piegando anca e ginocchio fino al ginocchio posteriore quasi a terra.",
+"Spingi tramite gamba anteriore per tornare in piedi sulla pedana."
+],
+"view": "side view"
+},
+"rematore_cavo_rialzo": {
+"end": "Handle pulled to belly, elbows driven behind torso, shoulder blades retracted and squeezed, torso stable and vertical, forearms near ribs.",
+"end_img": "seated with V-bar pulled to the belly, elbows drawn back behind torso, shoulder blades squeezed, hands holding handle near abdomen",
+"errors_it": [
+"Oscillare il busto per aiutare il tiro",
+"Sollevare le spalle verso le orecchie"
+],
+"muscles": "Latissimus dorsi, rhomboids, lower back",
+"setup": "Low cable row with V-bar attachment; place a 4–6in platform on seat, sit with feet on footplate, knees slightly bent, torso upright, grab V-bar with both hands.",
+"start": "Seated, arms fully extended holding V-bar, torso upright at ~90° to legs, slightly arched lower back, shoulders protracted, cable taut.",
+"start_img": "seated on low cable row with feet on footplate, arms fully extended holding V-bar in both hands, torso upright, cable taut in front",
+"steps_it": [
+"Siediti con i piedi sulla pedana e afferra la V-bar con entrambe le mani.",
+"Porta il busto a posizione eretta con schiena leggermente arcuata.",
+"Tira mantenendo il torso fermo fino a toccare l'addome con la maniglia.",
+"Controlla il ritorno estendendo le braccia lentamente."
+],
+"view": "side view"
+},
+"crunch_fitball": {
+"end": "Hips and knees flexed, knees pulled toward chest as ball rolls forward under ankles, torso stationary, arms straight supporting upper body on floor.",
+"end_img": "hands on floor, knees drawn toward chest with exercise ball rolled forward under ankles, hips flexed, torso stable and arms straight",
+"errors_it": [
+"Sollevare o oscillare il busto",
+"Lasciare che la palla scivoli instabile"
+],
+"muscles": "Abdominals, obliques",
+"setup": "Hands on floor shoulder-width in push-up position, large exercise ball under lower shins, legs fully extended, body straight from head to heels.",
+"start": "Push-up position hands on floor, body straight, shins resting on exercise ball, hips extended, shoulders over hands, legs straight.",
+"start_img": "in push-up position with hands on floor, shins resting on exercise ball behind, body forming a straight line, arms extended holding weight of torso",
+"steps_it": [
+"Posizionati in appoggio sulle mani con gli stinchi sulla fitball.",
+"Mantieni il busto fermo e la schiena diritta.",
+"Tira le ginocchia verso il petto facendo rotolare la palla in avanti.",
+"Estendi le gambe lentamente riportando la palla indietro."
+],
+"view": "side view"
+},
+"ginocchia_petto_fitball": {
+"end": "Posterior pelvic tilt, knees drawn toward chest, thighs close to torso, spine rounded slightly, hands still on ball sides, feet near ribs.",
+"end_img": "curled on the ball with hips tucked, knees pulled to chest, hands on ball sides, feet close to torso showing contracted core",
+"errors_it": [
+"Inarcare la schiena durante la discesa",
+"Uso eccessivo delle gambe invece del core"
+],
+"muscles": "Abdominals and obliques",
+"setup": "Large inflated fitball under lower back/pelvis; feet free, hands bracing ball sides or floor for balance; head and shoulders supported by ball.",
+"start": "Supine on fitball with pelvis neutral, lower back supported, hands bracing sides, legs extended together and slightly off the floor, toes pointed.",
+"start_img": "supine on fitball with lower back on the ball, hands bracing sides, legs straight and extended together, feet off the floor",
+"steps_it": [
+"Siedi il bacino sulla fitball e sdraiati col dorso supportato.",
+"Posiziona mani sui fianchi o a terra per stabilità.",
+"Contraendo l'addome, porta il bacino verso le costole.",
+"Controlla la discesa evitando l'iperestensione della schiena."
+],
+"view": "side view"
+},
+"floor_press_braccio_kettlebell": {
+"end": "Right elbow fully extended, kettlebell pressed vertically above chest with shoulder stacked over hand, right knee still bent across midline, spine neutral on floor.",
+"end_img": "lying on floor with right arm fully extended pressing kettlebell above chest, right knee still bent across midline, left leg relaxed",
+"errors_it": [
+"Alzare il bacino dal pavimento",
+"Usare slancio del corpo invece del braccio"
+],
+"muscles": "Pectoral muscles, triceps",
+"setup": "Flat floor lying position, single kettlebell in right hand by handle, left leg extended, pressing-side (right) knee bent and crossing midline over body.",
+"start": "Supine on floor, kettlebell held at chest with elbow bent, forearm vertical, right knee bent crossing toward left midline, left leg neutral on floor.",
+"start_img": "lying on floor holding kettlebell in right hand at chest, right elbow bent, right knee bent crossing over midline, left leg extended",
+"steps_it": [
+"Sdraiati supino e afferra il kettlebell con una mano.",
+"Piega il ginocchio dello stesso lato attraversando la linea mediana.",
+"Estendi il gomito e spingi il kettlebell sopra il petto.",
+"Ridisci lentamente fino al contatto controllato del gomito."
+],
+"view": "side view"
+},
+"rotazione_esterna_manubrio": {
+"end": "Externally rotated forearm lifted upward so forearm points toward ceiling, elbow still at side, dumbbell elevated above starting plane, hold contracted.",
+"end_img": "lying on right side with right forearm rotated upward toward ceiling holding dumbbell, upper arm unchanged against torso, left hand under head",
+"errors_it": [
+"Spostare l'avambraccio invece del braccio superiore",
+"Sollevare la spalla verso l'orecchio"
+],
+"muscles": "Posterior deltoid and rotator cuff",
+"setup": "Flat bench, lie on right side along bench edge, left hand supporting head, right hand holds a dumbbell, upper arm tucked and parallel to torso.",
+"start": "Lying on side, right upper arm fixed against torso, elbow flexed 90 degrees, forearm pointing forward parallel to floor, dumbbell in right hand.",
+"start_img": "lying on right side on bench, right elbow bent 90 degrees, forearm pointing forward holding dumbbell, left hand under head",
+"steps_it": [
+"Sdraiati di lato con il gomito appoggiato al fianco.",
+"Porta l'avambraccio parallelo al pavimento come partenza.",
+"Ruota esternamente l'avambraccio sollevando il manubrio.",
+"Controlla la discesa tornando lentamente alla posizione iniziale."
+],
+"view": "front view"
+},
+"rotazione_esterna_elastico": {
+"end": "Right forearm rotated outward away from torso, hand moved laterally, band stretched, elbow maintained pinned to side, forearm now pointing more laterally.",
+"end_img": "standing with right forearm rotated outward pulling band away from torso, hand moved laterally, elbow fixed to side, band taut",
+"errors_it": [
+"Allontanare il gomito dal fianco",
+"Usare il busto per slancio"
+],
+"muscles": "External rotators and deltoids",
+"setup": "Red resistance band anchored at elbow height to a post on subject's right; stand with left side toward post, right elbow pressed to side, hand gripping band end.",
+"start": "Standing side-on to anchor, right elbow at side flexed 90 degrees, forearm across front of torso holding band handle near belly, shoulder relaxed.",
+"start_img": "standing with left side to post, right elbow at side bent 90 degrees, forearm across torso holding band handle near abdomen",
+"steps_it": [
+"Fissa la banda all'altezza del gomito.",
+"Tieni il gomito attaccato al fianco, braccio a 90 gradi.",
+"Ruota esternamente l'avambraccio allontanando la mano dalla linea mediana.",
+"Ritorna lentamente alla posizione di partenza controllata."
+],
+"view": "front view"
+},
+"rotazione_esterna_cavo": {
+"end": "Elbows flared, pull rope toward face separating hands, upper arms parallel to ground, hands beside ears, rope near nose and face.",
+"end_img": "standing pulling rope to face, elbows high and flared, hands separated beside ears, rope close to nose, upper arms parallel to ground",
+"errors_it": [
+"Abbassare le braccia anziché tirare verso il viso",
+"Usare il tronco per tirare invece delle spalle"
+],
+"muscles": "Posterior deltoids and upper back",
+"setup": "High cable pulley with rope attachment, standing facing pulley, feet shoulder-width, both hands holding rope with neutral grip, cable visible.",
+"start": "Standing facing high pulley, arms extended forward holding rope with both hands, palms facing inward, upper arms slightly forward and parallel to ground.",
+"start_img": "standing facing a high cable with rope, arms extended forward holding rope with both hands, palms inward, cable taut",
+"steps_it": [
+"Affronta la puleggia alta e afferra la corda con entrambe le mani.",
+"Tira la corda verso il viso separando le mani.",
+"Mantieni gli avambracci davanti al volto e le braccia parallele al suolo.",
+"Ritorna lentamente alla posizione di partenza controllando la corda."
+],
+"view": "front view"
+},
+"skip_veloce": {
+"end": "Short quick hop on right foot with left knee driven upward, low flight time, ankle and knee slightly bent on landing, arms pumping.",
+"end_img": "executing a quick low hop on right foot, left knee driven upward, arms pumping, feet close to ground",
+"errors_it": [
+"Saltare troppo alto",
+"Atterrare con tallone piatto"
+],
+"muscles": "Quadriceps and calf muscles",
+"setup": "No equipment; stand upright with one foot slightly forward (right), knees soft, arms relaxed ready to pump.",
+"start": "Upright relaxed posture with right foot slightly forward, weight evenly distributed, arms hanging naturally at sides ready to swing.",
+"start_img": "standing upright with right foot slightly forward, arms relaxed at sides, ready to begin skipping",
+"steps_it": [
+"Stai eretto con un piede leggermente avanti.",
+"Esegui un rapido passo-salto mantenendo basso il tempo di volo.",
+"Alterna rapido destra-destra poi sinistra-sinistra mantenendo ritmo.",
+"Usa braccia per coordinare e mantenere velocità."
+],
+"view": "side view"
+},
+"curl_delle_dita_bilanciere": {
+"end": "Fingers curled fully closing around bar, bar lifted toward knuckles, wrists slightly flexed, elbows remain at sides, forearms contracted.",
+"end_img": "standing with fingers curled tightly around barbell, bar lifted toward knuckles, wrists slightly flexed, elbows pinned at sides",
+"errors_it": [
+"Curvare i polsi durante il movimento",
+"Muovere i gomiti invece delle dita"
+],
+"muscles": "Forearm flexors (finger flexors)",
+"setup": "Stand feet slightly wider than shoulders, hold straight barbell with palms up shoulder-width, elbows fixed at sides, barbell with bumper plates visible.",
+"start": "Standing upright, barbell held in both hands at mid-thigh, palms up, fingers partially open so bar rests on fingertips, elbows at sides.",
+"start_img": "standing upright holding barbell in both hands at mid-thigh, palms up, bar resting on fingertips, elbows at sides",
+"steps_it": [
+"Afferra il bilanciere con i palmi rivolti verso l'alto.",
+"Lascia scorrere il bilanciere lungo le dita estese.",
+"Richiudi le dita e curl il bilanciere verso l'alto.",
+"Mantieni i gomiti fermi e controlla la discesa."
+],
+"view": "side view"
+},
+"croci_cavi_panca_piana": {
+"end": "Arms brought together in a semi-circle, hands meet in front of lower chest, elbows still slightly bent, chest squeezed, handles close together.",
+"end_img": "lying on bench with arms brought together in front of lower chest, handles meeting, elbows still slightly bent, chest contracted",
+"errors_it": [
+"Estendere completamente il gomito",
+"Sollevarsi con il busto per aiutare il movimento"
+],
+"muscles": "Pectoral major and minor",
+"setup": "Flat bench centered between two low pulleys, lie supine with chest aligned to pulleys, feet on floor, single handle in each hand, slight elbow bend.",
+"start": "Lying supine on bench, arms extended wide to sides parallel to floor with slight constant elbow bend, handles in hands palms up, chest open.",
+"start_img": "lying on flat bench between low pulleys, arms extended wide to sides, slight elbow bend, handles in both hands",
+"steps_it": [
+"Posiziona la panca tra le pulegge basse e sdraiati supino.",
+"Afferra i manici con i palmi rivolti verso l'alto.",
+"Esegui un arco semicircolare portando le mani davanti al petto basso.",
+"Rilascia lentamente mantenendo il controllo e il gomito piegato."
+],
+"view": "front view"
+},
+"ginocchia_petto_panca": {
+"end": "Torso remains flat on bench, hips and knees flexed, thighs pulled toward midsection so knees near chest, hands still under glutes.",
+"end_img": "Lying on back on a bench with hips at edge, hands under glutes, arms close to torso, knees pulled up so thighs near chest.",
+"errors_it": [
+"Sollevare il bacino dalla panca.",
+"Usare slancio anziché controllo."
+],
+"muscles": "abdominal muscles and obliques",
+"setup": "Flat padded bench. Lie supine with hips near bench edge, legs hanging off end. Hands placed under glutes, palms down. Head on bench, feet together, knees extended.",
+"start": "Supine on bench, torso flat, hips neutral, legs fully extended off bench, knees straight, hands under glutes; shoulders relaxed, feet together.",
+"start_img": "Lying on back on a bench with hips at edge, hands under glutes, arms close to torso, legs straight out off the end, toes together.",
+"steps_it": [
+"Sdraiati con i fianchi al bordo della panca.",
+"Posiziona le mani sotto i glutei, gambe estese fuori dalla panca.",
+"Espira e piega le ginocchia portandole verso il petto.",
+"Inspira e estendi lentamente le gambe tornando alla posizione iniziale."
+],
+"view": "side view"
+},
+"sollevamento_gambe_panca": {
+"end": "Legs raised together until vertical (90° to floor), hips flexed, knees slightly bent but long, torso pressed flat, hands under glutes.",
+"end_img": "Lying on back on a bench with hips at edge, hands under glutes, arms close to torso, legs lifted up vertical over hips, feet together.",
+"errors_it": [
+"Inarcare la zona lombare.",
+"Lasciare cadere le gambe velocemente."
+],
+"muscles": "abdominal muscles and obliques",
+"setup": "Flat padded bench. Lie supine with hips at bench edge, legs hanging off end. Hands under glutes, palms down. Head on bench, feet together, knees slightly unlocked.",
+"start": "Supine on bench, torso flat, legs extended straight down off bench, knees slightly soft, hands under glutes, feet together.",
+"start_img": "Lying on back on a bench with hips at edge, hands under glutes, arms close to torso, legs straight down off bench, feet together.",
+"steps_it": [
+"Sdraiati con i fianchi al bordo e mani sotto i glutei.",
+"Mantieni le gambe estese e i piedi uniti.",
+"Espira e solleva le gambe fino a 90 gradi.",
+"Inspira e abbassa lentamente le gambe controllando."
+],
+"view": "side view"
+},
+"curl_panca_inclinata_polsi_flessi": {
+"end": "Arms curled, forearms vertical with dumbbells near shoulders, biceps fully contracted, elbows fixed at sides, wrists still pulled back, torso stable.",
+"end_img": "Seated on an incline bench, holding dumbbells near shoulders with elbows at sides, palms facing forward, wrists pulled back, feet on floor.",
+"errors_it": [
+"Oscillare il busto avanti e indietro.",
+"Ruotare i polsi durante la risalita."
+],
+"muscles": "biceps",
+"setup": "Adjustable bench reclined to 45°. Sit with back against pad, feet on floor. Hold a black hex dumbbell in each hand, palms facing forward, wrists extended back.",
+"start": "Seated on 45° incline, torso supported, arms hanging at sides, elbows close, palms supinated, wrists pulled back (knuckles angled rearward), dumbbells at thigh level.",
+"start_img": "Seated on an incline bench, back against pad, holding a dumbbell in each hand at sides, palms facing forward, wrists pulled back, feet on floor.",
+"steps_it": [
+"Siedi sullo schienale inclinato a 45° con i manubri in mano.",
+"Mantieni i gomiti vicino al busto e i polsi tirati indietro.",
+"Espira e fletti i gomiti per avvicinare i manubri alle spalle.",
+"Controlla la discesa fino alla posizione iniziale."
+],
+"view": "side view"
+},
+"glute_ham_raise_terra": {
+"end": "Torso lowered forward by knee extension, body nearly horizontal, hips neutral, hands placed on floor in front to catch, feet still braced.",
+"end_img": "Kneeling lowered forward nearly horizontal with hands on the floor ahead, feet braced, knees extended forward, torso long and straight.",
+"errors_it": [
+"Flettere i fianchi durante la discesa.",
+"Lasciare i piedi non bloccati."
+],
+"muscles": "hamstrings",
+"setup": "Kneeling on mat with shins vertical, feet braced under a partner or stable object. Torso upright, hands free and ready in front. Knees hip-width apart.",
+"start": "Kneeling upright, hips extended, torso vertical, knees bent ~90°, feet secured, hands relaxed in front of chest ready to reach forward.",
+"start_img": "Kneeling upright on a mat with feet braced under an object, hands in front of chest, torso vertical, knees bent and feet secured.",
+"steps_it": [
+"Inginocchiati con i piedi bloccati sotto un oggetto o partner.",
+"Mantieni il busto eretto e i glutei attivi.",
+"Estendi le ginocchia abbassando il corpo in avanti controllato.",
+"Usa i glutei/hamstring e le mani per tornare alla posizione iniziale."
+],
+"view": "side view"
+},
+"floor_press_bilanciere": {
+"end": "Arms fully extended pressing the bar upward with wrists and elbows aligned over shoulders, bar held above chest, shoulder blades stable, feet on floor.",
+"end_img": "Lying on back on the floor holding the barbell overhead with arms fully extended, wrists aligned, elbows stacked over shoulders, feet flat.",
+"errors_it": [
+"Sbottonare le scapole o spalle incurvate.",
+"Rimbalzare il bilanciere sul petto."
+],
+"muscles": "triceps",
+"setup": "Power rack with j-hooks adjusted. Lie supine on floor with head near rack. Straight Olympic barbell with black bumper plates on hooks, grip shoulder-width, feet flat on floor, shoulder blades retracted.",
+"start": "Barbell lowered and paused with the bar contacting lower chest/upper stomach, elbows tucked with upper arms touching the floor, wrists stacked, feet flat.",
+"start_img": "Lying on back on the floor under a barbell, holding the bar over lower chest with elbows tucked and upper arms contacting the floor, feet flat.",
+"steps_it": [
+"Sdraiati a terra con la testa vicino al rack e scapole retratte.",
+"Afferra il bilanciere con presa alla larghezza delle spalle.",
+"Abbassa il bilanciere fino al petto finché le braccia toccano il pavimento.",
+"Spingi esplosivamente il bilanciere fino alle braccia completamente estese."
+],
+"view": "side view"
+},
+"floor_press_catene": {
+"end": "Arms fully extended pressing bar upward; chains lifted off floor ends, bar over chest, elbows and wrists aligned, feet flat, shoulders stable.",
+"end_img": "Lying on back on the floor holding the barbell arms extended overhead with chains lifted along bar ends, elbows and wrists aligned, feet flat.",
+"errors_it": [
+"Far strisciare le catene contro le piastre.",
+"Allargare eccessivamente i gomiti durante la spinta."
+],
+"muscles": "triceps",
+"setup": "Power rack with j-hooks adjusted. Lie supine on floor. Straight Olympic barbell with black bumper plates and chains draped over each bar end, grip shoulder-width, feet flat, scapulae retracted.",
+"start": "Barbell lowered and paused with bar contacting lower chest/upper stomach, chains draped over bar ends resting partly toward floor, elbows tucked, wrists stacked.",
+"start_img": "Lying on back on the floor under a barbell with chains draped over each end, holding bar on lower chest with elbows tucked and feet flat.",
+"steps_it": [
+"Sdraiati a terra con la testa vicino al rack e scapole retratte.",
+"Assicurati che le catene siano drappeggiate sui lati del bilanciere.",
+"Abbassa il bilanciere fino al petto con i gomiti stretti.",
+"Spingi fino alle braccia estese mantenendo controllo delle catene."
+],
+"view": "side view"
+},
+"sforbiciate": {
+"end": "Prone on bench holding front edge, left leg lifted higher than right (alternating), right leg lower, legs straight, toes pointed, hips stable.",
+"end_img": "Lying face down on a bench gripping front edge, left leg lifted higher and right leg lower in alternating flutter kick, toes pointed.",
+"errors_it": [
+"Arcuare la schiena lombare.",
+"Muovere le gambe troppo velocemente."
+],
+"muscles": "gluteal muscles",
+"setup": "Flat bench. Lie facedown with hips on the bench edge, chest supported, hands gripping front edge of bench, legs extended straight off end, toes pointed, feet elevated off floor.",
+"start": "Prone on bench with hips at edge, hands holding front bench edge, legs together and held level with hips, toes pointed, glutes and hamstrings engaged.",
+"start_img": "Lying face down on a bench with hips at edge, hands gripping front edge, legs together extended level with hips, toes pointed.",
+"steps_it": [
+"Sdraiati prono con i fianchi al bordo e mani sulla parte anteriore della panca.",
+"Attiva glutei e femorali mantenendo le gambe dritte.",
+"Alterna sollevando una gamba più dell'altra in modo controllato.",
+"Mantieni il movimento fluido e respira normalmente."
+],
+"view": "side view"
+},
+"squat_frankenstein": {
+"end": "Deep front squat position: hips dropped so hamstrings contact calves, torso still upright, elbows high, bar held against throat, knees flexed and feet flat.",
+"end_img": "In a deep front squat with hips down and hamstrings near calves, holding the barbell on the throat, arms extended forward, torso upright, feet flat.",
+"errors_it": [
+"Rinunciare a tenere i gomiti alti.",
+"Inclinare eccessivamente il busto avanti."
+],
+"muscles": "quadriceps",
+"setup": "Straight Olympic barbell held on front of shoulders against throat. Stand feet shoulder-width, toes slightly out, arms extended forward parallel, elbows high, torso upright.",
+"start": "Standing upright with barbell resting on the front of shoulders/throat, arms extended forward, shoulders pushed forward creating a shelf, torso vertical, knees and hips extended.",
+"start_img": "Standing upright holding a barbell on the front of the shoulders at the throat, arms extended forward, elbows high, feet shoulder-width apart.",
+"steps_it": [
+"Posiziona il bilanciere davanti sulle spalle con gomiti alti e braccia tese in avanti.",
+"Spingi le spalle in avanti creando una mensola per il bilanciere.",
+"Fletti anche e ginocchia abbassando i fianchi tra i piedi fino al fondo.",
+"Spingi sui talloni e estendi anche e ginocchia per tornare in piedi."
+],
+"view": "side view"
+},
+"squat_jump": {
+"end": "Mid-flight after forward leap: hips and knees near full extension, feet off ground, torso held upright, hands remain behind head, body projecting forward.",
+"end_img": "in mid-air having just jumped forward, legs near extended, feet off ground, hands still behind head, torso upright and slightly forward",
+"errors_it": [
+"Saltare troppo in alto invece che in avanti",
+"Ginocchia che valgono verso l'interno"
+],
+"muscles": "Quadriceps, glutes, calves",
+"setup": "No equipment. Stand feet shoulder-width, toes slightly out, hands interlaced behind head, neutral spine, weight evenly distributed on mid-foot.",
+"start": "Deep squat: hips back, knees strongly flexed, torso upright, head up, elbows back, hands behind head, feet flat and planted.",
+"start_img": "crouched low in a squat with hands clasped behind head, elbows back, knees bent, hips down, feet flat on floor",
+"steps_it": [
+"Posizionati con piedi larghezza spalle e mani dietro la testa.",
+"Accovacciati mantenendo busto eretto e sguardo avanti.",
+"Esplodi in un salto in avanti spingendo con talloni e quadricipiti.",
+"Assorbi l'atterraggio sulle gambe e ripeti il salto immediatamente."
+],
+"view": "side view"
+},
+"sit_up_rana": {
+"end": "Upper torso curled upward (quarter sit-up), upper chest lifted off mat, lower back flattened to mat, neck neutral, legs unchanged.",
+"end_img": "shoulders and upper chest lifted in a quarter sit-up, arms still crossed on chest, lower back pressed to mat, legs remain in diamond",
+"errors_it": [
+"Tirare il collo con le mani",
+"Sollevare tutta la schiena invece del quarto"
+],
+"muscles": "Rectus abdominis, obliques",
+"setup": "No equipment; lie supine on mat, legs in butterfly (soles together), outer thighs touching mat, arms crossed over chest, neck neutral.",
+"start": "Back flat on mat, hips and knees relaxed in diamond, arms crossed on chest, lower back neutral, head resting, feet together.",
+"start_img": "lying flat on back with legs in butterfly, soles together and knees flared, arms crossed over chest, head on mat",
+"steps_it": [
+"Sdraiati con piante dei piedi unite e cosce esterne a contatto col tappetino.",
+"Incrocia le braccia sul petto mantenendo il collo rilassato.",
+"Espira e arrotonda il busto sollevando petto e spalle il primo quarto del sit-up.",
+"Mantieni la posizione un secondo e inspira abbassando lentamente."
+],
+"view": "side view"
+},
+"front_squat_panca": {
+"end": "Seated back lightly to touch bench: hips pushed back, knees deeply flexed, glutes contacting bench, torso upright, elbows maintained high, weight on heels.",
+"end_img": "sitting back to lightly touch bench with glutes, knees bent, barbell on deltoids, elbows still high, feet flat and weight on heels",
+"errors_it": [
+"Gomiti che cadono in avanti",
+"Schiena che si arrotonda durante la discesa"
+],
+"muscles": "Quadriceps, glutes, core",
+"setup": "Olympic barbell with black bumper plates racked at chest height; flat bench set behind at hip height; feet shoulder-width, toes slightly out; clean/front grip, elbows high.",
+"start": "Standing with bar on front deltoids, elbows high, upper arms slightly above parallel, torso upright, knees and hips fully extended, feet flat shoulder-width.",
+"start_img": "standing with barbell resting on front deltoids, hands under bar, elbows high, feet shoulder-width, flat bench set just behind",
+"steps_it": [
+"Posiziona il bilanciere sulle deltoidi anteriori con gomiti alti.",
+"Solleva il bilanciere dal rack estendendo gambe e busto.",
+"Scendi controllato finché i glutei sfiorano la panca mantenendo busto eretto.",
+"Spingi con i talloni e torna in piedi estendendo gambe e anche."
+],
+"view": "side view"
+},
+"box_jump_frontale": {
+"end": "Landed on box with knees bent absorbing, feet flat and centered, hips slightly back, arms forward/up, torso upright absorbing impact.",
+"end_img": "landed on top of box with knees bent absorbing the landing, feet flat and centered, arms forward and slightly raised",
+"errors_it": [
+"Atterrare con gambe rigide senza ammortizzare",
+"Saltare indietro o troppo lontano dalla box"
+],
+"muscles": "Hamstrings, glutes, calves",
+"setup": "Plyo box placed 1–2 feet ahead on flat floor; feet shoulder-width, toes neutral; hands free to swing; box height appropriate to athlete.",
+"start": "Shallow squat with hips back and knees flexed, torso slightly inclined forward, arms swung behind ready to drive, feet flat shoulder-width.",
+"start_img": "standing in shallow squat with feet shoulder-width, arms swung back, box one to two feet ahead, ready to jump",
+"steps_it": [
+"Posizionati di fronte alla box con piedi alla larghezza delle spalle.",
+"Effettua un breve accosciamento e porta le braccia indietro.",
+"Estendi rapidamente anche, ginocchia e caviglie per saltare sulla box.",
+"Aterri con ginocchia flesse per assorbire e poi scendi controllato."
+],
+"view": "side view"
+},
+"alzate_frontali_cavo": {
+"end": "Left arm raised forward to slightly above parallel, slight elbow bend, palm turned down, shoulder flexed, torso unchanged, pause at top.",
+"end_img": "left arm lifted forward to just above shoulder level holding cable handle, elbow slightly bent, torso stationary, right arm relaxed",
+"errors_it": [
+"Oscillazione del busto per aiutare il movimento",
+"Sollevare il braccio oltre il controllo o ruotare il polso"
+],
+"muscles": "Anterior deltoid, shoulder stabilizers",
+"setup": "Low pulley cable with single handle attached at floor level; stand facing away from pulley, feet hip-width, hold handle in left hand in front of thigh, palm facing thigh.",
+"start": "Left arm extended down with slight elbow bend, palm facing thigh, torso upright and still, right arm relaxed, cable taut toward low pulley.",
+"start_img": "standing away from low cable with left arm straight down holding handle in front of thigh, palm facing thigh, right hand relaxed",
+"steps_it": [
+"Imposta il carico al cavo basso e impugna la maniglia con la sinistra.",
+"Stai con busto fermo e braccio teso davanti alla coscia.",
+"Solleva il braccio in avanti mantenendo il corpo immobile fino oltre la parallela.",
+"Abbassa lentamente controllando il ritorno alla posizione iniziale."
+],
+"view": "side view"
+},
+"saltelli_sugli_ostacoli": {
+"end": "In mid-air over cone with both feet together slightly tucked, knees slightly flexed, arms forward to assist, body cleared over cone, preparing to land.",
+"end_img": "mid-air above the cone with both feet together slightly tucked, arms forward, knees softly flexed, body cleared over cone",
+"errors_it": [
+"Atterrare rigido senza piegare le ginocchia",
+"Non usare le braccia per aiutare il salto"
+],
+"muscles": "Quadriceps, calves, glutes",
+"setup": "Row of small cones spaced a few feet apart on flat floor; stand before first cone, feet shoulder-width, ready to jump, hands free to swing.",
+"start": "Slight squat with knees bent, hips back, arms swung behind, weight on mid-foot, eyes forward, ready to jump over first cone.",
+"start_img": "standing before the first cone in slight squat with feet shoulder-width, arms swung back, ready to leap",
+"steps_it": [
+"Allinea una fila di coni a distanza regolare.",
+"Assumi una lieve posizione accovacciata prima del salto.",
+"Salta con entrambi i piedi oltre il primo cono sfruttando le braccia.",
+"Assorbi l'atterraggio piegando le ginocchia e rimbalza sul prossimo ostacolo."
+],
+"view": "side view"
+},
+"alzate_frontali_panca_inclinata": {
+"end": "Dumbbells raised straight up slightly above shoulder height, arms extended and locked, elbows soft, shoulders elevated, back and head remain on bench.",
+"end_img": "dumbbells raised straight up slightly above shoulders, arms extended, back and head still on pad, feet planted on floor",
+"errors_it": [
+"Flettere esageratamente i gomiti durante il sollevamento",
+"Sollevare il busto dalla panca per guadagnare slancio"
+],
+"muscles": "Anterior deltoid, shoulder stabilizers",
+"setup": "Adjustable bench set to 30–45° incline; sit with back against pad, feet on floor, hold black hex dumbbells at thighs, palms facing down, head resting on bench.",
+"start": "Seated with dumbbells just above thighs, arms extended in front with slight elbow lock, palms down, back and head supported by bench, feet on floor.",
+"start_img": "seated on incline bench with back and head against pad, dumbbells held in front at thigh level, palms facing down, feet on floor",
+"steps_it": [
+"Siediti con schiena e testa appoggiate sulla panca inclinata.",
+"Tieni i manubri davanti alle cosce con i palmi verso il basso.",
+"Solleva i manubri in linea con le spalle mantenendo i gomiti fermi.",
+"Abbassa controllato fino alla posizione iniziale mantenendo il busto appoggiato."
+],
+"view": "side view"
+},
+"alzate_frontali_disco": {
+"end": "Plate raised to just above shoulder level, arms extended and locked with slight bend, torso stationary, shoulders elevated slightly, feet grounded.",
+"end_img": "plate raised to just above shoulder level with both hands at 3 and 9 o'clock, arms extended, torso still, feet shoulder-width",
+"errors_it": [
+"Oscillare il torso per aiutare il movimento",
+"Flettere troppo i gomiti invece di tenere le braccia parallele"
+],
+"muscles": "Anterior deltoid, shoulder stabilizers",
+"setup": "Stand upright holding a weight plate with both hands at 3 and 9 o'clock in front of waist; arms extended with slight elbow bend, palms facing each other, feet shoulder-width.",
+"start": "Plate held low at waist, arms extended with slight elbow bend, torso upright, shoulders relaxed, feet flat shoulder-width.",
+"start_img": "standing upright holding a weight plate with both hands at 3 and 9 o'clock in front of waist, arms extended",
+"steps_it": [
+"Afferra il disco nelle posizioni 3 e 9 e stai eretto.",
+"Mantieni i gomiti leggermente piegati e il busto immobile.",
+"Solleva il disco davanti fino a poco oltre l'altezza delle spalle.",
+"Abbassa lentamente controllando senza oscillare il corpo."
+],
+"view": "side view"
+},
+"alzata_frontale_pullover": {
+"end": "Supine, arms moved in a semicircle overhead to the opposite side; arms nearly straight, slight elbow bend, bar above head, palms rotated to face the ceiling, torso flat on bench.",
+"end_img": "lying flat on bench holding the barbell overhead above the head and slightly behind, arms extended with slight bend, palms facing ceiling, feet on floor",
+"errors_it": [
+"Piegare troppo i gomiti",
+"Usare slancio del tronco"
+],
+"muscles": "Pectoralis major and anterior deltoids",
+"setup": "Flat bench. Lie supine holding an Olympic barbell with palms down about 15 inches apart. Feet flat on floor, head and shoulders on bench, arms extended holding bar above upper thighs.",
+"start": "Supine on bench, barbell resting on upper thighs, arms extended and locked with a slight elbow bend, shoulders neutral, hips and knees relaxed, palms facing down.",
+"start_img": "lying flat on bench holding the barbell across upper thighs, arms extended, palms down, feet flat on floor, bar centered over torso",
+"steps_it": [
+"Sdraiati supino con il bilanciere sulle cosce, impugnatura a palmi verso il basso.",
+"Estendi le braccia e mantieni un piccolo piegamento dei gomiti.",
+"Alza il bilanciere con un movimento semicircolare fino sopra la testa.",
+"Controlla la discesa invertendo il percorso fino alla posizione iniziale."
+],
+"view": "side view"
+},
+"front_squat_presa_olimpica": {
+"end": "Deep squat with hips below parallel (hamstrings near calves), torso upright, elbows kept high, knees tracking over toes, weight through heels/mid-foot, bar resting on deltoids.",
+"end_img": "in a deep front squat holding the barbell on the deltoids, torso upright, elbows high, knees pushed out, feet planted, bar centered on chest",
+"errors_it": [
+"Gomiti che cadono verso il basso",
+"Sollevare i talloni dal suolo"
+],
+"muscles": "Quadriceps, gluteus maximus",
+"setup": "Barbell in rack slightly below shoulder height. Bar racked on anterior deltoids/clavicles in clean grip (fingers under bar), feet shoulder-width, toes slightly out, elbows high and forward.",
+"start": "Standing upright, bar on deltoids, fingers under bar, elbows up, chest tall, knees unlocked, weight evenly on heels/mid-foot, gaze forward.",
+"start_img": "standing upright holding the barbell on the front deltoids with fingers under the bar, elbows high, feet shoulder-width, bar across shoulders",
+"steps_it": [
+"Sistema il bilanciere sul rack e posizionalo sulle spalle anteriori.",
+"Afferra in presa olimpica con le dita, gomiti alti, petto in fuori.",
+"Scendi sedendoti tra le gambe fino a massima profondità controllata.",
+"Spingi con i talloni e rialzati fino alla posizione iniziale."
+],
+"view": "side view"
+},
+"front_squat_due_kettlebell": {
+"end": "Deep squat with hips below parallel, torso upright, elbows remaining high, kettlebells held at shoulders, knees tracking outward, feet planted.",
+"end_img": "in a deep squat holding kettlebells at the shoulders, torso upright, elbows high, knees pushed outward, feet flat",
+"errors_it": [
+"Torace che cade in avanti",
+"Ginocchia che crollano verso l’interno"
+],
+"muscles": "Quadriceps, gluteus maximus",
+"setup": "Two kettlebells racked at shoulders (handles across palms), elbows forward and high, feet shoulder-width, toes slightly out, upright torso.",
+"start": "Standing upright, two kettlebells racked at each shoulder, palms facing each other, elbows high, chest up, feet shoulder-width, weight on heels/mid-foot.",
+"start_img": "standing upright holding two kettlebells racked at the shoulders, palms facing each other, elbows lifted, feet shoulder-width apart",
+"steps_it": [
+"Clean i kettlebell al petto e posizionali in presa racked.",
+"Mantieni petto e testa alzati, gomiti davanti.",
+"Scendi in accosciata mantenendo il busto verticale e le ginocchia fuori.",
+"Spingi con i talloni e risali controllando il movimento."
+],
+"view": "side view"
+},
+"alzate_frontali_due_manubri": {
+"end": "Arms lifted forward to slightly above parallel to floor, slight elbow bend maintained, palms down, shoulders elevated but torso still static.",
+"end_img": "standing holding dumbbells raised forward to just above shoulder line, arms slightly bent, palms facing down, torso still",
+"errors_it": [
+"Oscillare il tronco in avanti",
+"Sollevare oltre la parallela"
+],
+"muscles": "Anterior deltoids",
+"setup": "Stand upright holding a pair of hex dumbbells at front of thighs, arms extended, palms facing thighs. Feet hip-to-shoulder width, knees soft, spine neutral.",
+"start": "Standing tall, dumbbells resting in front of thighs, arms straight with slight elbow bend, shoulders relaxed, core braced, palms facing down.",
+"start_img": "standing upright holding two dumbbells in front of thighs, arms extended, palms facing thighs, feet shoulder-width apart",
+"steps_it": [
+"Parti con i manubri davanti alle cosce, palmi rivolti verso il basso.",
+"Solleva i manubri in avanti senza oscillare il busto.",
+"Arriva poco oltre la parallela e tieni un secondo la posizione.",
+"Abbassa lentamente i manubri al punto di partenza controllando la discesa."
+],
+"view": "side view"
+},
+"lat_machine_escursione_completa": {
+"end": "Bar pulled to upper chest, elbows down and back, hands rotated so palms face each other, chest tall, scapulae retracted, cable taut to pulleys.",
+"end_img": "seated holding the wide bar pulled to the upper chest, elbows down and back, hands rotated so palms face each other, cable taut",
+"errors_it": [
+"Tirare dietro al collo",
+"Inarcare eccessivamente la schiena"
+],
+"muscles": "Latissimus dorsi, rhomboids, lower back",
+"setup": "Seated at a high pulley lat station, thighs locked under knee pads, long wide bar attached to high cable. Hands wide on bar, palms facing forward at start.",
+"start": "Seated upright, chest lifted with slight lumbar arch, arms fully extended overhead holding the wide bar, palms facing forward, cable taut above.",
+"start_img": "seated upright holding the wide bar overhead with arms straight, hands wide and palms forward, thighs under pads, cable above",
+"steps_it": [
+"Siediti con le cosce bloccate sotto i cuscinetti e afferra la sbarra ampia.",
+"Mantieni il petto alto e una lieve curva lombare.",
+"Tira la sbarra con gomiti verso il basso fino all’altezza del petto.",
+"Ritorna lentamente alla posizione completamente estesa controllando la risalita."
+],
+"view": "front view"
+},
+"trazioni_sterno": {
+"end": "Chest pulled up toward the bar (sternum to bar), elbows pulled down toward the ribcage, shoulders retracted, torso slightly leaned back, chin near bar.",
+"end_img": "pulling chest up to the bar with elbows tucked toward the sides, chest close to the bar, legs hanging back",
+"errors_it": [
+"Usare slancio o kipping",
+"Tirare solo con le braccia senza retrarre le scapole"
+],
+"muscles": "Latissimus dorsi, rhomboids, posterior shoulders",
+"setup": "Overhead horizontal pull-up bar set above head height. Use chosen grip width (shoulder-width or slightly wider). Bodyweight, feet free, core braced.",
+"start": "Dead hang from bar with arms fully extended, shoulders down, core braced, legs slightly back or straight, gaze forward.",
+"start_img": "hanging from a pull-up bar with arms fully extended, hands gripping the bar, legs hanging, core braced",
+"steps_it": [
+"Afferra la sbarra con presa scelta e corpo sospeso a braccia distese.",
+"Contrai le scapole e il core prima di iniziare la trazione.",
+"Tira portando il petto verso la sbarra e i gomiti vicini ai fianchi.",
+"Scendi controllato fino a braccia completamente estese."
+],
+"view": "side view"
+},
+"glute_ham_raise": {
+"end": "Body upright from knees to shoulders, knees flexed, hips fully extended, toes driving into footplate, torso straight and aligned over knees.",
+"end_img": "upright on the glute-ham machine with body straight from knees to shoulders, feet pressing into footplate, knees flexed, torso vertical",
+"errors_it": [
+"Usare slancio con le anche",
+"Iperestendere la zona lombare"
+],
+"muscles": "Hamstrings, gluteus maximus, spinal erectors",
+"setup": "Glute-ham machine adjusted to body: feet anchored between rollers, knees just behind the pad, torso free to hinge, weight stack visible.",
+"start": "Face down with hips slightly extended, torso lowered toward floor, knees positioned just behind pad, feet pressed between rollers/footplate, spine neutral and slightly arched.",
+"start_img": "lying face down on the glute-ham machine with feet anchored between rollers, torso lowered toward the floor, knees behind pad",
+"steps_it": [
+"Regola la macchina e blocca i piedi tra i rulli.",
+"Parti dal basso con il busto rilassato e schiena arcuata leggermente.",
+"Fletti le ginocchia spingendo con le dita e porta il corpo in posizione eretta.",
+"Ritorna lentamente alla posizione iniziale controllando la discesa."
+],
+"view": "side view"
+},
+"slanci_dietro_quattro_zampe": {
+"end": "Right thigh raised until upper leg is parallel to the floor, knee staying at 90 degrees so calf remains vertical, glute contracted, pelvis stable.",
+"end_img": "on hands and knees with right thigh lifted so upper leg is parallel to floor, knee still bent, foot pointing back, glute contracted",
+"errors_it": [
+"Inarcare eccessivamente la schiena",
+"Raddrizzare il ginocchio durante il sollevamento"
+],
+"muscles": "Gluteus maximus, hamstrings",
+"setup": "Kneeling on mat in quadruped position, hands shoulder-width under shoulders, knees hip-width, starting leg knee bent 90 degrees, foot off the floor.",
+"start": "Quadruped position, right knee bent at 90 degrees, shin vertical, foot off ground, hands under shoulders, spine neutral, core braced.",
+"start_img": "on hands and knees with right knee bent 90 degrees and right foot off the floor, hands shoulder-width on the mat",
+"steps_it": [
+"Mettiti a quattro zampe con le mani sotto le spalle.",
+"Contrai l’addome e mantieni il bacino stabile.",
+"Espira e solleva la gamba piegata fino a portare la coscia parallela.",
+"Abbassa controllando e ripeti, poi cambia gamba."
+],
+"view": "side view"
+},
+"good_morning_dai_fermi": {
+"end": "hips extended to standing, knees slightly bent, torso upright with back arched, shoulders retracted, hands holding bar on rear shoulders.",
+"end_img": "standing upright holding bar across rear shoulders, arms straight with hands on bar, hips and knees extended, torso tall and back arched, barbell behind shoulders",
+"errors_it": [
+"Curvare la schiena durante il movimento",
+"Posizionare il bilanciere sulla cervicale"
+],
+"muscles": "hamstrings, glutes, erector spinae",
+"setup": "Olympic barbell with black bumper plates on rack at stomach height; bar racked across rear deltoids; feet hip-width, toes forward, slight knee bend.",
+"start": "torso hinged forward nearly parallel to floor, hips flexed, knees slightly bent, spine arched, shoulder blades pinched, hands gripping bar on rear shoulders.",
+"start_img": "bent-over torso nearly parallel to floor, hands gripping bar across rear shoulders, arms close to body, knees slightly bent, feet hip-width, barbell with bumper plates behind neck",
+"steps_it": [
+"Posizionati sotto il bilanciere e rack sulle spalle posteriori.",
+"Mantieni schiena contratta, scapole addotte, ginocchia leggermente piegate.",
+"Estendi i fianchi e i glutei per tornare in piedi esplosivamente.",
+"Abbassa il bilanciere controllando fino ai fermi."
+],
+"view": "side view"
+},
+"trazione_crunch": {
+"end": "chin at bar level with nose at bar, arms fully bent, shoulders elevated, knees pulled up to chest level, feet tucked.",
+"end_img": "pulled up with chin at bar level, arms bent, hands gripping bar, knees drawn to chest, feet tucked, body higher under the bar",
+"errors_it": [
+"Usare lo slancio delle gambe",
+"Allentare la presa durante la trazione"
+],
+"muscles": "abdominals and obliques",
+"setup": "horizontal chin-up bar above head height; underhand grip slightly wider than shoulders; knees bent 90°, thighs vertical, calves parallel to floor.",
+"start": "dead hang from bar with arms straight, palms facing you, shoulders engaged, knees bent 90° so thighs vertical and calves parallel, feet off floor.",
+"start_img": "hanging from bar with underhand grip, arms straight, hands shoulder-width-plus, knees bent 90 degrees, thighs vertical, calves parallel, body suspended",
+"steps_it": [
+"Afferra la sbarra con presa supinata, larghezza spalle.",
+"Piega le ginocchia a 90° e sospendi i piedi da terra.",
+"Tira il corpo verso la sbarra portando le ginocchia al petto.",
+"Abbassa lentamente controllando fino alla posizione iniziale."
+],
+"view": "side view"
+},
+"panca_inclinata_manubri_presa_neutra": {
+"end": "arms pressed up until nearly locked, dumbbells together above upper chest, palms facing, elbows nearly extended, torso braced on bench.",
+"end_img": "lying on incline bench pressing dumbbells up, arms nearly locked overhead, palms facing, dumbbells together above chest, feet planted",
+"errors_it": [
+"Sollevare il bacino dal banco",
+"Tenere i gomiti troppo chiusi"
+],
+"muscles": "pectoralis major, anterior deltoids, triceps",
+"setup": "adjustable bench set 30–45° incline; pair of black hex dumbbells; lie supine with feet on floor; neutral grip (palms facing each other).",
+"start": "dumbbells at shoulder width, elbows bent 90°, upper arms perpendicular to torso (in line with shoulders), palms neutral, back pressed to bench.",
+"start_img": "lying on 30–45° incline bench holding dumbbells at shoulder width, palms facing each other, elbows bent 90°, upper arms parallel to floor, feet on floor",
+"steps_it": [
+"Sdraiati su panca inclinata 30–45° con manubri in mano.",
+"Porta i gomiti a 90° con impugnatura neutra e spalle ferme.",
+"Spingi i manubri verso l'alto fino a quasi estensione completa.",
+"Abbassa lentamente controllando, dimezza la velocità rispetto alla salita."
+],
+"view": "side view"
+},
+"piegamenti_verticale": {
+"end": "lowered with head almost touching the floor, elbows strongly flexed, hands on floor, body held straight, feet against wall (bottom position before concentric).",
+"end_img": "lowered handstand with head almost touching floor, elbows bent, hands on floor, legs vertical against wall, body straight and controlled",
+"errors_it": [
+"Inarcare il corpo durante la discesa",
+"Lasciare che la testa colpisca il pavimento"
+],
+"muscles": "deltoids, triceps",
+"setup": "no equipment; hands placed on floor shoulder-width, body vertical with feet supported against wall, facing wall with head; hands directly under shoulders.",
+"start": "full handstand with arms straight, hands shoulder-width on floor, body straight, legs vertical with feet against wall, head facing the wall.",
+"start_img": "handstand against wall with arms straight, hands shoulder-width on floor, legs vertical with feet touching wall, body rigid and straight",
+"steps_it": [
+"Posiziona le mani a larghezza spalle e appoggia i piedi al muro.",
+"Entra in verticale mantenendo il corpo rigido e allineato.",
+"Abbassa lentamente finché la testa sfiora il pavimento.",
+"Spingi verso l'alto fino a quasi completa estensione dei gomiti."
+],
+"view": "front view"
+},
+"girata_dalla_sospensione": {
+"end": "full explosive extension of hips, knees, ankles; standing upright, shoulders shrugged, elbows beginning to flex, bar rising near upper thighs/hips.",
+"end_img": "after explosive extension standing upright, hips and knees extended, shoulders shrugged, elbows beginning to bend, barbell rising near hips",
+"errors_it": [
+"Curvare la schiena durante il sollevamento",
+"Iniziare il movimento dai polpacci"
+],
+"muscles": "quadriceps, glutes, hamstrings, traps",
+"setup": "Olympic barbell with black bumper plates; bar hanging at mid-thigh; shoulder-width double overhand or hook grip; feet shoulder-width, torso inclined forward.",
+"start": "bar at mid-thigh, arms straight, back flat, torso inclined forward, knees slightly bent, weight close to shins/thighs.",
+"start_img": "standing with barbell at mid-thigh, hands shoulder-width on bar, arms straight, torso inclined forward, knees slightly bent, feet shoulder-width",
+"steps_it": [
+"Assumi presa spalle e bilanciere all'altezza medio-femorale.",
+"Estendi esplosivamente fianchi, ginocchia e caviglie spingendo con i talloni.",
+"Shruga le spalle e tira il bilanciere verso l'alto.",
+"Raddrizzati completamente controllando la traiettoria del bilanciere."
+],
+"view": "side view"
+},
+"girata_dalla_sospensione_sotto_ginocchia": {
+"end": "explosive triple extension then receive: standing with bar racked on protracted shoulders, elbows high, hands relaxed touching throat, feet flat.",
+"end_img": "standing upright with bar racked on protracted shoulders touching throat, elbows high and forward, hands relaxed on the bar, feet flat",
+"errors_it": [
+"Gomiti rivolti indietro alla ricezione",
+"Non scendere nel rack/squat di ricezione"
+],
+"muscles": "quadriceps, glutes, hamstrings, traps",
+"setup": "Olympic barbell with black bumper plates; bar hanging just below the knees; shoulder-width double overhand or hook grip; feet shoulder-width, torso inclined forward.",
+"start": "bar just below knees, arms straight, back flat, torso inclined, knees slightly bent, hands shoulder-width, bar close to shins.",
+"start_img": "standing with barbell hanging just below the knees, hands shoulder-width, arms straight, torso inclined forward, knees slightly bent, feet shoulder-width",
+"steps_it": [
+"Impugna il bilanciere sotto le ginocchia con schiena neutra.",
+"Estendi esplosivamente fianchi e ginocchia e shrug le spalle.",
+"Tira sotto il bilanciere ruotando i gomiti sotto il carico.",
+"Ricevi in posizione di squat e risali guidando con i talloni."
+],
+"view": "side view"
+},
+"strappo_dalla_sospensione": {
+"end": "receive the bar overhead with arms fully extended while body low in a squat; bar locked overhead, feet in stable stance; then stand.",
+"end_img": "received in a low squat with barbell locked overhead, arms fully extended, hands wide on bar, feet in wider stable stance, body low",
+"errors_it": [
+"Tirare con le braccia invece delle gambe",
+"Non muovere i piedi nella posizione di ricezione"
+],
+"muscles": "hamstrings, glutes, deltoids, traps",
+"setup": "Olympic barbell with black bumper plates; wide overhand or hook grip; feet under hips; bar held at hip level; knees slightly bent, torso inclined.",
+"start": "bar at hips, wide overhand grip, arms straight, knees slightly bent, torso inclined, feet under hips.",
+"start_img": "standing with barbell at hips, wide overhand grip, arms straight, knees slightly bent, torso inclined, feet under hips",
+"steps_it": [
+"Assumi presa ampia con il bilanciere all'altezza dei fianchi.",
+"Estendi esplosivamente gambe e fianchi e shrug le spalle.",
+"Al picco di estensione tira sotto il bilanciere e sposta i piedi.",
+"Ricevi il bilanciere sopra la testa con braccia completamente estese."
+],
+"view": "side view"
+},
+"strappo_dalla_sospensione_sotto_ginocchi": {
+"end": "receive bar overhead with arms fully extended while body as low as possible in a squat; bar locked overhead, feet stable, then stand.",
+"end_img": "received low in a squat with barbell locked overhead, arms fully extended above head, hands wide on bar, feet stable, body low",
+"errors_it": [
+"Tirare solo con le braccia",
+"Ricevere con braccia non pienamente estese"
+],
+"muscles": "hamstrings, glutes, deltoids, traps",
+"setup": "Olympic barbell with black bumper plates; wide overhand or hook grip; feet under hips; bar hanging just below the knees; knees slightly bent.",
+"start": "bar just below the knees, wide grip, arms straight, torso inclined forward, knees slightly bent, feet under hips.",
+"start_img": "standing with barbell hanging just below the knees, wide overhand grip, arms straight, torso inclined, knees slightly bent, feet under hips",
+"steps_it": [
+"Impugna il bilanciere sotto le ginocchia con presa ampia.",
+"Estendi velocemente fianchi e ginocchia e shrug le spalle.",
+"Tira sotto il bilanciere e porta i piedi nella posizione di ricezione.",
+"Ricevi in basso con le braccia completamente estese sopra la testa."
+],
+"view": "side view"
+},
+"good_morning_bilanciere_appeso": {
+"end": "Hips fully extended to standing, torso vertical, knees slightly bent, bar still across rear shoulders with hands on bar, scapulae stable; chains slack as weight briefly supported by lifter.",
+"end_img": "standing upright holding barbell across rear shoulders, hands on bar, knees slightly bent, chains slack behind supporting rack, legs straightened compared to start.",
+"errors_it": [
+"Curvare la schiena e perdere l'arco lombare.",
+"Appoggiare il bilanciere sulle cervicali invece che sul dorso."
+],
+"muscles": "hamstrings, glutes, spinal erectors",
+"setup": "Olympic barbell with black bumper plates suspended from short chains at stomach height on rack; feet hip-width, toes forward, hands gripping bar just outside shoulders, knees slightly bent.",
+"start": "Hips hinged, torso near parallel to floor, back arched, knees slightly bent, bar across rear shoulders held by hands outside shoulders, scapulae pinched, cervical spine neutral; chains bearing some weight.",
+"start_img": "bent over with torso near parallel, hands gripping barbell across rear shoulders, elbows back, knees slightly bent, barbell with bumper plates suspended on short chains behind.",
+"steps_it": [
+"Posizionati sotto il bilanciere sospeso, piedi larghezza anche, bar sul dorso.",
+"Mantieni schiena arcuata, scapole serrate e ginocchia leggermente flesse.",
+"Estendi l'anca spingendo con glutei e femorali fino a stare in piedi.",
+"Abbassa lentamente finché il bilanciere è di nuovo sostenuto dalle catene."
+],
+"view": "side view"
+},
+"sollevamento_gambe_sbarra": {
+"end": "Legs raised so torso and legs form an L (legs horizontal), hips flexed, knees straight, hands gripping bar overhead, torso still vertical, hold briefly.",
+"end_img": "hanging from bar with legs lifted forward so torso and legs form an L, hands gripping bar overhead, legs straight and together, bodyweight held.",
+"errors_it": [
+"Oscillare il corpo per slancio.",
+"Piegare le ginocchia invece di mantenere le gambe dritte."
+],
+"muscles": "rectus abdominis, obliques",
+"setup": "Horizontal chin-up bar above head height; hands gripping bar slightly wider than shoulder width, arms fully extended, legs straight down together, pelvis slightly posterior.",
+"start": "Hanging from bar with arms straight overhead, scapulae engaged, torso vertical, legs straight and together pointing down, pelvis slightly rolled posterior, no external load.",
+"start_img": "hanging from pull-up bar with arms fully extended, hands gripping bar, legs straight down together, torso vertical, no external weight.",
+"steps_it": [
+"Afferra la sbarra mani larghezza spalle, braccia completamente estese.",
+"Posteriorizza il bacino e contrae l'addome.",
+"Solleva le gambe fino a formare un angolo retto con il busto.",
+"Abbassa lentamente controllando il movimento."
+],
+"view": "side view"
+},
+"pike_sbarra": {
+"end": "Pull hips up; legs driven toward bar with knees nearing extension, shins close to bar above, arms holding bar overhead, torso folded into pike position.",
+"end_img": "hanging with legs pulled up toward bar, hips sharply flexed, shins near bar above, hands gripping bar, knees straighter than start.",
+"errors_it": [
+"Usare lo slancio del corpo.",
+"Divaricare le gambe o non provare a stenderle."
+],
+"muscles": "rectus abdominis, obliques, hip flexors",
+"setup": "Horizontal chin-up bar above head; overhand grip slightly wider than shoulders, hands gripping bar, legs together, start with knees bent 90° and thighs forward parallel to floor.",
+"start": "Hang with arms extended, hands on bar, thighs forward parallel to floor, knees bent 90°, calves vertical, torso slightly flexed forward, pelvis neutral.",
+"start_img": "hanging from pull-up bar with hands shoulder-width, arms extended, thighs forward parallel to floor, knees bent 90°, calves vertical below.",
+"steps_it": [
+"Afferra la sbarra con presa prona appena più larga delle spalle.",
+"Inizia con ginocchia piegate 90°, cosce parallele a terra.",
+"Solleva le gambe verso l'alto avvicinando le tibie alla sbarra.",
+"Abbassa lentamente evitando slancio e oscillazioni."
+],
+"view": "side view"
+},
+"snatch_balance_spinta": {
+"end": "Received in a full overhead squat: arms locked overhead holding barbell, hips descended below parallel, torso upright, feet same position, knees tracking over toes.",
+"end_img": "deep squat with arms locked overhead holding barbell, hips below parallel, feet same, bar centered over head, elbows straight.",
+"errors_it": [
+"Sollevare il bilanciere solo con le braccia.",
+"Non scendere sotto la barra, ricezione alta e instabile."
+],
+"muscles": "quadriceps, glutes, shoulders",
+"setup": "Olympic barbell with bumper plates held across rear shoulders, light weight; feet slightly wider than hip-width, toes turned out, hands gripping bar outside shoulder line.",
+"start": "Standing tall with bar across rear shoulders, feet slightly wider than hips, knees slightly bent, torso upright, elbows down, hands gripping bar, gaze forward.",
+"start_img": "standing upright holding barbell across rear shoulders with hands gripping outside shoulders, feet slightly wider than hips, elbows down, bar resting on back.",
+"steps_it": [
+"Posiziona il bilanciere sul dorso con presa larga, piedi leggermente più larghi delle anche.",
+"Esegui un piccolo dip con le ginocchia e poi esplodi verso l'alto.",
+"Spingi la barra sopra la testa mentre scendi rapidamente sotto di essa.",
+"Ricevi in accosciata completa con braccia bloccate, poi rialzati."
+],
+"view": "side view"
+},
+"curl_cavi_alti": {
+"end": "Forearms curled so hands are beside ears holding handles, biceps contracted, upper arms remain parallel to floor, elbows stationary, cables taut upward.",
+"end_img": "standing with hands curled beside ears holding handles, forearms vertical, upper arms still parallel to floor, cables taut overhead.",
+"errors_it": [
+"Muovere i gomiti in avanti.",
+"Usare slancio del busto per aiutare la trazione."
+],
+"muscles": "biceps brachii",
+"setup": "Cable station with two high pulleys; stand between them holding single handles or rope, upper arms positioned parallel to floor at shoulder height, palms facing you, cables visible overhead.",
+"start": "Standing between high pulleys, upper arms parallel to floor, elbows fixed, forearms extended back holding handles, wrists neutral, cables routed upward to pulleys.",
+"start_img": "standing between high pulleys, upper arms parallel to floor, hands holding handles with cables upward, forearms extended behind, elbows fixed.",
+"steps_it": [
+"Posizionati tra le pulegge alte e impugna le maniglie.",
+"Mantieni i gomiti fermi e gli avambracci pronti all'azione.",
+"Fletti gli avambracci portando le maniglie vicino alle orecchie.",
+"Abbassa lentamente controllando la tensione del bicipite."
+],
+"view": "side view"
+},
+"estensione_dell_anca_elastico": {
+"end": "Working leg driven back as far as possible with knee straight, hip fully extended, ankle behind body pulling band taut, torso upright, hands on post.",
+"end_img": "standing with working leg pushed back fully straight, ankle pulling red band taut behind, torso upright, hands on post for balance.",
+"errors_it": [
+"Piegare il busto in avanti per aiutarsi.",
+"Flettere il ginocchio della gamba lavorante."
+],
+"muscles": "gluteus maximus, hamstrings",
+"setup": "Red resistance band anchored low to a post; other end looped securely around working ankle; face the anchor, hold post with hand for stability, standing on opposite leg, feet hip-width.",
+"start": "Facing anchor, hands on column for support, torso upright, supporting leg bearing weight, working leg vertical behind with band attached at ankle and knee straight.",
+"start_img": "standing facing anchor with hand on post, working leg straight down behind with red band attached at ankle, weight on opposite foot.",
+"steps_it": [
+"Fissa la banda bassa al palo e annodala alla caviglia.",
+"Affronta l'ancoraggio, tieni il busto eretto e una mano sul pilastro.",
+"Spingi la gamba indietro mantenendo il ginocchio completamente esteso.",
+"Ritorna controllato alla posizione iniziale."
+],
+"view": "side view"
+},
+"flessione_dell_anca_elastico": {
+"end": "Working knee raised to 90° with thigh parallel to floor, ankle with band in front of hip, torso upright, hands on hips, band stretched.",
+"end_img": "standing with working knee raised to hip level (90°), thigh parallel to floor, band taut at ankle in front, hands on hips.",
+"errors_it": [
+"Usare lo slancio del busto per sollevare la gamba.",
+"Non portare il ginocchio fino a 90°."
+],
+"muscles": "iliopsoas, rectus femoris, quadriceps",
+"setup": "Red resistance band anchored low to a post; other end attached to working ankle; face away from anchor, feet hip-width, hands on hips for stability.",
+"start": "Facing away from anchor, hands on hips, torso upright, supporting leg stable, working leg straight down with band pulling back at ankle.",
+"start_img": "standing facing away from anchor with hands on hips, working leg straight down and band attached at ankle pulling back.",
+"steps_it": [
+"Fissa la banda bassa e aggancia l'altra estremità alla caviglia.",
+"Posizionati volto in avanti con busto eretto e mani sui fianchi.",
+"Solleva il ginocchio fino a 90° mantenendo il busto stabile.",
+"Abbassa lentamente controllando il ritorno alla posizione iniziale."
+],
+"view": "side view"
+},
+"ponte_glutei_elastico": {
+"end": "Hips driven up into full bridge so body forms straight line shoulder-to-knees, feet flat, band stretched over hips, glutes squeezed, hands on floor.",
+"end_img": "hips thrust upward into straight line from shoulders to knees, red band stretched over hips anchored both sides, feet flat, hands on floor.",
+"errors_it": [
+"Sollevarsi usando la zona lombare invece dei glutei.",
+"Allargare eccessivamente i piedi o spostare la banda."
+],
+"muscles": "gluteus maximus, hamstrings",
+"setup": "Red resistance band anchored to rack pegs both sides and looped centered over hips; lie supine on floor, knees bent, feet flat hip-width, shoulders on ground, hands on floor holding band if needed.",
+"start": "Supine with shoulders on ground, knees bent, feet flat hip-width, red band resting over hips anchored both sides, hands on floor or holding band, torso relaxed.",
+"start_img": "lying supine with knees bent, feet flat, red band looped over hips anchored both sides, hands resting on floor holding band.",
+"steps_it": [
+"Sdraiati supino con banda centrata sulle anche e piedi a terra.",
+"Poggiati sulle spalle mantenendo mani a terra o a tenere la banda.",
+"Spingi con i talloni alza i fianchi fino ad estensione completa.",
+"Mantieni la contrazione un istante poi abbassa controllando."
+],
+"view": "side view"
+},
+"salti_sugli_ostacoli": {
+"end": "In mid-flight over hurdle: hips more extended, knees near straight but slightly bent, ankles dorsiflexed, arms swung forward for momentum.",
+"end_img": "in mid-air above hurdle, arms swung forward and up, legs together slightly bent, feet pointed, body clearing hurdle",
+"errors_it": "Atterrare con ginocchia rigide; Usare solo le braccia per slancio",
+"muscles": "Hamstrings, glutes, calves, quadriceps",
+"setup": "Row of low hurdles on flat floor, spaced ~2–3 feet; athlete stands in front of first hurdle, feet shoulder-width, toes pointing forward.",
+"start": "Athlete in athletic crouch, hips slightly bent, knees ~25° flexion, weight on forefoot, arms swung back preparing to explode forward.",
+"start_img": "standing in athletic crouch before first hurdle, hands swung back, arms bent, feet shoulder-width, no external weight, body facing hurdle",
+"steps_it": "Posizionati davanti al primo ostacolo con piedi a larghezza spalle; piega leggermente le ginocchia; Salta esplodendo con entrambe le gambe e oscillando le braccia; Assorbi l'atterraggio con ginocchia flesse e rimbalza immediatamente verso il prossimo ostacolo; Continua la sequenza mantenendo ritmo controllato.",
+"view": "side view"
+},
+"iperestensioni_senza_panca": {
+"end": "Torso raised in straight line with legs, hips fully extended, spine neutral, shoulders back, arms still crossed over chest.",
+"end_img": "hips extended so body forms straight line from head to heels, arms crossed over chest, legs straight, partner holding ankles",
+"errors_it": "Arrotondare la schiena verso il basso; Iperestendere forzando la schiena",
+"muscles": "Erector spinae, glutes, hamstrings",
+"setup": "Flat bench edge with hips hanging off end, partner holding ankles/feet down; torso free to descend, legs straight, feet anchored by partner.",
+"start": "Hips on bench edge, torso hanging vertically toward floor, spine neutral, arms crossed over chest, legs straight, ankles secured by partner.",
+"start_img": "prone on bench with hips at edge, torso hanging down toward floor, arms crossed over chest, legs straight, partner holding ankles",
+"steps_it": "Scivola con i fianchi sul bordo della panca e fatti trattenere i piedi; Incrocia le braccia sul petto mantenendo la schiena neutra; Abbassati controllando il busto finché senti stiramento, senza arrotondare la schiena; Solleva il busto fino a linea dritta, evitando iperestensioni e slanci.",
+"view": "side view"
+},
+"french_press_panca_inclinata": {
+"end": "Elbows stationary, forearms flexed lowering bar in semicircular arc behind head until forearms touch biceps; upper arms remain vertical relative to torso.",
+"end_img": "bar lowered behind head with forearms folded toward biceps, elbows pinned close to head, body on incline bench",
+"errors_it": "Muovere le spalle invece dei gomiti; Inarcare la schiena durante l'estensione",
+"muscles": "Triceps",
+"setup": "Adjustable incline bench set 30–45°; lie supine; hold straight Olympic barbell with overhand grip slightly narrower than shoulder width.",
+"start": "Lying supine on incline bench, arms extended overhead, elbows tucked close to head, barbell held with overhand narrow grip above face.",
+"start_img": "lying back on 30–45° incline bench holding barbell overhead with both hands, overhand grip slightly narrower than shoulders, arms extended",
+"steps_it": "Sdraiati sulla panca inclinata e impugna il bilanciere con presa pronata stretta; Porta il bilanciere sopra la testa con le braccia estese; Abbassa il bilanciere in arco dietro la testa mantenendo i gomiti fermi vicino alla testa; Estendi i gomiti per tornare alla posizione iniziale, contraendo i tricipiti.",
+"view": "side view"
+},
+"rematore_panca_inclinata_bilanciere": {
+"end": "Pull dumbbells up with elbows flared so upper arms reach same level as back forming a T with torso; forearms hang down from elbows.",
+"end_img": "dumbbells pulled up so upper arms are level with back, elbows flared outward forming a T, forearms hanging down",
+"errors_it": "Usare slancio del busto; Tenere i gomiti troppo vicini al corpo",
+"muscles": "Latissimus dorsi, rhomboids, posterior deltoid",
+"setup": "Adjustable incline bench ~30° set face down; one dumbbell in each hand, chest supported on bench, arms hanging toward floor, wrists pronated.",
+"start": "Prone on incline bench, arms fully extended down, palms facing floor (pronated), elbows slightly out, torso pressed to pad, legs supported on floor.",
+"start_img": "face down on 30° incline bench with dumbbells hanging at sides, palms down, arms straight, chest supported on pad, feet on floor",
+"steps_it": "Sdraiati a faccia in giù su panca inclinata con un manubrio in ogni mano; Lascia le braccia pendere e ruota i palmi in pronazione; Tira i manubri verso l'alto con i gomiti larghi, portando le braccia al livello della schiena; Abbassa controllando il movimento fino alla posizione iniziale.",
+"view": "side view"
+},
+"chest_press_inclinata_cavi": {
+"end": "Arms pressed forward almost straight, slight elbow bend, hands meeting in front of chest, back firmly against pad, cables extended.",
+"end_img": "arms extended forward almost straight, hands together in front of chest, slight elbow bend, back pressed to pad, cables taut",
+"errors_it": "Lasciare la schiena staccata dal supporto; Allargare eccessivamente i gomiti",
+"muscles": "Pectoral muscles, anterior deltoid, triceps",
+"setup": "Seated on machine with upright padded backrest, handles at mid-chest height, feet flat, torso against pad, cables visible and taut.",
+"start": "Seated upright against pad, hands on handles beside chest, elbows bent ~90°, upper arms ~45° from torso, shoulder blades retracted.",
+"start_img": "seated upright on padded seat gripping handles at chest level, elbows bent ninety degrees, forearms vertical, cables slack but engaged",
+"steps_it": "Siediti con la schiena appoggiata al supporto e afferra le maniglie a livello del petto; Mantieni le scapole retratte e i gomiti a 45°; Spingi le maniglie in avanti fino quasi all'estensione completa; Torna controllato alla posizione di partenza mantenendo tensione sui cavi.",
+"view": "side view"
+},
+"croci_cavi_panca_inclinata": {
+"end": "Arms lowered in wide arc out to sides with slight elbow bend until chest stretch felt; hands level with bench sides, cables taut outward.",
+"end_img": "arms opened wide in a broad arc to both sides, slight elbow bend, hands level with bench, cables spread outward",
+"errors_it": "Piegare troppo i gomiti; Tirare con i bicipiti",
+"muscles": "Pectoralis major, anterior deltoid",
+"setup": "Cable pulleys set at lowest position below torso; 45° incline bench centered between pulleys; one handle in each hand, lie supine on bench.",
+"start": "Lying on 45° incline bench, arms extended together above face at arm's length, slight elbow bend, one handle in each hand, palms facing each other.",
+"start_img": "lying on 45° incline bench holding a handle in each hand, arms extended together above face, palms facing each other, cables vertical",
+"steps_it": "Posiziona la panca inclinata tra le pulegge con i cavi al livello più basso; Sdraiati e afferra una maniglia per mano con braccia estese davanti al viso; Abbassa le braccia ad arco ampio mantenendo leggero il gomito fino a sentire lo stretch; Riporta le mani insieme controllando la contrazione del petto.",
+"view": "front view"
+},
+"panca_inclinata_manubri_palmi_dentro": {
+"end": "Dumbbells pressed up above chest, arms locked out, palms still facing each other, dumbbells nearly touching at top, torso steady on bench.",
+"end_img": "dumbbells pressed above chest with arms locked, palms facing each other, weights near together, body resting on incline bench",
+"errors_it": "Portare i gomiti troppo avanti; Scendere troppo velocemente senza controllo",
+"muscles": "Pectoralis major, anterior deltoid, triceps",
+"setup": "Adjustable bench set 30–45°; one black hex dumbbell in each hand; lie back with feet flat, palms facing each other (neutral grip).",
+"start": "Lying on incline bench holding dumbbells at shoulder width, palms facing each other, elbows flared, upper arms perpendicular to torso, elbows ~90°.",
+"start_img": "lying on 30–45° incline bench holding black hex dumbbells at shoulder level, palms facing inward, elbows bent ninety degrees, feet on floor",
+"steps_it": "Sdraiati sulla panca inclinata con i manubri in mano e le palme rivolte l'una verso l'altra; Solleva i manubri fino all'altezza delle spalle in posizione iniziale; Spingi i manubri verso l'alto contraendo il petto e blocca le braccia; Abbassa lentamente controllando il movimento in discesa.",
+"view": "side view"
+},
+"curl_panca_inclinata": {
+"end": "Dumbbells curled to shoulder level, biceps fully contracted, forearms vertical, elbows stationary against torso, shoulders relaxed.",
+"end_img": "dumbbells curled up to shoulder level, biceps contracted, forearms vertical, elbows fixed at torso, weights held near shoulders",
+"errors_it": "Usare impulso del busto; Muovere i gomiti in avanti",
+"muscles": "Biceps brachii, brachialis",
+"setup": "Adjustable bench set 30–45°; sit back with back supported; hold a black hex dumbbell in each hand, arms hanging, elbows close to torso.",
+"start": "Seated on incline bench, arms fully extended down, elbows close to torso, palms rotated to face forward (supinated), weights hanging at sides.",
+"start_img": "seated on incline bench with dumbbells hanging at arms' length, palms facing forward, elbows close to torso, back supported",
+"steps_it": "Siediti con la schiena appoggiata e impugna i manubri con i palmi rivolti in avanti; Mantieni i gomiti fermi vicino al corpo; Contrai i bicipiti e porta i manubri fino all'altezza delle spalle; Abbassa lentamente al controllo fino alla posizione iniziale.",
+"view": "side view"
+},
+"croci_panca_inclinata": {
+"end": "Arms lowered out to sides at shoulder height with slight elbow bend, palms facing up toward ceiling, dumbbells level with chest sides, torso braced.",
+"end_img": "lying on a 30° incline bench with arms extended out wide at shoulder height, slight elbow bend, palms facing up, black dumbbells beside torso, feet flat",
+"errors_it": [
+"Bloccare i gomiti",
+"Panca troppo inclinata"
+],
+"muscles": "Pectoralis major, anterior deltoid",
+"setup": "Adjustable bench reclined to 30°, head supported; black hex dumbbells in each hand; feet flat on floor, knees bent, shoulders against bench.",
+"start": "Lying on 30° incline, arms extended above chest with slight elbow bend, palms facing you (pinky sides together), dumbbells touching, torso stable.",
+"start_img": "lying on a 30° incline bench holding a black hex dumbbell in each hand above chest, arms slightly bent, palms facing you, feet flat on floor",
+"steps_it": [
+"Sdraiati sulla panca inclinata a 30° tenendo i manubri.",
+"Estendi le braccia sopra il petto con lieve flessione dei gomiti.",
+"Inspira e apri le braccia lateralmente ruotando i polsi.",
+"Espira e riporta le braccia sopra, ruotando i polsi."
+],
+"view": "front view"
+},
+"croci_inclinate_rotazione": {
+"end": "Arms fully extended overhead, elbows locked, dumbbells nearly touching above chest, shoulders engaged, torso braced against bench.",
+"end_img": "lying on a 30° incline bench with arms fully extended overhead, black dumbbells together above chest, feet flat on floor",
+"errors_it": [
+"Ipereestendere la schiena",
+"Spingere con le gambe"
+],
+"muscles": "Pectoralis major, anterior deltoid, triceps",
+"setup": "Adjustable bench reclined to 30°, black hex dumbbells, feet flat on floor, start with dumbbells at shoulder width, wrists free to rotate.",
+"start": "Lying on 30° incline with dumbbells at shoulder level, elbows ~90°, wrists rotated so palms face away, shoulders retracted, weights at shoulder width.",
+"start_img": "lying on a 30° incline bench holding black dumbbells at shoulder width, elbows bent, palms facing away, feet flat on floor",
+"steps_it": [
+"Sdraiati su panca inclinata a 30° impugnando i manubri.",
+"Porta i manubri a larghezza spalle e ruota i polsi in avanti.",
+"Espira e spingi i manubri verso l'alto fino a bloccare i gomiti.",
+"Abbassa lentamente controllando il movimento."
+],
+"view": "front view"
+},
+"curl_martello_panca_inclinata": {
+"end": "Elbows flexed bringing dumbbells toward shoulders, forearms vertical, thumbs pointing forward, upper arms stationary against bench, brief peak contraction.",
+"end_img": "seated on a 45° incline bench with forearms curled, black dumbbells near shoulders, upper arms fixed against pad, thumbs pointing forward",
+"errors_it": [
+"Oscillare il busto",
+"Muovere la spalla"
+],
+"muscles": "Brachialis, biceps brachii, brachioradialis",
+"setup": "Seat on incline bench set ~45°, back pressed to pad, black hex dumbbells in neutral grip, feet together, arms hanging straight at sides.",
+"start": "Seated on 45° incline, upper arms pressed to bench, elbows extended, dumbbells hanging at sides, wrists neutral (thumbs up), torso stable.",
+"start_img": "seated on a 45° incline bench holding black dumbbells at sides with neutral grip, arms straight, thumbs up, feet together",
+"steps_it": [
+"Siediti sulla panca inclinata a 45° con i manubri in neutro.",
+"Mantenendo il braccio superiore fermo, flette il gomito.",
+"Porta i manubri verso la spalla e trattieni la contrazione.",
+"Abbassa lentamente controllando il movimento."
+],
+"view": "side view"
+},
+"curl_interno_panca_inclinata": {
+"end": "Elbows flexed bringing dumbbells up and out to shoulder height beside deltoids, forearms aligned with side deltoids, strong peak contraction.",
+"end_img": "lying on a 45° incline bench with elbows flexed, black dumbbells at shoulder height beside deltoids, forearms aligned with side delts",
+"errors_it": [
+"Usare slancio del corpo",
+"Allontanare i gomiti dal busto"
+],
+"muscles": "Biceps brachii, brachialis",
+"setup": "Adjustable bench reclined ~45°, lie back with head supported, black hex dumbbells in each hand, palms facing outward, feet flat on floor.",
+"start": "Lying on incline with arms straight hanging at sides, palms facing away from body, elbows extended, dumbbells next to hips, torso braced.",
+"start_img": "lying on a 45° incline bench holding black dumbbells at sides, arms straight, palms facing out, feet flat on floor",
+"steps_it": [
+"Sdraiati sulla panca inclinata a 45° con i manubri ai lati, palmi rivolti verso l'esterno.",
+"Flessa i gomiti mantenendo gli avambracci in linea con le spalle.",
+"Porta i manubri all'altezza delle spalle e stringi.",
+"Abbassa lentamente seguendo la stessa traiettoria."
+],
+"view": "side view"
+},
+"piegamenti_inclinati": {
+"end": "Chest lowered close to bench edge, elbows bent about 90°, body still in straight line from head to heels, hands on bench.",
+"end_img": "body lowered toward bench with chest almost touching bench edge, elbows bent, hands on bench edge, feet on toes, body straight",
+"errors_it": [
+"Flettere il bacino",
+"Allargare le spalle"
+],
+"muscles": "Pectoralis major, triceps",
+"setup": "Hands on edge of 30° incline bench, hands slightly wider than shoulder width, feet on toes, body straight from head to heels.",
+"start": "Plank position with arms fully extended, hands on bench edge slightly wider than shoulders, body straight, feet on toes—starting top position.",
+"start_img": "plank position feet on toes, hands on 30° incline bench edge slightly wider than shoulders, arms straight, body aligned",
+"steps_it": [
+"Posizionati di fronte alla panca inclinata, mani leggermente più larghe delle spalle.",
+"Tieni il corpo diritto con punte dei piedi a terra.",
+"Inspira e piega i gomiti per abbassare il petto verso la panca.",
+"Espira e spingi fino a distendere completamente le braccia."
+],
+"view": "side view"
+},
+"piegamenti_inclinati_presa_stretta": {
+"end": "Chest lowered to the bar with elbows bent and tucked close to body, hands still together on bar, body straight from head to heels.",
+"end_img": "body lowered with chest near bar, elbows tucked in, hands close together on bar, feet on toes, body straight",
+"errors_it": [
+"Allargare i gomiti",
+"Inarcare la schiena"
+],
+"muscles": "Triceps, pectoralis major",
+"setup": "Hands close together on a sturdy elevated bar or bench edge at 30° incline, hands touching, feet on toes, body straight and aligned.",
+"start": "Plank position with hands next to each other on bar/edge, arms fully extended, body straight, feet on toes—hands narrow grip.",
+"start_img": "plank with hands close together on elevated bar edge at 30° incline, arms straight, body aligned, feet on toes",
+"steps_it": [
+"Posiziona le mani vicine sul bordo o sulla sbarra.",
+"Mantieni il corpo perfettamente dritto.",
+"Inspira e piega i gomiti tenendoli vicino al busto.",
+"Espira e spingi fino a distendere i gomiti."
+],
+"view": "side view"
+},
+"piegamenti_inclinati_pliometrici": {
+"end": "Explosive concentric: arms extended, hands slightly off bench as body is briefly propelled upward, feet on toes, body straight.",
+"end_img": "arms extended in an explosive push with hands slightly off the bench, body straight and briefly elevated, feet on toes",
+"errors_it": [
+"Cedimento del core",
+"Non estendere esplosivamente"
+],
+"muscles": "Pectoralis major, triceps",
+"setup": "Hands shoulder-width on 30° incline bench edge, feet on toes, body straight; prepare to press explosively so hands can leave surface.",
+"start": "Plank with hands shoulder-width on incline bench, arms straight, body aligned, feet on toes—ready to descend.",
+"start_img": "plank with hands shoulder-width on 30° incline bench edge, arms straight, body aligned, feet on toes",
+"steps_it": [
+"Posizionati con mani larghezza spalle sul bordo inclinato.",
+"Mantieni il corpo rigido e compatto.",
+"Abbassa il corpo piegando i gomiti.",
+"Espira e spingi esplosivamente, staccando leggermente le mani."
+],
+"view": "side view"
+},
+"piegamenti_inclinati_presa_media": {
+"end": "Chest lowered close to bar with elbows bent, palms still facing up on the bar, body straight, feet on toes.",
+"end_img": "body lowered with chest near bar, elbows bent, palms still facing up on the bar, feet on toes, body straight",
+"errors_it": [
+"Ruotare i polsi",
+"Cedimento del busto"
+],
+"muscles": "Pectoralis major, biceps (assisting)",
+"setup": "Hands on elevated bar or bench edge at 30° incline with palms facing up (reverse grip), shoulder-width, feet on toes, body straight and braced.",
+"start": "Plank position with palms up on bar, arms fully extended, body aligned from head to heels, feet on toes—reverse grip start.",
+"start_img": "plank with hands shoulder-width on 30° incline bar, palms facing up, arms straight, body aligned, feet on toes",
+"steps_it": [
+"Posiziona le mani sul bordo con i palmi rivolti verso l'alto.",
+"Tieni il corpo allineato e il core contratto.",
+"Inspira e piega i gomiti per abbassare il petto verso la sbarra.",
+"Espira e spingi fino a estendere completamente le braccia."
+],
+"view": "side view"
+},
+"piegamenti_inclinati_presa_inversa": {
+"end": "Chest lowered close to bench, elbows bent ~90° with forearms vertical, body remains straight, hips and knees extended, hands on bench, ready to press back up.",
+"end_img": "inclined plank position lowered chest near bench, elbows bent, hands on bench, feet on floor, no weight; body straight head-to-heels",
+"errors_it": [
+"Bacino abbassato o sollevato",
+"Gomiti troppo aperti o sbloccati"
+],
+"muscles": "pectoralis major, anterior deltoid",
+"setup": "Adjustable bench backrest inclined 30–45°. Hands on bench surface wider than shoulders, fingers forward. Feet on floor hip-width, bodyweight supported in straight line.",
+"start": "Body straight head-to-heels, torso angled on 30–45° incline, arms fully extended perpendicular to torso, elbows locked, hips and knees extended, hands wide on bench, no external weight.",
+"start_img": "inclined plank position hands wide on bench backrest, arms straight, feet on floor, no weight; hands gripping bench, arms supporting body",
+"steps_it": [
+"Posiziona le mani sullo schienale inclinato 30–45°, più larghe delle spalle.",
+"Allunga il corpo in linea dai talloni alla testa.",
+"Abbassa il petto verso lo schienale controllando i gomiti.",
+"Estendi i gomiti per tornare alla posizione iniziale."
+],
+"view": "side view"
+},
+"piegamenti_inclinati_presa_larga": {
+"end": "Chest lowered toward bench, elbows bent with shafts about 45° from torso, body remains rigid, hips and knees extended, hands on bench, ready to press up.",
+"end_img": "inclined plank position lowered chest near bench, elbows flared about 45° from torso, hands on bench, feet on floor, no weight",
+"errors_it": [
+"Arco lombare eccessivo",
+"Gomiti troppo stretti"
+],
+"muscles": "pectoralis major, anterior deltoid",
+"setup": "Bench backrest inclined 30–45°. Hands placed wider than shoulder width on bench surface, fingers forward. Feet on floor shoulder-width, bodyweight supported.",
+"start": "Body straight head-to-heels, torso angled on 30–45° incline, arms fully extended, shoulders over hands, hips and knees extended, no external weight.",
+"start_img": "inclined plank position hands wide on bench, arms straight, feet shoulder-width on floor, no weight; palms on bench",
+"steps_it": [
+"Posiziona mani più larghe delle spalle sullo schienale a 30–45°.",
+"Tieni il corpo in linea rigida dai talloni alla testa.",
+"Scendi piegando i gomiti mantenendoli a ~45° dal busto.",
+"Spingi il pavimento lontano fino a braccia completamente distese."
+],
+"view": "side view"
+},
+"rotazione_interna_elastico": {
+"end": "Right forearm rotated inward across abdomen, right hand pulled toward midline, elbow remains pinned to side, shoulder internally rotated, torso stable, band taut.",
+"end_img": "standing upright, right forearm rotated inward across abdomen pulling red band to midline, right elbow pinned to side, legs shoulder-width",
+"errors_it": [
+"Spalla che si solleva o avanza",
+"Gomito che si stacca dal fianco"
+],
+"muscles": "deltoids, subscapularis",
+"setup": "Red resistance band anchored at elbow height to the right. Athlete stands perpendicular a few feet away, right elbow pressed to side, forearm free, feet shoulder-width.",
+"start": "Right elbow flexed 90° pinned to side, upper arm against torso, forearm pointing away from body, right hand holding band handle, torso upright, neutral spine.",
+"start_img": "standing upright, right hand holds red band to right anchor, right elbow pinned to side, forearm extended away from torso, legs shoulder-width",
+"steps_it": [
+"Ancorare la banda all'altezza del gomito sul lato destro.",
+"Mantieni il gomito aderente al fianco e l'avambraccio a 90°.",
+"Ruota internamente l'avambraccio portando la mano verso l'addome.",
+"Controlla il ritorno lentamente alla posizione di partenza."
+],
+"view": "front view"
+},
+"rematore_inverso": {
+"end": "Torso pulled up so chest touches or meets bar, elbows flexed and pulled back near sides, scapulae retracted, body remains straight, heels on floor.",
+"end_img": "body pulled up chest toward bar, elbows bent back near torso, hands on bar, legs extended with heels on floor, no weight",
+"errors_it": [
+"Bacino che si abbassa",
+"Dondolio del corpo"
+],
+"muscles": "latissimus dorsi, rhomboids, posterior deltoid",
+"setup": "Bar set at waist height. Body positioned under bar with heels on floor, grip wider than shoulders, palms pronated, body straight from head to heels.",
+"start": "Hanging beneath waist bar, arms fully extended, body straight and rigid from head to heels, heels on ground, shoulders depressed, neutral spine.",
+"start_img": "supine body hanging under waist bar, hands wide pronated grip on bar, arms straight, legs extended with heels on floor, no weight",
+"steps_it": [
+"Posiziona la barra all'altezza della vita e afferrala larga.",
+"Mantieni il corpo in linea rigida dai talloni alla testa.",
+"Tira il petto verso la barra contraendo le scapole.",
+"Abbassa controllando fino a braccia completamente estese."
+],
+"view": "side view"
+},
+"rematore_inverso_anelli_trx": {
+"end": "Pulling body up so chest approaches handles, elbows pulled back close to torso, scapulae squeezed, body remains straight, feet on floor.",
+"end_img": "body pulled up chest near TRX rings, elbows close to torso, hands gripping rings, feet on floor, no weight",
+"errors_it": [
+"Schiena curva",
+"Dare slancio col corpo"
+],
+"muscles": "latissimus dorsi, rhomboids, posterior deltoid",
+"setup": "Suspension straps or gymnastic rings anchored high. Handles at reachable chest length, feet on floor, pronated grip, body inclined with straight line from head to heels.",
+"start": "Body inclined backward, arms fully extended holding rings in pronated grip, shoulders down, body straight, feet planted, knees extended, no added weight.",
+"start_img": "leaning back body straight holding TRX rings in pronated grip, arms extended, feet on floor, no weight",
+"steps_it": [
+"Regola le cinghie e impugna gli anelli con presa prona.",
+"Inclina il corpo mantenendo la linea del corpo rigida.",
+"Tira portando i gomiti indietro e stringi le scapole.",
+"Rilascia lentamente fino a braccia completamente estese."
+],
+"view": "side view"
+},
+"croce_ferro_manubri": {
+"end": "Arms abducted to shoulder height forming a T, slight elbow bend maintained, dumbbells level with shoulders, palms neutral or slightly rotated, torso upright.",
+"end_img": "standing upright arms abducted to shoulder height forming a T, dumbbells in hands, slight elbow bend, feet hip-width",
+"errors_it": [
+"Oscillare il busto",
+"Eccessiva estensione dei polsi"
+],
+"muscles": "middle deltoid, anterior deltoid",
+"setup": "Pair of black hexagonal dumbbells. Standing upright, feet hip-width, hold dumbbells at sides, palms facing inward, slight knee softening allowed.",
+"start": "Standing upright holding dumbbells at hips, arms down straight with slight elbow softness, palms facing inward, torso tall, knees slightly bent, no other weight.",
+"start_img": "standing upright holding black hex dumbbells at hips, arms down, palms facing inward, feet hip-width, no other weight",
+"steps_it": [
+"Afferra i manubri ai fianchi con presa neutra.",
+"Alza le braccia lateralmente mantenendo una leggera flessione dei gomiti.",
+"Porta i manubri all'altezza delle spalle in movimento controllato.",
+"Abbassa i manubri lentamente alla posizione iniziale."
+],
+"view": "front view"
+},
+"contrazione_isometrica_petto": {
+"end": "Press palms forcefully together creating maximal chest contraction, elbows remain at 90°, shoulders stable, maintain normal breathing while holding isometric tension.",
+"end_img": "seated upright pushing palms firmly together at chest level, elbows at 90°, chest muscles visibly contracted, no weight",
+"errors_it": [
+"Bloccare la respirazione",
+"Gomiti che cambiano altezza"
+],
+"muscles": "pectoralis major, pectoralis minor",
+"setup": "Seated or standing upright. Elbows flexed to 90°, palms pressed together in front of chest, fingers pointing forward, shoulders relaxed.",
+"start": "Seated upright with elbows at 90°, palms lightly together at sternum, fingers forward, shoulders down, torso neutral, no external weight.",
+"start_img": "seated upright with elbows bent 90°, palms lightly together in front of chest, fingers forward, no weight",
+"steps_it": [
+"Posiziona le mani a palmi uniti davanti al petto, gomiti a 90°.",
+"Mantieni le spalle rilassate e la schiena eretta.",
+"Spingi lentamente le mani l'una contro l'altra aumentando la tensione.",
+"Mantieni la contrazione per il tempo richiesto e rilascia gradualmente."
+],
+"view": "front view"
+},
+"isometria_collo_avanti_indietro": {
+"end": "Isometric press: head pushes into hands (forward or backward) without visible head movement, neck muscles contracted, hands providing steady opposing force.",
+"end_img": "seated pressing forehead into hands (forward isometric), chin slightly tucked, hands providing resistance behind forehead, feet on floor",
+"errors_it": [
+"Muovere la testa troppo",
+"Coinvolgere le spalle eccessivamente"
+],
+"muscles": "neck flexors and extensors",
+"setup": "Seated upright on stable chair, hands available to provide resistance: one hand on forehead and one on back of head alternately. Shoulders relaxed.",
+"start": "Seated neutral head posture, hands lightly contacting forehead and back of head ready to apply gentle resistance, shoulders down, spine tall, no external weight.",
+"start_img": "seated upright neutral head, both hands lightly contacting forehead and back of head, arms bent, feet on floor, no weight",
+"steps_it": [
+"Siedi eretto con spalle basse e postura stabile.",
+"Posiziona le mani sulla fronte o sulla nuca a seconda della direzione.",
+"Contrai i muscoli del collo spingendo contro le mani senza muovere la testa.",
+"Rilascia lentamente la tensione mantenendo il controllo."
+],
+"view": "front view"
 }
 }
