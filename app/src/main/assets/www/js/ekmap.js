@@ -17,9 +17,13 @@ try { FIGS_R = new Set(JSON.parse(localStorage.getItem('gym.figs') || '{"l":[]}'
     if (nuove && typeof render === 'function') render();
   }).catch(() => { /* offline: si usano le figure già note */ });
 })();
+/* controllo a vista dei 245 disegni: in alcuni la prima immagine è la posizione finale (si invertono),
+   in altri il disegno non corrisponde all'esercizio (si tolgono e resta l'omino) */
+const EK_SWAP = new Set(["alzata_frontale_bilanciere_fin_sopra_tes", "alzate_frontali", "alzate_frontali_cavo", "alzate_laterali", "alzate_posteriori_cavi", "alzate_posteriori_cavo_basso", "alzate_y_manubri", "chest_press_inclinata_leva", "croci_inclinate_rotazione", "good_morning_gambe_tese", "jefferson_squat", "lat_machine", "lat_machine_barra_v", "panca_macchina", "panca_piana_man", "pulley", "rematore_inverso", "stacco_bil", "stacco_rumeno_man", "tirata_mento_manubri", "tirate_mento", "trazioni_barra_v"]);
+["iperestensioni_inverse", "panca_inclinata_smith_machine", "stacco_gambe_tese_smith_machine", "stacco_laterale_braccio", "t_bar_row"].forEach(id => delete EK[id]);
 const hasFig = id => (typeof FIGS !== 'undefined' && FIGS.has(id)) || FIGS_R.has(id);
 const figBase = id => typeof FIGS !== 'undefined' && FIGS.has(id) ? 'fig/' : FIG_REMOTE;
-const ekImgs = id => hasFig(id) ? [figBase(id) + id + '-1.webp', figBase(id) + id + '-2.webp'] : EK[id] ? ['ek/' + EK[id] + '-1.webp', 'ek/' + EK[id] + '-2.webp'] : null;
+const ekImgs = id => hasFig(id) ? [figBase(id) + id + '-1.webp', figBase(id) + id + '-2.webp'] : EK[id] ? (EK_SWAP.has(id) ? [2, 1] : [1, 2]).map(n => 'ek/' + EK[id] + '-' + n + '.webp') : null;
 const EK_CREDIT = 'Disegni: Everkinetic (Greg Priday) · CC BY-SA 4.0';
 const EK_URL = 'https://github.com/everkinetic/data';
 
