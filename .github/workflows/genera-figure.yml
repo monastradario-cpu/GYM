@@ -1,0 +1,42 @@
+name: Genera figure (anteprima)
+
+# Solo manuale: genera le figure di prova con VideoDB e le pubblica come anteprima.
+# Non compila e non pubblica l'app.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  genera:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installa VideoDB
+        run: pip install "videodb>=0.5.0"
+
+      - name: Genera immagini e video
+        env:
+          VIDEO_DB_API_KEY: ${{ secrets.VIDEO_DB_API_KEY }}
+        run: |
+          if [ -z "$VIDEO_DB_API_KEY" ]; then
+            echo "::error::Manca il secret VIDEO_DB_API_KEY (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+          python tools/genera_figure.py
+
+      - name: Pubblica anteprima
+        if: always()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: anteprima-figure-${{ github.run_number }}
+          name: Anteprima figure ${{ github.run_number }}
+          prerelease: true
+          body: "Figure di prova generate con VideoDB. Da approvare prima di inserirle nell'app."
+          files: anteprima/*
