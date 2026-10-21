@@ -1,0 +1,72 @@
+{
+"chest_press": {
+"end": "Arms pressed forward almost straight, elbow flexion ~10–15°, shoulders protracted, back still against pad, hands pushing handles forward inline with chest.",
+"muscles": "Pectoralis major, anterior deltoid, triceps brachii",
+"setup": "Selectorized seated chest-press machine with upright padded backrest; seat adjusted so handles align with mid-chest; feet flat on floor, back fully against pad.",
+"start": "Hands on handles beside chest, elbows ~45° from torso, elbow flexion ~90°, shoulders neutral, torso upright, back pressed to pad, load at chest level.",
+"view": "side view"
+},
+"croci_cavi": {
+"end": "Arms horizontally adducted, hands meet in front of lower chest/upper abdomen, elbows maintain slight bend ~15°, torso stable and slightly inclined forward.",
+"muscles": "Pectoralis major, anterior deltoid",
+"setup": "Two high cable pulleys, one handle in each hand; standing between pulleys with one foot staggered forward, torso inclined slightly forward (~10–20°).",
+"start": "Arms abducted wide to the sides at shoulder height, elbows slightly bent ~10–20°, palms facing forward, shoulders level, cables taut.",
+"view": "front view"
+},
+"stacco_bil": {
+"end": "Hips and knees fully extended, hips thrust forward, torso upright (near vertical), shoulders back, bar close to thighs at hip height.",
+"muscles": "Gluteus maximus, hamstrings, erector spinae",
+"setup": "Straight Olympic barbell with bumper plates on floor; feet hip-width, bar over mid-foot, grip double overhand or mixed, shins near bar.",
+"start": "Hips and knees flexed (hips ~45°), knees ~90° flexion, torso inclined ~40–50° with neutral spine, chest up, shoulders slightly in front of bar, hands outside knees on bar.",
+"view": "side view"
+},
+"lat_machine": {
+"end": "Bar pulled to upper chest, elbows down and back, shoulder blades drawn together, torso slightly leaned back with chest lifted.",
+"muscles": "Latissimus dorsi, rhomboids, lower back (erector spinae)",
+"setup": "Seated at lat pulldown machine, thighs locked under knee pads, long wide bar on high cable, grip slightly wider than shoulder width.",
+"start": "Arms fully extended overhead holding bar wide, shoulders elevated slightly, torso upright with chest up, knees under pads, back neutral.",
+"view": "front view"
+},
+"alzate_laterali": {
+"end": "Arms abducted laterally to shoulder height (~90°), elbows still slightly bent ~20°, palms facing down or slightly forward, shoulder level.",
+"muscles": "Middle (lateral) deltoid",
+"setup": "Pair of hex dumbbells at sides, standing feet hip-width, knees soft, torso upright, neutral grip at start (thumbs slightly facing forward).",
+"start": "Arms at sides holding dumbbells, elbows slightly bent ~15°, palms facing inward, shoulders relaxed, spine neutral.",
+"view": "front view"
+},
+"curl_bil": {
+"end": "Elbows flexed ~90–100°, bar near upper chest/clavicle, forearms vertical, shoulders stable, elbows remain at the sides.",
+"muscles": "Biceps brachii, brachialis",
+"setup": "Standing with straight barbell held in supinated grip, hands shoulder-width, feet hip-width, knees soft, torso upright.",
+"start": "Arms fully extended, elbows pinned to sides, wrists neutral, shoulders relaxed, bar at thigh level.",
+"view": "side view"
+},
+"squat_bil": {
+"end": "Hips pushed back and down until thighs at least parallel (hips ~90° flexion), knees ~90° flexion, torso leaned forward ~20–30°, weight through whole foot.",
+"muscles": "Quadriceps, gluteus maximus, hamstrings",
+"setup": "Straight barbell resting on upper trapezius, feet shoulder-width, toes slightly turned out, weight distributed evenly across foot.",
+"start": "Standing tall: hips and knees extended, spine neutral, chest up, shoulders over hips.",
+"view": "side view"
+},
+"leg_press": {
+"end": "Legs pushed out almost straight with knees soft (~10–15° flexion), hips extended, feet flat, spine and hips pressed to seat.",
+"muscles": "Quadriceps, gluteus maximus",
+"setup": "45° leg-press machine: reclined padded seat, feet shoulder-width on inclined sled platform, hips and back pressed to seat.",
+"start": "Knees deeply flexed with hips close to chest (~90–100° knee flexion), shins angled, torso supported against seat, feet flat on platform.",
+"view": "side view"
+},
+"leg_curl": {
+"end": "Knees flexed to about 110°, heels drawn toward the glutes, hips remain anchored on pad, femurs stationary, torso unchanged.",
+"muscles": "hamstrings (posterior thigh)",
+"setup": "Lying face down on the machine bench, hips centered on the hip pad, roller pad positioned just above the heels, feet neutral, hands gripping the bench or handles at sides.",
+"start": "Torso flat on bench, hips anchored on pad, legs fully extended, knees ~0° (straight), ankles neutral, hands holding handles.",
+"view": "side view"
+},
+"hip_thrust_bil": {
+"end": "Hips fully extended so torso and thighs form a near-horizontal line, pelvis level with shoulders, knees ~90°, glutes maximally contracted, hands stabilizing the bar.",
+"muscles": "gluteus maximus, gluteus medius, hamstrings",
+"setup": "Upper back (scapulae) braced on a flat bench, barbell with pad resting across the pelvis, feet flat hip-width, knees bent ~90°, toes pointing forward.",
+"start": "Hips lowered so pelvis near the floor, torso angled ~45° to the floor, bar resting on pelvis, shins vertical, knees ~90°, hands stabilizing the bar.",
+"view": "side view"
+}
+}
