@@ -28,8 +28,9 @@ OUT = "app/src/main/assets/www/fig"
 os.makedirs(OUT, exist_ok=True)
 DESC = json.load(open(DESC_F)) if os.path.exists(DESC_F) else {}
 QUANTI = int(os.environ.get("QUANTI") or 0)
+RIFAI = os.environ.get("RIFAI") == "1"
 SOLO = [s.strip() for s in (os.environ.get("SOLO") or "").split(",") if s.strip()]
-THREADS = 6
+THREADS = int(os.environ.get("THREADS") or 4)
 LOCK = threading.Lock()
 STOP = threading.Event()
 LOG = {"ok": [], "errori": {}}
@@ -46,7 +47,8 @@ STILE = ("Clean medical-anatomy illustration in the style of a premium fitness a
          "gentle ambient occlusion. Gym equipment drawn in matte charcoal black steel with dark grey padding. "
          "Plain pure white background, the whole figure and the whole equipment fully inside the frame with a generous "
          "margin, centered, static camera at chest height. No text, no labels, no arrows, no watermark, no logos.")
-QUOTA = re.compile(r"credit|quota|limit|insufficient|balance|payment|plan", re.I)
+QUOTA = re.compile(r"credit|quota exceeded|insufficient|balance|payment required|upgrade", re.I)
+RATE = re.compile(r"rate|429|too many|throttl", re.I)
 
 
 def conn():
@@ -65,7 +67,7 @@ def salva_webp(data, path):
 
 
 def git_commit(msg):
-    subprocess.run(["git", "add", OUT, DESC_F], check=False)
+    subprocess.run(["git", "add", OUT, DESC_F, "tools/esito_figure.json"], check=False)
     if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
         return
     subprocess.run(["git", "commit", "-q", "-m", msg + " [skip ci]"], check=False)
@@ -88,13 +90,20 @@ Return ONLY a JSON object mapping each exercise id to an object with these strin
   where the hands and the load are. Max 45 words.
 - "end": exact body position at the END of the concentric phase (or the other extreme for stretches/isometrics). Max 45 words.
 - "muscles": the main working muscles in plain anatomical English, max 8 words.
+- "start_img" and "end_img": a short image-generation caption (max 35 words) for each frame, written in plain visual
+  words a painter understands, NOT angles in degrees. It must start with the body position and say exactly where the
+  hands, arms, legs and the weight are (e.g. "standing upright holding the barbell in both hands at mid-thigh, arms straight",
+  "both arms raised straight out to the sides at shoulder height, dumbbells in hands, body forming a T").
+  The two captions must clearly differ so the movement is visible.
+- "steps_it": 4 short steps in Italian (imperative, max 18 words each) describing the correct execution,
+  faithful to the instructions; "errors_it": 2 common mistakes in Italian (max 12 words each).
 Exercises:
 """
 
 
 def fase1(c, todo):
     coll = c.get_collection()
-    mancanti = [s for s in todo if s["id"] not in DESC]
+    mancanti = [s for s in todo if "start_img" not in DESC.get(s["id"], {})]
     print(f"Fase 1: {len(mancanti)} descrizioni da scrivere", flush=True)
     for i in range(0, len(mancanti), 8):
         if STOP.is_set():
@@ -112,7 +121,7 @@ def fase1(c, todo):
                     out = json.loads(re.sub(r"^```(json)?|```$", "", out.strip(), flags=re.M))
                 for s in lotto:
                     d = out.get(s["id"]) if isinstance(out, dict) else None
-                    if d and all(k in d for k in ("setup", "start", "end")):
+                    if d and all(k in d for k in ("setup", "start_img", "end_img")):
                         DESC[s["id"]] = d
                 break
             except Exception as e:  # noqa: BLE001
@@ -128,13 +137,12 @@ def fase1(c, todo):
 
 # ---------------- fase 2: immagini ----------------
 def prompt_img(s, d, fase):
-    pos = d["start"] if fase == 1 else d["end"]
+    pos = d["start_img"] if fase == 1 else d["end_img"]
     sec = ", ".join(MUSCOLI.get(m, m) for m in s["s"][:3])
-    return (f"A {d.get('view', 'side view')} full-body illustration of {PERSONAGGIO}, performing the exercise "
-            f"\"{s['en'] or s['it']}\" with correct technique. Equipment and setup: {d['setup']} "
-            f"Body position in this frame: {pos} "
-            f"The working muscles ({d.get('muscles') or MUSCOLI.get(s['m'], s['m'])}) are tinted a strong warm coral red"
-            + (f", the assisting muscles ({sec}) a lighter salmon pink" if sec else "")
+    return (f"{d.get('view', 'side view').capitalize()} of an athletic anatomical man {pos.rstrip('.')}. "
+            f"He is using {d['setup']} This is the only equipment in the picture, nothing else around him. "
+            f"Style: {PERSONAGGIO}. The working muscles ({d.get('muscles') or MUSCOLI.get(s['m'], s['m'])}) are tinted "
+            f"a strong warm coral red" + (f", the assisting muscles ({sec}) a lighter salmon pink" if sec else "")
             + f"; all other muscles stay light grey. {STILE}")
 
 
@@ -153,7 +161,7 @@ def fai(s):
         path = f"{OUT}/{s['id']}-{fase}.webp"
         if os.path.exists(path):
             continue
-        for tent in range(3):
+        for tent in range(5):
             if STOP.is_set():
                 return
             try:
@@ -163,11 +171,13 @@ def fai(s):
             except Exception as e:  # noqa: BLE001
                 msg = str(e)
                 print(f"  {s['id']}-{fase} errore: {msg[:200]}", flush=True)
-                if QUOTA.search(msg):
+                with LOCK:
+                    LOG.setdefault("messaggi", []).append(f"{s['id']}-{fase}: {msg[:200]}")
+                if QUOTA.search(msg) and not RATE.search(msg):
                     STOP.set()
                     LOG["fermato"] = msg[:300]
                     return
-                time.sleep(15 * (tent + 1))
+                time.sleep((60 if RATE.search(msg) else 15) * (tent + 1))
         else:
             with LOCK:
                 LOG["errori"][s["id"]] = "immagine non generata"
@@ -178,6 +188,11 @@ def fai(s):
 
 def main():
     todo = [s for s in SPEC if (not SOLO or s["id"] in SOLO)]
+    if RIFAI:
+        for s in todo:
+            for f in (1, 2):
+                if os.path.exists(f"{OUT}/{s['id']}-{f}.webp"):
+                    os.remove(f"{OUT}/{s['id']}-{f}.webp")
     todo = [s for s in todo if not (os.path.exists(f"{OUT}/{s['id']}-1.webp") and os.path.exists(f"{OUT}/{s['id']}-2.webp"))]
     if QUANTI:
         todo = todo[:QUANTI]
@@ -198,7 +213,9 @@ def main():
     git_commit(f"Figure: {len(os.listdir(OUT)) // 2} esercizi disegnati")
     tot = sum(1 for s in SPEC if os.path.exists(f"{OUT}/{s['id']}-2.webp"))
     LOG["totale_con_figure"] = f"{tot}/{len(SPEC)}"
-    json.dump(LOG, open("risultati_figure.json", "w"), indent=1, ensure_ascii=False)
+    json.dump(LOG, open("tools/esito_figure.json", "w"), indent=1, ensure_ascii=False)
+    subprocess.run(["git", "add", "tools/esito_figure.json"], check=False)
+    git_commit("Figure: esito")
     print(json.dumps({k: (v if not isinstance(v, list) else len(v)) for k, v in LOG.items()}, ensure_ascii=False)[:2000])
     if "fermato" in LOG:
         print("::warning::Generazione fermata: " + LOG["fermato"])

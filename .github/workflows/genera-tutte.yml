@@ -11,6 +11,9 @@ on:
       solo:
         description: "Solo questi esercizi (id separati da virgola, vuoto = tutti)"
         default: ""
+      rifai:
+        description: "Rifai anche le figure già presenti (1 = sì)"
+        default: "0"
 
 permissions:
   contents: write
@@ -38,6 +41,7 @@ jobs:
           VIDEO_DB_API_KEY: ${{ secrets.VIDEO_DB_API_KEY }}
           QUANTI: ${{ inputs.quanti }}
           SOLO: ${{ inputs.solo }}
+          RIFAI: ${{ inputs.rifai }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898693+github-actions[bot]@users.noreply.github.com"
