@@ -99,7 +99,15 @@ def cf_check(img_bytes, caption, nome):
          "Answer YES only if ALL are true: exactly one person; the body position clearly matches the required position "
          "(arms, legs, torso and where the weight is); the equipment is correct and used correctly; plain light background. "
          "Otherwise answer NO. Reply with one word: YES or NO.")
-    res = cf_run(VISION, {"messages": [{"role": "user", "content": q}], "image": list(buf.getvalue()), "max_tokens": 5})
+    import base64
+    uri = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+    try:
+        res = cf_run(VISION, {"messages": [{"role": "user", "content": [
+            {"type": "text", "text": q}, {"type": "image_url", "image_url": {"url": uri}}]}], "max_tokens": 5})
+    except RuntimeError as e:
+        if QUOTA.search(str(e)) and not RATE.search(str(e)):
+            raise
+        res = cf_run(VISION, {"prompt": q, "image": list(buf.getvalue()), "max_tokens": 5})
     out = str((res.get("result") or {}).get("response", "")).strip().upper()
     return out.startswith("YES")
 
