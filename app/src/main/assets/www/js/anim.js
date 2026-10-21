@@ -24,9 +24,9 @@ const FSEAT = o => F(Object.assign({ thS: 0.35, anchor: { j: 'hip', x: 160, y: 1
 const ANIMS = {
   bench_press: { props: ['bench'], keys: [LIE({ ua: 88, fa: 90 }), LIE({ ua: -78, fa: 96 })], cues: ['Scendi lento verso il petto, inspira', 'Spingi in alto espirando, scapole strette'] },
   incline_press: { props: ['incline'], keys: [P({ t: 140, n: 120, ua: 84, fa: 86, th: -10, sh: -100, anchor: { j: 'hip', x: 180, y: 150 } }), P({ t: 140, n: 120, ua: -96, fa: 80, th: -10, sh: -100, anchor: { j: 'hip', x: 180, y: 150 } })], cues: ['Scendi verso il petto alto, gomiti a 45°', 'Spingi verso l\'alto espirando'] },
-  chest_press: { props: ['seat', 'lever'], lever: [232, 70], keys: [SEAT({ ua: 0, fa: 0 }), SEAT({ ua: 190, fa: 4 })], order: 1, cues: ['Torna indietro lento, senti l\'allungamento del petto', 'Spingi in avanti espirando'] },
+  chest_press: { props: ['seat', 'lever'], lever: [232, 70], leverH: true, keys: [SEAT({ ua: 190, fa: 4 }), SEAT({ ua: 0, fa: 0 })], order: 1, cues: ['Spingi in avanti espirando, schiena appoggiata', 'Torna indietro lento, senti l\'allungamento del petto'] },
   pushup: { props: [], keys: [P({ t: 156, n: 150, ua: -90, fa: -90, th: -24, sh: -24, ft: -70, anchor: { j: 'hand', x: 110, y: 197 } }), P({ t: 177, n: 170, ua: 30, fa: -125, th: -3, sh: -3, ft: -70, anchor: { j: 'hand', x: 110, y: 197 } })], cues: ['Scendi col petto verso terra, corpo dritto', 'Spingi il pavimento lontano, addome contratto'] },
-  fly: { props: ['seatF'], keys: [FSEAT({ uaR: 0, faR: 84, uaS: 1 }), FSEAT({ uaR: 6, faR: 86, uaS: 0.15 })], order: 1, front: true, cues: ['Apri le braccia lento fino a sentire l\'allungamento', 'Chiudi le braccia davanti al petto e stringi'] },
+  fly: { props: ['seatF'], keys: [FSEAT({ uaR: 0, faR: 84, uaS: 1 }), FSEAT({ uaR: 6, faR: 86, uaS: 0.15 })], order: 1, front: true, cues: ['Chiudi le braccia davanti al petto e stringi', 'Apri le braccia lento fino a sentire l\'allungamento'] },
   deadlift: { props: [], keys: [P({ t: 40, n: 30, th: -30, sh: -105 }), P({})], cues: ['Spingi il pavimento, bilanciere vicino alle gambe', 'Riscendi controllato, schiena neutra'] },
   rdl: { props: [], keys: [P({ th: -84, sh: -94 }), P({ t: 15, n: 0, th: -60, sh: -100 })], cues: ['Anche indietro, schiena neutra, scendi lungo le gambe', 'Spingi le anche avanti e stringi i glutei'] },
   good_morning: { props: [], keys: [P({ ua: -150, fa: 75, th: -84, sh: -94 }), P({ t: 15, n: 0, ua: -60, fa: 150, th: -60, sh: -100 })], cues: ['Piega il busto portando le anche indietro', 'Risali a schiena neutra'] },
@@ -331,7 +331,7 @@ function drawProps(def, J, front, gear, layer) {
   pr.forEach(k => {
     if (k === 'cable' && !front) { const target = [def.cable[0], def.cable[1] == null ? J.hand[1] : def.cable[1]]; o.push(seg(J.hand, target, 1.6, pd), dot(target, 5, pc), seg([target[0] + 6, 0], [target[0] + 6, GY], 5, pd)); }
     if (k === 'cableAnkle') { o.push(seg(J.ankle, [265, 190], 1.6, pd), dot([265, 190], 5, pc), seg([271, 20], [271, GY], 5, pd), seg([J.ankle[0] - 3, J.ankle[1]], [J.ankle[0] + 3, J.ankle[1]], 8, pc)); }
-    if (k === 'lever') { o.push(seg(J.hand, def.lever, 5, pc), dot(def.lever, 6, pd), seg(def.lever, [def.lever[0], GY], 6, pd), seg([J.hand[0], J.hand[1] - 9], [J.hand[0], J.hand[1] + 9], 5, pd)); }
+    if (k === 'lever') { const pv = def.leverH ? [def.lever[0], J.hand[1]] : def.lever; o.push(seg(J.hand, pv, 5, pc), dot(pv, 6, pd), seg([def.lever[0], def.lever[1]], [def.lever[0], GY], 6, pd), seg([J.hand[0], J.hand[1] - 9], [J.hand[0], J.hand[1] + 9], 5, pd)); }
     if (k === 'platform') { const a = J.ankle; const d = vec(125, 30); o.push(seg(add(a, [d[0] + 4, d[1] + 4]), add(a, [-d[0] + 4, -d[1] + 4]), 7, pc), seg(add(a, [8, 8]), [a[0] + 40, GY], 5, pd)); }
     if (k === 'padAnkle') o.push(dot(add(J.ankle, [3, -6]), 6, pc));
     if (k === 'hipbar') o.push(dot(add(J.hip, [0, -16]), 19, pd), dot(add(J.hip, [0, -16]), 5, pc));
