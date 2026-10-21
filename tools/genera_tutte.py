@@ -68,7 +68,7 @@ def conn():
 def cf_image(prompt, seed):
     """Cloudflare Workers AI (FLUX.1 schnell): restituisce i byte dell'immagine. Piano gratuito: 10.000 neuroni al giorno."""
     import base64
-    body = json.dumps({"prompt": prompt[:2000], "steps": 6}).encode()
+    body = json.dumps({"prompt": prompt[:2000], "steps": 8}).encode()
     req = urllib.request.Request(f"https://api.cloudflare.com/client/v4/accounts/{CF_ID}/ai/run/{CF_MODEL}", data=body,
                                  headers={"Authorization": f"Bearer {CF_TOKEN}", "Content-Type": "application/json"})
     try:
@@ -165,12 +165,25 @@ def fase1(c, todo):
 
 
 # ---------------- fase 2: immagini ----------------
+def _corto(t, n):
+    w = re.sub(r"\s+", " ", str(t)).strip().rstrip(".").split(" ")
+    return " ".join(w[:n])
+
+
 def prompt_img(s, d, fase):
     pos = d["start_img"] if fase == 1 else d["end_img"]
+    mus = d.get("muscles") or MUSCOLI.get(s["m"], s["m"])
+    if CF_ID:
+        # FLUX legge bene solo l'inizio del testo: posa prima, poi attrezzo e stile, tutto breve
+        return (f"{d.get('view', 'side view')}, full body. A muscular man {_corto(pos, 34)}. "
+                f"Equipment: {(s['macchina'].split(':')[0] if s['macchina'] else s['attrezzo'])}. "
+                f"Medical anatomy illustration: light grey anatomical skin with fine muscle fibres, dark grey shorts, barefoot. "
+                f"Only the {_corto(mus, 6)} are coloured red, all other muscles light grey. "
+                f"Plain pure white background, whole body and equipment in frame, no text.")
     sec = ", ".join(MUSCOLI.get(m, m) for m in s["s"][:3])
     return (f"{d.get('view', 'side view').capitalize()} of an athletic anatomical man {pos.rstrip('.')}. "
             f"He is using {d['setup']} This is the only equipment in the picture, nothing else around him. "
-            f"Style: {PERSONAGGIO}. The working muscles ({d.get('muscles') or MUSCOLI.get(s['m'], s['m'])}) are tinted "
+            f"Style: {PERSONAGGIO}. The working muscles ({mus}) are tinted "
             f"a strong warm coral red" + (f", the assisting muscles ({sec}) a lighter salmon pink" if sec else "")
             + f"; all other muscles stay light grey. {STILE}")
 
