@@ -92,7 +92,14 @@ function drawSide3(p, root, e) {
   o.push(line3([along(0.3, 4), along(0.5, 2), along(0.62, 1)], 0.5)); // obliquo
   o.push(line3([along(0.45, -9), along(0.7, -12.5)], 0.6)); // dorsale
   // pantaloncini sul bacino
-  o.push(sh3([along(0.2, 10.2), along(0.08, 10.4), along(-0.08, 9.6), along(-0.13, 0), along(-0.1, -10.8), along(0.04, -14), along(0.18, -11.8), along(0.2, 0)], 'url(#mq3k)', 0.8));
+  { // pantaloncini: involucro morbido di bacino e attacco delle cosce, segue la posizione delle gambe
+    const pts = [along(0.2, 10.2), along(0.08, 10.4), along(-0.08, 9.6), along(-0.13, 0), along(-0.1, -10.8), along(0.04, -14), along(0.18, -11.8), along(0.2, 0)];
+    [J.knee, J.knee2].forEach(kn => { if (!kn) return; const tv = V2.nrm(V2.sub(kn, J.hip)), ta = [tv[1], -tv[0]], c = V2.off(J.hip, tv, 15); pts.push(V2.off(c, ta, 10.5), V2.off(c, ta, -10.5)); });
+    const cx = pts.reduce((a, q) => a + q[0], 0) / pts.length, cy = pts.reduce((a, q) => a + q[1], 0) / pts.length;
+    const hull = (P) => { P = P.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]); const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); const lo = [], up = []; P.forEach(q => { while (lo.length > 1 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }); P.slice().reverse().forEach(q => { while (up.length > 1 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }); return lo.slice(0, -1).concat(up.slice(0, -1)); };
+    const H = hull(pts).map(q => [+(cx + (q[0] - cx) * 0.97).toFixed(1), +(cy + (q[1] - cy) * 0.97).toFixed(1)]);
+    o.push('<path d="' + smoothPath(H, true) + '" fill="url(#mq3k)" stroke="#0d0e10" stroke-width=".8" stroke-linejoin="round"/>');
+  }
   o.push(mus([along(0.18, -4), along(0.06, -15), along(-0.08, -12), along(-0.06, -4)], 'glutei'));
   // collo e testa
   const tdir = V2.nrm(V2.sub(J.shoulder, J.hip)), nk = V2.off(J.shoulder, tdir, 1.5), hd = J.head;

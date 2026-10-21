@@ -16,7 +16,9 @@ import subprocess
 import sys
 import threading
 import time
+import urllib.error
 import urllib.request
+import zlib
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import videodb
@@ -48,12 +50,33 @@ STILE = ("Clean medical-anatomy illustration in the style of a premium fitness a
          "gentle ambient occlusion. Gym equipment drawn in matte charcoal black steel with dark grey padding. "
          "Plain pure white background, the whole figure and the whole equipment fully inside the frame with a generous "
          "margin, centered, static camera at chest height. No text, no labels, no arrows, no watermark, no logos.")
-QUOTA = re.compile(r"credit|quota exceeded|insufficient|balance|payment required|upgrade|maximum limit|current plan", re.I)
+QUOTA = re.compile(r"credit|quota exceeded|insufficient|balance|payment required|upgrade|maximum limit|current plan|daily free allocation|neurons|4006|capacity exceeded", re.I)
 RATE = re.compile(r"rate|429|too many|throttl", re.I)
+
+
+CF_ID = os.environ.get("CF_ACCOUNT_ID", "").strip()
+CF_TOKEN = os.environ.get("CF_API_TOKEN", "").strip()
+CF_MODEL = "@cf/black-forest-labs/flux-1-schnell"
 
 
 def conn():
     return videodb.connect()
+
+
+def cf_image(prompt, seed):
+    """Cloudflare Workers AI (FLUX.1 schnell): restituisce i byte dell'immagine. Piano gratuito: 10.000 neuroni al giorno."""
+    import base64
+    body = json.dumps({"prompt": prompt[:2000], "steps": 6, "seed": seed}).encode()
+    req = urllib.request.Request(f"https://api.cloudflare.com/client/v4/accounts/{CF_ID}/ai/run/{CF_MODEL}", data=body,
+                                 headers={"Authorization": f"Bearer {CF_TOKEN}", "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=180) as r:
+            res = json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        raise RuntimeError(f"HTTP {e.code}: {e.read()[:300]!r}")
+    if not res.get("success", True) or not (res.get("result") or {}).get("image"):
+        raise RuntimeError(str(res.get("errors") or res)[:300])
+    return base64.b64decode(res["result"]["image"])
 
 
 def scarica(url):
@@ -159,7 +182,7 @@ def fai(s):
     d = DESC.get(s["id"])
     if not d:
         return
-    if not hasattr(TL, "coll"):
+    if not CF_ID and not hasattr(TL, "coll"):
         TL.coll = conn().get_collection()
     for fase in (1, 2):
         path = f"{OUT}/{s['id']}-{fase}.webp"
@@ -169,8 +192,12 @@ def fai(s):
             if STOP.is_set():
                 return
             try:
-                img = TL.coll.generate_image(prompt=prompt_img(s, d, fase), aspect_ratio="1:1")
-                salva_webp(scarica(img.generate_url()), path)
+                if CF_ID:
+                    # stesso seme per inizio e fine: omino e attrezzo restano più simili tra le due figure
+                    salva_webp(cf_image(prompt_img(s, d, fase), zlib.crc32(s["id"].encode()) % 2147483647), path)
+                else:
+                    img = TL.coll.generate_image(prompt=prompt_img(s, d, fase), aspect_ratio="1:1")
+                    salva_webp(scarica(img.generate_url()), path)
                 break
             except Exception as e:  # noqa: BLE001
                 msg = str(e)

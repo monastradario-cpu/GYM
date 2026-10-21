@@ -3,6 +3,9 @@ name: Genera figure esercizi
 # Manuale: disegna con VideoDB le figure di tutti gli esercizi e le salva nel repo.
 # Riprende da dove si era fermato. Non pubblica l'app.
 on:
+  # ogni notte riprende da dove si era fermato (piano gratuito Cloudflare: circa 160 immagini al giorno)
+  schedule:
+    - cron: "17 1 * * *"
   workflow_dispatch:
     inputs:
       quanti:
@@ -42,6 +45,8 @@ jobs:
       - name: Genera
         env:
           VIDEO_DB_API_KEY: ${{ secrets.VIDEO_DB_API_KEY }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           QUANTI: ${{ inputs.quanti }}
           SOLO: ${{ inputs.solo }}
           RIFAI: ${{ inputs.rifai }}
