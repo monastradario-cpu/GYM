@@ -272,7 +272,7 @@ def fai(s):
                 print(f"  {s['id']}-{fase} errore: {msg[:200]}", flush=True)
                 with LOCK:
                     LOG.setdefault("messaggi", []).append(f"{s['id']}-{fase}: {msg[:200]}")
-                if QUOTA.search(msg) and not RATE.search(msg):
+                if ("4006" in msg or "daily free allocation" in msg) or (QUOTA.search(msg) and not RATE.search(msg)):
                     STOP.set()
                     LOG["fermato"] = msg[:300]
                     return

@@ -33,4 +33,6 @@ js = ("/* GYM — generato da tools/esporta_desc.py: figure anatomiche disponibi
       "  });\n"
       "})();\n")
 open("app/src/main/assets/www/js/figdesc.js", "w").write(js)
+# elenco letto dall'app online: le figure nuove arrivano senza installare una nuova versione
+json.dump(figs, open(f"{OUT}/index.json", "w"))
 print(f"figdesc.js: {len(figs)} esercizi con figure, {len(fd)} con testi")
