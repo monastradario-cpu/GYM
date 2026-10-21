@@ -1,0 +1,52 @@
+name: Genera figure esercizi
+
+# Manuale: disegna con VideoDB le figure di tutti gli esercizi e le salva nel repo.
+# Riprende da dove si era fermato. Non pubblica l'app.
+on:
+  workflow_dispatch:
+    inputs:
+      quanti:
+        description: "Quanti esercizi fare (0 = tutti quelli mancanti)"
+        default: "0"
+      solo:
+        description: "Solo questi esercizi (id separati da virgola, vuoto = tutti)"
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: genera-figure
+  cancel-in-progress: false
+
+jobs:
+  genera:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installa VideoDB
+        run: pip install "videodb>=0.5.0" pillow
+
+      - name: Genera
+        env:
+          VIDEO_DB_API_KEY: ${{ secrets.VIDEO_DB_API_KEY }}
+          QUANTI: ${{ inputs.quanti }}
+          SOLO: ${{ inputs.solo }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898693+github-actions[bot]@users.noreply.github.com"
+          python tools/genera_tutte.py
+
+      - name: Esito
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: esito-figure
+          path: risultati_figure.json
+          if-no-files-found: ignore
