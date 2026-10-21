@@ -54,7 +54,9 @@ QUOTA = re.compile(r"credit|quota exceeded|insufficient|balance|payment required
 RATE = re.compile(r"rate|429|too many|throttl", re.I)
 
 
-CF_ID = os.environ.get("CF_ACCOUNT_ID", "").strip()
+_cf = os.environ.get("CF_ACCOUNT_ID", "")
+# accetta anche l'indirizzo intero della dashboard: prende solo il codice di 32 caratteri
+CF_ID = (re.search(r"[0-9a-f]{32}", _cf.lower()) or re.search(r".*", _cf.strip())).group(0)
 CF_TOKEN = os.environ.get("CF_API_TOKEN", "").strip()
 CF_MODEL = "@cf/black-forest-labs/flux-1-schnell"
 
