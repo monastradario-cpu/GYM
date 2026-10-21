@@ -30,6 +30,8 @@ OUT = "app/src/main/assets/www/fig"
 os.makedirs(OUT, exist_ok=True)
 DESC = json.load(open(DESC_F)) if os.path.exists(DESC_F) else {}
 QUANTI = int(os.environ.get("QUANTI") or 0)
+SALT_F = "tools/figure_saltate.json"
+SALT = json.load(open(SALT_F)) if os.path.exists(SALT_F) else {}
 RIFAI = os.environ.get("RIFAI") == "1"
 SOLO_TESTI = os.environ.get("SOLO_TESTI") == "1"
 SOLO = [s.strip() for s in (os.environ.get("SOLO") or "").split(",") if s.strip()]
@@ -61,8 +63,45 @@ CF_TOKEN = os.environ.get("CF_API_TOKEN", "").strip()
 CF_MODEL = "@cf/black-forest-labs/flux-1-schnell"
 
 
+VISION = "@cf/meta/llama-3.2-11b-vision-instruct"
+_LIC = {"ok": False}
+
+
 def conn():
     return videodb.connect()
+
+
+def cf_run(model, payload, timeout=180):
+    req = urllib.request.Request(f"https://api.cloudflare.com/client/v4/accounts/{CF_ID}/ai/run/{model}",
+                                 data=json.dumps(payload).encode(),
+                                 headers={"Authorization": f"Bearer {CF_TOKEN}", "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        raise RuntimeError(f"HTTP {e.code}: {e.read()[:300]!r}")
+
+
+def cf_check(img_bytes, caption, nome):
+    """Controllo qualità gratuito: un modello che vede l'immagine dice se la posa è quella richiesta."""
+    if not _LIC["ok"]:
+        try:
+            cf_run(VISION, {"prompt": "agree"}, 60)  # accettazione della licenza Llama 3.2 (una volta)
+        except Exception:  # noqa: BLE001
+            pass
+        _LIC["ok"] = True
+    im = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+    im.thumbnail((448, 448))
+    buf = io.BytesIO()
+    im.save(buf, "JPEG", quality=80)
+    q = (f"You check gym exercise illustrations for a fitness app. Exercise: {nome}. "
+         f"Required body position: {caption}. "
+         "Answer YES only if ALL are true: exactly one person; the body position clearly matches the required position "
+         "(arms, legs, torso and where the weight is); the equipment is correct and used correctly; plain light background. "
+         "Otherwise answer NO. Reply with one word: YES or NO.")
+    res = cf_run(VISION, {"messages": [{"role": "user", "content": q}], "image": list(buf.getvalue()), "max_tokens": 5})
+    out = str((res.get("result") or {}).get("response", "")).strip().upper()
+    return out.startswith("YES")
 
 
 def cf_image(prompt, seed):
@@ -203,13 +242,19 @@ def fai(s):
         path = f"{OUT}/{s['id']}-{fase}.webp"
         if os.path.exists(path):
             continue
-        for tent in range(5):
+        for tent in range(3 if CF_ID else 5):
             if STOP.is_set():
                 return
             try:
                 if CF_ID:
-                    # stesso seme per inizio e fine: omino e attrezzo restano più simili tra le due figure
-                    salva_webp(cf_image(prompt_img(s, d, fase), zlib.crc32(s["id"].encode()) % 2147483647), path)
+                    data = cf_image(prompt_img(s, d, fase), 0)
+                    cap = d["start_img"] if fase == 1 else d["end_img"]
+                    if not cf_check(data, cap, s["en"] or s["it"]):
+                        with LOCK:
+                            LOG.setdefault("scartate", 0)
+                            LOG["scartate"] += 1
+                        raise ValueError("posa non corretta secondo il controllo")
+                    salva_webp(data, path)
                 else:
                     img = TL.coll.generate_image(prompt=prompt_img(s, d, fase), aspect_ratio="1:1")
                     salva_webp(scarica(img.generate_url()), path)
@@ -223,10 +268,14 @@ def fai(s):
                     STOP.set()
                     LOG["fermato"] = msg[:300]
                     return
-                time.sleep((60 if RATE.search(msg) else 15) * (tent + 1))
+                if "posa non corretta" not in msg:
+                    time.sleep((60 if RATE.search(msg) else 15) * (tent + 1))
         else:
             with LOCK:
-                LOG["errori"][s["id"]] = "immagine non generata"
+                LOG["errori"][s["id"]] = f"figura {fase} non riuscita"
+            if not STOP.is_set():
+                with LOCK:
+                    LOG.setdefault("da_saltare", []).append(s["id"])
             return
     with LOCK:
         LOG["ok"].append(s["id"])
@@ -243,6 +292,7 @@ def main():
         todo = [s for s in todo if "steps_it" not in DESC.get(s["id"], {})]
     else:
         todo = [s for s in todo if not (os.path.exists(f"{OUT}/{s['id']}-1.webp") and os.path.exists(f"{OUT}/{s['id']}-2.webp"))]
+        todo = [s for s in todo if SALT.get(s["id"], 0) < 2]  # dopo 2 notti senza figure giuste resta l'omino
     if QUANTI:
         todo = todo[:QUANTI]
     print(f"Esercizi da fare: {len(todo)}", flush=True)
@@ -265,6 +315,10 @@ def main():
                 with LOCK:
                     git_commit(f"Figure: {len(os.listdir(OUT)) // 2} esercizi disegnati")
     git_commit(f"Figure: {len(os.listdir(OUT)) // 2} esercizi disegnati")
+    for i in LOG.get("da_saltare", []):
+        SALT[i] = SALT.get(i, 0) + 1
+    json.dump(SALT, open(SALT_F, "w"), indent=0)
+    subprocess.run(["git", "add", SALT_F], check=False)
     tot = sum(1 for s in SPEC if os.path.exists(f"{OUT}/{s['id']}-2.webp"))
     LOG["totale_con_figure"] = f"{tot}/{len(SPEC)}"
     json.dump(LOG, open("tools/esito_figure.json", "w"), indent=1, ensure_ascii=False)

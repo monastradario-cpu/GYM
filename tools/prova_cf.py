@@ -13,8 +13,13 @@ for s in G.SPEC:
         esito[s["id"]] = "manca la descrizione"; continue
     for f in (1, 2):
         try:
-            G.salva_webp(G.cf_image(G.prompt_img(s, d, f), zlib.crc32(s["id"].encode()) % 2147483647), f"anteprima/{s['id']}-{f}.webp")
-            esito[f"{s['id']}-{f}"] = "ok"
+            for t in range(3):
+                data = G.cf_image(G.prompt_img(s, d, f), 0)
+                ok = G.cf_check(data, d["start_img"] if f == 1 else d["end_img"], s["en"] or s["it"])
+                G.salva_webp(data, f"anteprima/{s['id']}-{f}-t{t + 1}{'' if ok else '-NO'}.webp")
+                if ok:
+                    break
+            esito[f"{s['id']}-{f}"] = "ok" if ok else "scartata 3 volte"
         except Exception as e:
             esito[f"{s['id']}-{f}"] = str(e)[:300]
         print(s["id"], f, esito.get(f"{s['id']}-{f}"), flush=True)
