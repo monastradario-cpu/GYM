@@ -14,6 +14,9 @@ on:
       rifai:
         description: "Rifai anche le figure già presenti (1 = sì)"
         default: "0"
+      solo_testi:
+        description: "Solo i testi di esecuzione, niente immagini (1 = sì)"
+        default: "0"
 
 permissions:
   contents: write
@@ -42,6 +45,7 @@ jobs:
           QUANTI: ${{ inputs.quanti }}
           SOLO: ${{ inputs.solo }}
           RIFAI: ${{ inputs.rifai }}
+          SOLO_TESTI: ${{ inputs.solo_testi }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898693+github-actions[bot]@users.noreply.github.com"

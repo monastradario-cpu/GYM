@@ -29,6 +29,7 @@ os.makedirs(OUT, exist_ok=True)
 DESC = json.load(open(DESC_F)) if os.path.exists(DESC_F) else {}
 QUANTI = int(os.environ.get("QUANTI") or 0)
 RIFAI = os.environ.get("RIFAI") == "1"
+SOLO_TESTI = os.environ.get("SOLO_TESTI") == "1"
 SOLO = [s.strip() for s in (os.environ.get("SOLO") or "").split(",") if s.strip()]
 THREADS = int(os.environ.get("THREADS") or 4)
 LOCK = threading.Lock()
@@ -47,7 +48,7 @@ STILE = ("Clean medical-anatomy illustration in the style of a premium fitness a
          "gentle ambient occlusion. Gym equipment drawn in matte charcoal black steel with dark grey padding. "
          "Plain pure white background, the whole figure and the whole equipment fully inside the frame with a generous "
          "margin, centered, static camera at chest height. No text, no labels, no arrows, no watermark, no logos.")
-QUOTA = re.compile(r"credit|quota exceeded|insufficient|balance|payment required|upgrade", re.I)
+QUOTA = re.compile(r"credit|quota exceeded|insufficient|balance|payment required|upgrade|maximum limit|current plan", re.I)
 RATE = re.compile(r"rate|429|too many|throttl", re.I)
 
 
@@ -134,6 +135,8 @@ def fase1(c, todo):
                 time.sleep(10)
         json.dump(DESC, open(DESC_F, "w"), ensure_ascii=False, indent=0)
         print(f"  descrizioni {min(i + 8, len(mancanti))}/{len(mancanti)}", flush=True)
+        if (i // 8) % 10 == 9:
+            git_commit(f"Testi esecuzione: {len(DESC)} esercizi")
 
 
 # ---------------- fase 2: immagini ----------------
@@ -194,13 +197,21 @@ def main():
             for f in (1, 2):
                 if os.path.exists(f"{OUT}/{s['id']}-{f}.webp"):
                     os.remove(f"{OUT}/{s['id']}-{f}.webp")
-    todo = [s for s in todo if not (os.path.exists(f"{OUT}/{s['id']}-1.webp") and os.path.exists(f"{OUT}/{s['id']}-2.webp"))]
+    if SOLO_TESTI:
+        todo = [s for s in todo if "steps_it" not in DESC.get(s["id"], {})]
+    else:
+        todo = [s for s in todo if not (os.path.exists(f"{OUT}/{s['id']}-1.webp") and os.path.exists(f"{OUT}/{s['id']}-2.webp"))]
     if QUANTI:
         todo = todo[:QUANTI]
     print(f"Esercizi da fare: {len(todo)}", flush=True)
     c = conn()
     fase1(c, todo)
     git_commit("Figure: descrizioni delle pose")
+    if SOLO_TESTI:
+        LOG["descrizioni"] = f"{sum(1 for v in DESC.values() if 'steps_it' in v)}/{len(SPEC)}"
+        json.dump(LOG, open("tools/esito_figure.json", "w"), indent=1, ensure_ascii=False)
+        git_commit("Testi esecuzione: descrizioni da fonti")
+        return
     fatti = 0
     with ThreadPoolExecutor(THREADS) as ex:
         futs = [ex.submit(fai, s) for s in todo]
