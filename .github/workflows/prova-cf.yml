@@ -1,0 +1,36 @@
+name: Prova figure Cloudflare
+
+on:
+  workflow_dispatch:
+    inputs:
+      solo:
+        description: "Esercizi (id separati da virgola)"
+        default: "chest_press,lat_machine,squat_bil,leg_press,alzate_laterali,curl_bil,leg_curl,croci_cavi,hip_thrust_bil,stacco_bil"
+
+permissions:
+  contents: write
+
+jobs:
+  prova:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "videodb>=0.5.0" pillow
+      - name: Genera
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          SOLO: ${{ inputs.solo }}
+        run: python tools/prova_cf.py
+      - name: Pubblica anteprima
+        if: always()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: prova-cf-${{ github.run_number }}
+          name: Prova Cloudflare ${{ github.run_number }}
+          prerelease: true
+          body: "Prova delle figure con Cloudflare Workers AI."
+          files: anteprima/*
