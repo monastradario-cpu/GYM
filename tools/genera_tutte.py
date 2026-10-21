@@ -68,7 +68,7 @@ def conn():
 def cf_image(prompt, seed):
     """Cloudflare Workers AI (FLUX.1 schnell): restituisce i byte dell'immagine. Piano gratuito: 10.000 neuroni al giorno."""
     import base64
-    body = json.dumps({"prompt": prompt[:2000], "steps": 6, "seed": seed}).encode()
+    body = json.dumps({"prompt": prompt[:2000], "steps": 6}).encode()
     req = urllib.request.Request(f"https://api.cloudflare.com/client/v4/accounts/{CF_ID}/ai/run/{CF_MODEL}", data=body,
                                  headers={"Authorization": f"Bearer {CF_TOKEN}", "Content-Type": "application/json"})
     try:
