@@ -329,7 +329,7 @@ function streaks() {
 /* alternative a un esercizio */
 function alternatives(exId, avoidEq) {
   const e = EX[exId]; if (!e) return [];
-  return EXERCISES.filter(x => x.id !== exId && x.m === e.m && x.pat !== 'condizionamento' && !isBreakEx(x))
+  return EXERCISES.filter(x => x.id !== exId && x.m === e.m && x.pat !== 'condizionamento' && !isBreakEx(x) && !x.niche)
     .map(x => ({ x, score: (x.pat === e.pat ? 3 : 0) + (x.eq !== (avoidEq || e.eq) ? 1 : 0) + (x.comp === e.comp ? 1 : 0) }))
     .sort((a, b) => b.score - a.score).map(a => a.x);
 }

@@ -113,6 +113,8 @@ const ACT = {
   },
   toggleWu: d => { const s = S.active.items[+d.n].sets[+d.k]; s.wu = !s.wu; const it = S.active.items[+d.n]; it.sets.sort((a, b) => (b.wu ? 1 : 0) - (a.wu ? 1 : 0)); save(); render(); toast(s.wu ? 'Segnata come riscaldamento (non conta nei record)' : 'Segnata come serie di lavoro'); },
   exMenu: d => openSheet(() => exMenuSheet(+d.n)),
+  setMq: d => { S.settings.mq = d.k; save(); render(); },
+  circMenu: d => openSheet(() => circMenuSheet(+d.n)),
   menuDo: d => { closeSheet(); const fn = ACT[d.a]; if (fn) fn(d); },
   trainerTip: d => { const it = S.active.items[+d.n], prog = exProg(it); openSheet(() => '<h3>' + ic('coach', 'inline') + 'Consiglio del trainer</h3><p class="muted small">' + exLine(it.ex) + '</p><div class="tip ' + prog.kind + '">' + esc(prog.text) + '</div><p class="small">' + esc(trainerNote(it)) + '</p><p class="small muted">Puoi cambiare l\'intervallo di ripetizioni nei due riquadri: gli obiettivi delle serie si ricalcolano.</p>'); },
   woMode: d => { S.settings.woMode = d.m; UI.focusN = null; UI.focusK = null; save(); render(true); },
@@ -126,7 +128,34 @@ const ACT = {
   },
   woMove: d => { const a = S.active.items, n = +d.n, m = n + (+d.d); if (m < 0 || m >= a.length) return; [a[n], a[m]] = [a[m], a[n]]; save(); closeSheet(); render(); },
   woDel: d => { S.active.items.splice(+d.n, 1); save(); closeSheet(); render(); },
-  woAdd: () => pickExercise(id => { S.active.items.push(newItem(prescribe(id), 'scheda')); save(); render(); setTimeout(() => { const v = $('#view'); v.scrollTop = v.scrollHeight; }, 30); }),
+  woAdd: () => pickExercise(id => { const p = prescribe(id); UI.rx = { target: 'add', id, sets: p.sets || 3, mode: 'range', rmin: p.rmin || 8, rmax: p.rmax || 12, reps: p.rmax || 10, secs: p.secs || 40, rest: p.rest || 90, base: p }; setTimeout(() => openSheet(repSheet), 30); }),
+  repPick: d => { const it = S.active.items[+d.n]; UI.rx = { target: 'item', n: +d.n, id: it.ex, mode: it.repMode === 'fixed' || it.rmin === it.rmax ? 'fixed' : 'range', rmin: it.rmin, rmax: it.rmax, reps: it.rmax, secs: it.secs || 40 }; openSheet(repSheet); },
+  rxStep: d => { const R = UI.rx, k = d.k, step = k === 'secs' ? 5 : 1; R[k] = Math.max(1, Math.min(k === 'sets' ? 10 : 300, num(R[k]) + (+d.d) * step)); if (R.rmin > R.rmax) { if (k === 'rmin') R.rmax = R.rmin; else R.rmin = R.rmax; } rerenderSheet(); },
+  rxMode: d => { const R = UI.rx; R.mode = d.m; if (d.m === 'fixed') R.reps = R.rmax; else if (R.rmin === R.rmax) R.rmin = Math.max(1, R.rmax - 4); rerenderSheet(); },
+  rxRest: d => { UI.rx.rest = +d.s; rerenderSheet(); },
+  rxOk: () => {
+    const R = UI.rx, timed = (EX[R.id] || {}).type === 'time';
+    const rmin = R.mode === 'fixed' ? num(R.reps) : Math.min(num(R.rmin), num(R.rmax)), rmax = R.mode === 'fixed' ? num(R.reps) : Math.max(num(R.rmin), num(R.rmax));
+    if (R.target === 'add') {
+      const src = Object.assign({}, R.base, { ex: R.id, sets: num(R.sets), rest: R.rest, rmin, rmax, repMode: R.mode, secs: timed ? num(R.secs) : R.base.secs });
+      S.active.items.push(newItem(src, 'scheda')); save(); closeSheet(); render(); setTimeout(() => { const v = $('#view'); v.scrollTop = v.scrollHeight; }, 30);
+    } else {
+      const it = S.active.items[R.n];
+      if (timed) { it.secs = num(R.secs); it.sets.forEach(x => { if (!x.done && x.reps === '') x.pr = it.secs; }); }
+      else {
+        it.rmin = rmin; it.rmax = rmax; it.repMode = R.mode;
+        const tg = deloadActive() ? null : progression(it.ex, rmin, rmax).targets; let wi = 0;
+        it.sets.forEach(x => { if (x.wu) return; const tt = tg && (tg[wi] || tg[tg.length - 1]); wi++; if (x.done) return; if (tt) { if (x.kg === '' && tt.kg) x.pk = tt.kg; x.pr = Math.min(rmax, Math.max(rmin, tt.reps)); } else x.pr = Math.min(rmax, Math.max(rmin, num(x.pr) || rmax)); });
+      }
+      save(); closeSheet(); render();
+    }
+  },
+  editRepMode: d => { const it = UI.edit.items[+d.n]; it.repMode = d.m; if (d.m === 'fixed') it.rmin = it.rmax; else if (it.rmin === it.rmax) it.rmin = Math.max(1, it.rmax - 4); render(); },
+  woSettings: () => openSheet(woSettingsSheet),
+  swDur: () => { UI.saveWo.editDur = !UI.saveWo.editDur; render(); },
+  swUnusualEdit: () => { closeSheet(); UI.saveWo.editDur = true; go('saveWo'); },
+  swUnusualKeep: () => { closeSheet(); go('saveWo'); },
+  saveWoOk: () => { const W = UI.saveWo; back(); finishWorkout({ name: (W.name || '').trim(), note: (W.note || '').trim(), start: W.start, end: W.start + Math.max(1, W.min) * 60000 }); },
   addToActive: d => { S.active.items.push(newItem(prescribe(d.id), 'scheda')); save(); go('workout'); toast('Aggiunto'); },
   swapEx: d => openSwap(S.active.items[+d.n].ex, 'doSwap', +d.n, { used: S.active.items.map(x => x.ex) }),
   doSwap: d => {
@@ -149,9 +178,17 @@ const ACT = {
   delCardio: d => { S.active.cardio.splice(+d.n, 1); save(); render(); },
   finish: () => {
     const a = S.active; if (!a) return;
+    if (a.quick) { finishWorkout(); return; }
+    const anyDone = a.items.some(i => i.sets.some(x => x.done)) || a.cardio.length;
+    const toSave = () => {
+      if (!anyDone) { finishWorkout(); return; }
+      UI.saveWo = { name: a.name, note: '', start: a.start, min: Math.max(1, Math.round((Date.now() - a.start) / 60000)), editDur: false, photo: false };
+      if (UI.saveWo.min >= 240) openSheet(() => '<h3 class="center">Durata dell\'allenamento insolita</h3><p class="center">Il tuo allenamento è durato <b>' + Math.floor(UI.saveWo.min / 60) + 'h ' + (UI.saveWo.min % 60) + 'min</b>. Sembra più lungo del solito: forse hai dimenticato di chiuderlo. Vuoi modificarla?</p><button class="btn wide big" data-act="swUnusualEdit">Modifica durata allenamento</button><button class="btn ghost wide" data-act="swUnusualKeep">Mantieni durata attuale</button>');
+      else go('saveWo');
+    };
     const pending = a.circ ? 0 : a.items.reduce((s, i) => s + i.sets.filter(x => !x.done && !x.wu).length, 0);
-    if (pending && !a.circ) ask('Hai ancora ' + pending + ' serie non segnate. Terminare comunque?', 'Termina e salva', finishWorkout);
-    else finishWorkout();
+    if (pending && anyDone) ask('Hai ancora ' + pending + ' serie non segnate. Terminare comunque?', 'Termina', toSave);
+    else toSave();
   },
   discard: () => ask('Annullare l\'allenamento senza salvare?', 'Annulla allenamento', () => { endActive(); go('home', null, true); }, true),
   circGo: () => { S.active.circ.phase = 'work'; stopRest(true); save(); render(); },
@@ -213,6 +250,46 @@ const ACT = {
   usePrev: d => { if (!d.kg) return; const s = S.active.items[+d.n].sets[+d.k]; s.kg = num(d.kg); s.reps = num(d.r); save(); render(); },
   circTimed: d => { const a = S.active, c = a.circ, it = a.items[+d.n]; stopRest(true); c.idx = +d.n; c.round = +d.k; c.workUntil = Date.now() + it.secs * 1000; Native.restTimer(it.secs, 'Stazione finita'); save(); render(); },
   foodDayNav: d => { const x = new Date((UI.foodDay || todayKey()) + 'T12:00:00'); x.setDate(x.getDate() + (+d.d)); const k = dayKey(x); UI.foodDay = k > todayKey() ? todayKey() : k; render(); },
+  cycleOn: () => { const C = cycleState(); C.on = !C.on; if (C.on) C.start = startOfWeek(Date.now()).getTime(); save(); render(); },
+  cycleKind: d => { const C = cycleState(); C.kind = d.k || null; save(); render(); },
+  cycleRestart: () => ask('Ricominciare il ciclo dalla settimana 1?', 'Ricomincia', () => { cycleState().start = startOfWeek(Date.now()).getTime(); save(); render(); }),
+  maxOpen: d => { UI.maxEx = d.id; UI.prog.tab = 'massimali'; go('progress'); },
+  maxSel: d => { UI.maxEx = d.id; render(); },
+  maxSet: d => { UI.maxIn = { id: d.id, kg: '' }; openSheet(() => '<h3>Massimale testato</h3><p class="small muted">' + esc(EX[d.id].n) + ': il peso più alto sollevato per 1 ripetizione pulita.</p>' + field('Chili', numIn('', 'data-in="maxKg" id="max-in"', '0')) + '<button class="btn wide" data-act="maxSave">Salva</button>' + ((S.maxes || {})[d.id] ? '<button class="btn ghost wide" data-act="maxClear">Torna alla stima automatica</button>' : '')); setTimeout(() => { const i = document.getElementById('max-in'); if (i) i.focus(); }, 60); },
+  maxSave: () => { const v = num(UI.maxIn.kg); if (!(v > 0)) { toast('Inserisci i chili'); return; } S.maxes = S.maxes || {}; S.maxes[UI.maxIn.id] = { kg: v, d: Date.now() }; save(); closeSheet(); render(); toast('Massimale salvato'); },
+  maxClear: () => { delete S.maxes[UI.maxIn.id]; save(); closeSheet(); render(); },
+  measAdd: () => { const L = S.measures || [], last = L[L.length - 1] || {}; UI.meas = Object.assign({}, last, { d: Date.now(), i: null }); delete UI.meas.i; UI.meas.i = null; openSheet(measSheet); },
+  measEdit: d => { UI.meas = Object.assign({}, S.measures[+d.i], { i: +d.i }); openSheet(measSheet); },
+  measSave: () => { const M = UI.meas, m = { d: M.i != null ? M.d : Date.now() }; MEASURES.forEach(([k]) => { if (num(M[k]) > 0) m[k] = num(M[k]); }); if (Object.keys(m).length < 2) { toast('Inserisci almeno una misura'); return; } S.measures = S.measures || []; if (M.i != null) S.measures[M.i] = m; else S.measures.push(m); save(); closeSheet(); render(); toast('Misure salvate'); },
+  measDel: () => { S.measures.splice(UI.meas.i, 1); save(); closeSheet(); render(); },
+  nutTab: d => { UI.nutTab = d.t; render(true); },
+  prefDiet: d => { foodPrefs().diet = d.k; save(); render(); },
+  prefFlag: d => { const P = foodPrefs(); P[d.k] = !P[d.k]; save(); render(); },
+  prefCat: d => { UI.prefCat = d.k; render(); },
+  prefFood: d => { const P = foodPrefs(), n = d.n; if (P.like.includes(n)) { P.like = P.like.filter(x => x !== n); P.dislike.push(n); } else if (P.dislike.includes(n)) P.dislike = P.dislike.filter(x => x !== n); else P.like.push(n); save(); const v = $('#view'), y = v.scrollTop; render(); v.scrollTop = y; },
+  prefMeals: d => { foodPrefs().meals = +d.n; save(); render(); },
+  prefDone: () => { const P = foodPrefs(); P.done = true; mealPlanBuild(UI.planMeals || P.meals); UI.nutTab = 'piano'; UI.planDay = null; save(); back(); toast('Piano della settimana pronto'); },
+  planMeals: d => { UI.planMeals = +d.n; foodPrefs().meals = +d.n; save(); render(); },
+  planMake: () => { mealPlanBuild(UI.planMeals || foodPrefs().meals); UI.planDay = null; render(); toast('Nuovo piano creato'); },
+  planDay: d => { UI.planDay = +d.i; render(); },
+  planSwap: d => {
+    const MP = S.mealPlan, di = UI.planDay == null ? Math.max(0, MP.days.findIndex(x => x.d === todayKey())) : UI.planDay, s = MP.days[di].slots[+d.i], P = foodPrefs();
+    const base = s.slot === 'pre' || s.slot === 'post' ? 'spuntino' : s.slot;
+    const pool = RECIPES.filter(r => (r.m.includes(s.slot) || r.m.includes(base)) && recipeOk(r, P) && r.id !== s.rid);
+    if (!pool.length) { toast('Nessuna alternativa'); return; }
+    const i = (pool.findIndex(r => r.id === s.last) + 1) % pool.length; s.last = pool[i].id; s.rid = pool[i].id; save(); render();
+  },
+  planLog: d => {
+    const MP = S.mealPlan, di = UI.planDay == null ? Math.max(0, MP.days.findIndex(x => x.d === todayKey())) : UI.planDay, day = MP.days[di], m = planMeal(day, +d.i); if (!m) return;
+    const meal = { colazione: 'colazione', pranzo: 'pranzo', cena: 'cena' }[day.slots[+d.i].slot] || 'spuntini';
+    logIngredients(m.ing, meal); toast('Aggiunto al diario di oggi');
+  },
+  recipeOpen: d => { UI.recipe = { id: d.id, kcal: +d.k || 0, meal: mealNow() }; openSheet(recipeSheet); },
+  recMeal: d => { UI.recipe.meal = d.m; rerenderSheet(); },
+  recipeLog: () => { const R = UI.recipe, r = RECIPES.find(x => x.id === R.id), m = recipeFor(r, foodPrefs(), R.kcal || 0); logIngredients(m.ing, R.meal || mealNow()); closeSheet(); toast('Ricetta aggiunta al diario'); render(); },
+  recF: d => { UI.recF = d.k; render(); },
+  shopChk: d => { S.shopChecked = S.shopChecked || {}; S.shopChecked[d.n] = !S.shopChecked[d.n]; save(); const v = $('#view'), y = v.scrollTop; render(); v.scrollTop = y; },
+  shopShare: () => { const by = shoppingList(); if (!by) return; const txt = 'Lista della spesa (GYM)\n' + Object.keys(FOOD_CATS).filter(c => by[c]).map(c => '\n' + FOOD_CAT_N[c] + ':\n' + by[c].map(([n, g]) => '- ' + n.replace(/ \(.*\)/, '') + ' ' + shopQty(n, g)).join('\n')).join('\n'); copyText(txt); toast('Lista copiata: incollala dove vuoi'); },
   foodAdd: d => { UI.fadd = { meal: d.m || mealNow(), q: '' }; openSheet(foodAddSheet); },
   foodScan: () => {
     UI.fadd = UI.fadd || { meal: mealNow() };
@@ -279,7 +356,8 @@ const ACT = {
   woGroup: d => { const ms = d.q.split(','); pickExercise(id => { S.active.items.push(newItem(prescribe(id), 'scheda')); save(); render(); }, { m: ms[0], group: ms }); },
 
   /* libreria / esercizio */
-  exInfo: d => { closeSheet(); go('exercise', { id: d.id }); },
+  exInfo: d => { closeSheet(); UI.exTab = 'esecuzione'; go('exercise', { id: d.id }); },
+  exTab: d => { UI.exTab = d.t; const v = $('#view'), y = v.scrollTop; render(); v.scrollTop = y; },
   libM: d => { UI.lib.m = d.m; render(); },
   libEq: d => { UI.lib.eq = d.e; render(); },
 
@@ -360,7 +438,7 @@ function regenPresets(quiet) {
 document.addEventListener('click', ev => {
   // figura del corpo nell'allenatore
   const shape = ev.target.closest('.body-pick [data-m]');
-  if (shape) { ACT.coachM({ m: shape.dataset.m === 'avambracci' ? 'bicipiti' : shape.dataset.m }); return; }
+  if (shape) { ACT.coachM({ m: shape.dataset.m }); return; }
   const el = ev.target.closest('[data-act]'); if (!el || el.disabled) return;
   const fn = ACT[el.dataset.act]; if (!fn) return;
   if (el.tagName === 'A') ev.preventDefault();
@@ -378,12 +456,18 @@ document.addEventListener('input', ev => {
     case 'woItem': S.active.items[+d.n][d.k] = num(v); save(); break;
     case 'editName': UI.edit.name = v; break;
     case 'editNum': UI.edit[d.k] = num(v); break;
-    case 'editItem': UI.edit.items[+d.n][d.k] = num(v); break;
+    case 'editItem': if (d.k === 'fixed') { UI.edit.items[+d.n].rmin = UI.edit.items[+d.n].rmax = num(v); } else UI.edit.items[+d.n][d.k] = num(v); break;
     case 'pickQ': UI.pick.q = v; document.getElementById('pick-list').innerHTML = pickerList(); break;
     case 'libQ': UI.lib.q = v; document.getElementById('lib-list').innerHTML = libList(); break;
     case 'cardio': UI.cardio[d.k] = v; break;
     case 'plates': UI.plates[d.k] = v; { const b = $('#sheet-body'), f = document.activeElement, name = f && f.dataset.k; b.innerHTML = platesSheet(); const nf = b.querySelector('[data-in="plates"][data-k="' + name + '"]'); if (nf) { nf.focus(); nf.setSelectionRange(nf.value.length, nf.value.length); } } break;
     case 'waterGoal': S.profile.waterGoal = Math.max(1, Math.min(20, num(v) | 0)); save(); break;
+    case 'maxKg': UI.maxIn.kg = v; break;
+    case 'meas': UI.meas[d.k] = v; break;
+    case 'rx': UI.rx[d.k] = num(v); break;
+    case 'sw': UI.saveWo[d.k] = v; break;
+    case 'swH': UI.saveWo.min = Math.max(0, num(v) | 0) * 60 + UI.saveWo.min % 60; break;
+    case 'swM': UI.saveWo.min = Math.floor(UI.saveWo.min / 60) * 60 + Math.max(0, Math.min(59, num(v) | 0)); break;
     case 'brkNum': S.reminders.breaks[d.k] = Math.max(0, Math.min(24, num(v) | 0)); save(); break;
     case 'remNum': S.reminders.water[d.k] = num(v) | 0; save(); syncReminders(); break;
     case 'aiKey': S.settings.ai.key = cleanKey(v, S.settings.ai.provider); UI.aiStatus = null; save(); break;
@@ -424,6 +508,12 @@ document.addEventListener('change', async ev => {
     const f = el.files[0], text = await f.text();
     ask('Importare il backup? I dati attuali verranno sostituiti.', 'Importa', async () => { try { await importBackup(text); applyTheme(); syncReminders(); UI.stack = [{ v: 'home' }]; render(true); toast('Backup importato'); } catch (e) { toast('Errore: ' + e.message); } });
   }
+  if (k === 'swStart' && el.value) { const t = new Date(el.value).getTime(); if (t) UI.saveWo.start = t; }
+  if ((k === 'swH' || k === 'swM') && UI.saveWo) render();
+  if (k === 'swPhoto' && el.files[0]) {
+    try { const data = await shrinkImage(el.files[0], 1280); const w = S.weights[S.weights.length - 1]; await Photos.put({ id: uid(), date: Date.now(), data, kg: w ? w.kg : 0 }); UI.saveWo.photo = true; render(); toast('Foto salvata nei progressi'); }
+    catch (e) { toast('Impossibile salvare la foto'); }
+  }
   if (k === 'photo' && el.files[0]) {
     try { const data = await shrinkImage(el.files[0], 1280); const w = S.weights[S.weights.length - 1]; await Photos.put({ id: uid(), date: Date.now(), data, kg: w ? w.kg : 0 }); loadPhotos(); toast('Foto salvata'); }
     catch (e) { toast('Impossibile salvare la foto'); }
@@ -451,6 +541,7 @@ if (S.onboarded && S.needRegen) {
   setTimeout(() => toast('Schede aggiornate dal trainer: dai un\'occhiata in "Schede"'), 800);
 }
 delete S.needRegen;
+if (S.onboarded) cycleState();
 UI.stack = [{ v: S.active ? 'workout' : 'home' }];
 render(true);
 if (S.onboarded) syncReminders();

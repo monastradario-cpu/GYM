@@ -225,6 +225,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        /** copia un testo negli appunti (es. lista della spesa) */
+        @JavascriptInterface fun copyText(text: String) {
+            main.post {
+                try {
+                    val cm = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                    cm.setPrimaryClip(android.content.ClipData.newPlainText("GYM", text))
+                } catch (_: Exception) { }
+            }
+        }
+
         /** testo negli appunti (per incollare la chiave API) */
         @JavascriptInterface fun clipboard(): String {
             var out = ""

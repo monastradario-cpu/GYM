@@ -90,7 +90,10 @@ VIEWS.food = () => {
   const d = new Date(k + 'T12:00:00');
   const isToday = k === todayKey();
   const macro = (lbl, v, t, cls) => '<div class="mac"><div class="mac-h"><span>' + lbl + '</span><b>' + Math.round(v) + (t ? ' / ' + t : '') + ' g</b></div><div class="mac-bar"><i class="' + cls + '" style="width:' + (t ? Math.min(100, 100 * v / t) : 0) + '%"></i></div></div>';
-  let out = header('Calorie', { sub: isToday ? 'Oggi' : fmtDateLong(d) }) + '<div class="pad">' +
+  const tab = UI.nutTab || 'diario';
+  if (tab !== 'diario') return header('Alimentazione', { sub: (NUT_TABS.find(x => x[0] === tab) || [])[1] }) + nutTabs() + '<div class="pad">' + (tab === 'piano' ? nutPlan() : tab === 'ricette' ? nutRecipes() : tab === 'spesa' ? nutShop() : nutSupp()) + '</div>';
+  const alerts = isToday ? macroAlerts(list, n) : [];
+  let out = header('Alimentazione', { sub: isToday ? 'Oggi' : fmtDateLong(d) }) + nutTabs() + '<div class="pad">' +
     '<div class="day-nav"><button class="icon-btn" data-act="foodDayNav" data-d="-1">' + ic('back') + '</button><b>' + (isToday ? 'Oggi' : d.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' })) + '</b><button class="icon-btn" data-act="foodDayNav" data-d="1"' + (isToday ? ' disabled' : '') + '>' + ic('back', 'flip') + '</button></div>' +
     '<div class="card kcal-card">' +
       '<div class="ring"><svg viewBox="0 0 130 130"><circle cx="65" cy="65" r="' + R + '" class="ring-bg"/>' + (pct > 0.005 ? '<circle cx="65" cy="65" r="' + R + '" class="ring-fg' + (left < 0 ? ' over' : '') + '" stroke-dasharray="' + (Cc * pct).toFixed(1) + ' ' + Cc.toFixed(1) + '" transform="rotate(-90 65 65)"/>' : '') + '</svg>' +
@@ -100,6 +103,7 @@ VIEWS.food = () => {
     dietMiniCard(n) +
     (target ? '' : '<div class="note">Per l\'obiettivo di calorie completa peso, sesso, età e altezza: <button class="link-inline" data-act="goFood">apri i tuoi dati</button>.</div>') +
     '<div class="card">' + macro('Proteine', tot.p, n.protein, 'pro') + macro('Carboidrati', tot.c, n.carbs, 'carb') + macro('Grassi', tot.f, n.fat, 'fat') + '</div>' +
+    (alerts.length ? '<div class="card alerts">' + alerts.map(a => '<div class="alert ' + a.k + '"><b>' + esc(a.t) + '</b><small>' + a.d + '</small></div>').join('') + '</div>' : '') +
     '<div class="grid2 add-quick"><button class="btn" data-act="foodScan">' + ic('camera') + 'Scansiona codice</button><button class="btn ghost" data-act="foodPhoto">' + ic('sparkle') + 'Foto del cibo</button></div>' +
     MEALS_DAY.map(([mk, mn]) => {
       const items = list.map((x, i) => Object.assign({ i }, x)).filter(x => x.meal === mk), t = foodTotals(items);

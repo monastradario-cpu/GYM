@@ -137,3 +137,12 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Stelle: ogni routine completata = 1 stella, obiettivo giornaliero = numero di promemoria (3 o 4). Card in Home e in Schede › Casa e lavoro.
 - Promemoria pause attive nei giorni e nell'orario di lavoro, 3–4 al giorno (nativo, tipo "breaks").
 - Basi: Klika & Jordan 2013 (30 s/10 s), meta-analisi BJSM 2025 sugli exercise snacks, Duran/Diaz MSSE 2023 (spezzare la seduta), Coombes Phys Ther 2018 (collo negli impiegati).
+
+## Versione 1.0.19
+- Esercizi in corso in stile "registro" (scelto dall'utente): miniatura, nome, Recupero/Ripetizioni/Nota, tabella Serie·Precedente·kg·Ripetizioni·✓ con righe verdi, Aggiungi serie; in fondo Aggiungi esercizio, Impostazioni, Abbandona.
+- Ripetizioni fisse o a intervallo: quando aggiungi un esercizio, durante l'allenamento e nelle schede.
+- Fine allenamento: avviso durata insolita (≥ 4 h) e schermata Salva allenamento (titolo, durata, foto, descrizione, data).
+- Circuito in lista; omino v2 (Vettoriale/Anatomico/Linee/Classico); pagina esercizio con animazione + schede Esecuzione/Muscoli/Errori/I miei dati.
+- 718 esercizi (elenco da free-exercise-db, pubblico dominio), muscolo Avambracci, attrezzi Cavi, Kettlebell, Elastici, Smith, EZ.
+- Alimentazione: avvisi sui macro, preferenze, piano pasti 7 giorni (3/4/5 pasti), 36 ricette, lista spesa, integratori basati sugli studi.
+- Palestra: programma a cicli (5 settimane, deciso dal trainer), massimali e tabella %, misure corporee con grasso % US Navy, statistiche avanzate.

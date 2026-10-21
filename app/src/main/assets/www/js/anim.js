@@ -89,6 +89,25 @@ const ANIMS = {
     P({ t: 160, n: 150, ua: -90, fa: -90, th: -20, sh: -20, th2: -160, sh2: -75, ft: -70, anchor: { j: 'hand', x: 100, y: 197 } })],
     dur: [0.6, 0.6, 0.6, 0.6], cues: ['Ginocchio destro al petto', 'Torna in plank', 'Ginocchio sinistro al petto', 'Torna in plank'] },
   swing: { props: [], keys: [P({ t: 25, n: 0, th: -62, sh: -100, ua: -112, fa: -118 }), P({ ua: 0, fa: 2 })], dur: [0.9, 0.9], cues: ['Spingi le anche avanti con forza', 'Lascia scendere il peso tra le gambe'] },
+  wrist_curl: { props: ['seat'], keys: [SEAT({ ua: -62, fa: -14 }), SEAT({ ua: -62, fa: 14 })], order: 1, cues: ['Fletti il polso portando il peso in alto', 'Scendi lento fino in fondo'] },
+  shrug: { props: [], keys: [F({ uaR: -86, faR: -88 }), F({ tS: 1.07, uaR: -86, faR: -88 })], order: 1, front: true, cues: ['Alza le spalle verso le orecchie', 'Scendi lento'] },
+  rot_ext: { props: [], keys: [F({ uaR: 0, faR: -88 }), F({ uaR: 0, faR: 88 })], order: 1, front: true, cues: ['Ruota il braccio in alto, gomito fermo', 'Torna giù lento'] },
+  jump: { props: [], seq: true, keys: [
+    P({ t: 60, n: 45, th: -15, sh: -112, ua: -150, fa: -150, anchor: { j: 'ankle', x: 160, y: AY } }),
+    P({ ua: 80, fa: 85, ft: -40, anchor: { j: 'ankle', x: 160, y: 168 } }),
+    P({ t: 62, n: 48, th: -18, sh: -110, ua: -20, fa: -10, anchor: { j: 'ankle', x: 160, y: AY } })],
+    dur: [0.55, 0.45, 0.7], cues: ['Carica: anche indietro, braccia dietro', 'Salta esplosivo, braccia in alto', 'Atterra morbido piegando le gambe'] },
+  clean: { props: [], seq: true, keys: [
+    P({ t: 40, n: 30, th: -30, sh: -105 }), P({ t: 95, n: 92, ua: -95, fa: -95, ft: 25, anchor: { j: 'toe', x: 186, y: 199 } }),
+    P({ t: 72, n: 70, th: -15, sh: -112, ua: 15, fa: 160 }), P({ ua: 15, fa: 160 })],
+    dur: [0.9, 0.5, 0.7, 0.9], cues: ['Stacco: schiena neutra', 'Estensione esplosiva di anche e gambe', 'Ricevi il bilanciere sulle spalle in piegata', 'Alzati in piedi'] },
+  snatch: { props: [], seq: true, keys: [
+    P({ t: 40, n: 30, th: -30, sh: -105, ua: -100, fa: -100 }), P({ t: 95, n: 92, ua: -95, fa: -95, ft: 25, anchor: { j: 'toe', x: 186, y: 199 } }),
+    P({ t: 66, n: 55, th: -15, sh: -112, ua: 104, fa: 104 }), P({ ua: 96, fa: 96 })],
+    dur: [0.9, 0.5, 0.7, 0.9], cues: ['Presa larga, schiena neutra', 'Estensione esplosiva', 'Ricevi il peso sopra la testa in piegata', 'Alzati con le braccia tese'] },
+  thruster: { props: [], seq: true, keys: [P({ t: 72, n: 70, th: -15, sh: -112, ua: 15, fa: 160 }), P({ ua: 15, fa: 160 }), P({ ua: 92, fa: 92 })],
+    dur: [0.8, 0.6, 0.9], cues: ['Squat frontale', 'Risali con forza', 'Spingi il peso sopra la testa'] },
+  row_inverted: { props: ['lowbar'], keys: [P({ t: 160, n: 160, th: -20, sh: -20, ft: 10, ua: 90, fa: 90, anchor: { j: 'ankle', x: 245, y: 195 } }), P({ t: 148, n: 148, th: -32, sh: -32, ft: 10, ua: 63, fa: 171, anchor: { j: 'ankle', x: 245, y: 195 } })], order: 1, cues: ['Tira il petto verso la sbarra, corpo dritto', 'Scendi a braccia tese'] },
   wall_sit: { props: ['wall'], keys: [P({ t: 92, n: 90, th: 0, sh: -90, ua: -80, fa: -80, anchor: { j: 'hip', x: 128, y: 155 } }), P({ t: 91, n: 90, th: 0, sh: -90, ua: -80, fa: -80, anchor: { j: 'hip', x: 128, y: 155 } })], dur: [2, 2], cues: ['Schiena al muro, cosce parallele a terra', 'Respira e mantieni'] },
   high_knees: { props: [], seq: true, keys: [
     P({ t: 92, th: 0, sh: -95, th2: -92, sh2: -92, ua: -150, fa: -40, ua2: -40, fa2: 60, anchor: { j: 'ankle2', x: 160, y: AY } }),
@@ -279,7 +298,7 @@ function gearOf(e, def) {
   if (def.gear) return def.gear;
   if (!e) return 'none';
   if (e.id === 'hack_squat' || e.id === 'leg_press' || e.id === 'pec_deck' || e.id === 'abductor' || e.id === 'glute_machine' || e.id === 'leg_extension' || e.id.startsWith('leg_curl') || e.id === 'crunch_macchina' || e.id === 'calf_seduto' || e.id === 'iperestensioni' || e.id === 'dip_machine' || e.id === 'chest_press' || e.id === 'lat_machine' || e.id === 'pulley' || e.id === 'row_machine' || e.id === 'face_pull' || e.id === 'pushdown' || e.id === 'crunch_cavi') return 'none';
-  return { bilanciere: 'barbell', manubri: 'dumbbell', macchinari: 'handle', corpo: 'none' }[e.eq] || 'none';
+  return { bilanciere: 'barbell', manubri: 'dumbbell', macchinari: 'handle', cavi: 'handle', corpo: 'none', kettlebell: 'kettlebell', elastici: 'none', ez: 'barbell', smith: 'barbell', altro: 'none' }[e.eq] || 'none';
 }
 function drawProps(def, J, front, gear, layer) {
   const pc = 'var(--prop)', pd = 'var(--prop2)', o = [], pr = def.props || [];
@@ -289,6 +308,7 @@ function drawProps(def, J, front, gear, layer) {
       if (k === 'benchLow') o.push('<rect x="190" y="150" width="90" height="9" rx="3" fill="' + pc + '"/>', seg([205, 159], [205, GY], 6, pd), seg([265, 159], [265, GY], 6, pd));
       if (k === 'benchBack') o.push('<rect x="50" y="150" width="62" height="9" rx="3" fill="' + pc + '"/>', seg([62, 159], [62, GY], 6, pd), seg([100, 159], [100, GY], 6, pd));
       if (k === 'box') o.push('<rect x="170" y="162" width="55" height="38" rx="4" fill="' + pc + '"/>');
+      if (k === 'lowbar') o.push(seg([100, 90], [126, 90], 5, pc), seg([104, 90], [104, GY], 4, pd));
       if (k === 'chair') o.push('<rect x="120" y="166" width="52" height="8" rx="3" fill="' + pc + '"/>', seg([126, 174], [126, GY], 5, pd), seg([166, 174], [166, GY], 5, pd), seg([123, 168], [117, 110], 7, pc));
       if (k === 'desk') o.push('<rect x="36" y="136" width="78" height="8" rx="3" fill="' + pc + '"/>', seg([46, 144], [46, GY], 6, pd), seg([104, 144], [104, GY], 6, pd));
       if (k === 'wall') o.push('<rect x="96" y="40" width="8" height="160" rx="2" fill="' + pc + '"/>');
@@ -322,11 +342,13 @@ function drawProps(def, J, front, gear, layer) {
     if (gear === 'barbell') o.push(dot(J.hand, 19, pd), dot(J.hand, 15, pc), dot(J.hand, 3.5, pd));
     if (gear === 'dumbbell') o.push(seg(add(J.hand, [-7, 0]), add(J.hand, [7, 0]), 4, pd), dot(add(J.hand, [-7, 0]), 6.5, pc), dot(add(J.hand, [7, 0]), 6.5, pc));
     if (gear === 'handle') o.push(seg(add(J.hand, [0, -7]), add(J.hand, [0, 7]), 5, pd));
+    if (gear === 'kettlebell') o.push(seg(J.hand, add(J.hand, [0, 6]), 3, pd), dot(add(J.hand, [0, 11]), 7.5, pc));
   } else {
     const l = J.handL, r = J.handR;
     if (gear === 'barbell') { o.push(seg([l[0] - 40, l[1]], [r[0] + 40, r[1]], 4, pd)); [[l[0] - 32, l[1]], [r[0] + 32, r[1]]].forEach(p => o.push('<rect x="' + (p[0] - 4) + '" y="' + (p[1] - 18) + '" width="8" height="36" rx="2" fill="' + pc + '"/>')); }
     if (gear === 'dumbbell') [l, r].forEach(p => o.push(seg([p[0] - 8, p[1]], [p[0] + 8, p[1]], 4, pd), '<rect x="' + (p[0] - 11) + '" y="' + (p[1] - 6) + '" width="5" height="12" rx="1.5" fill="' + pc + '"/>', '<rect x="' + (p[0] + 6) + '" y="' + (p[1] - 6) + '" width="5" height="12" rx="1.5" fill="' + pc + '"/>'));
     if (gear === 'handle') [l, r].forEach(p => o.push(seg([p[0], p[1] - 6], [p[0], p[1] + 6], 5, pd)));
+    if (gear === 'kettlebell') [l, r].forEach(p => o.push(seg(p, [p[0], p[1] + 6], 3, pd), dot([p[0], p[1] + 11], 7, pc)));
   }
   return o.join('');
 }
@@ -356,7 +378,8 @@ function frameSvg(def, e, ka, kb, k) {
   const ra = pa._root || (pa._root = rootOf(pa)), rb = pb._root || (pb._root = rootOf(pb));
   const kk = ease(k), p = lerpPose(pa, pb, kk), root = [ra[0] + (rb[0] - ra[0]) * kk, ra[1] + (rb[1] - ra[1]) * kk];
   const front = !!p.f;
-  const fig = front ? drawFront(p, root, e) : drawSide(p, root, e, def);
+  const v2 = typeof drawSide2 === 'function' && mqStyle() !== 'classico';
+  const fig = front ? (v2 ? drawFront2(p, root, e) : drawFront(p, root, e)) : (v2 ? drawSide2(p, root, e, def) : drawSide(p, root, e, def));
   const gear = gearOf(e, def);
   return '<line x1="0" y1="' + (GY + 1) + '" x2="320" y2="' + (GY + 1) + '" stroke="var(--line)" stroke-width="2"/>' +
     drawProps(def, fig.J, front, gear, 'back') + fig.svg + drawProps(def, fig.J, front, gear, 'front');
@@ -370,7 +393,7 @@ const Demo = {
     const e = EX[exId], def = animDef(exId);
     const st = this.st = { el, e, def, speed: (opts && opts.speed) || (el.dataset.compact ? 0.8 : 0.6), t0: performance.now(), paused: false, pausedAt: 0 };
     const compact = el.dataset.compact;
-    el.innerHTML = '<div class="demo-stage"><svg viewBox="0 -16 320 224" class="demo-svg"></svg>' + (compact ? '' : '<div class="demo-view">' + (def.keys[0].f ? 'vista frontale' : 'vista laterale') + '</div>') + '</div>' +
+    el.innerHTML = '<div class="demo-stage"><svg viewBox="35 -14 250 218" class="demo-svg"></svg>' + (compact ? '' : '<div class="demo-view">' + (def.keys[0].f ? 'vista frontale' : 'vista laterale') + '</div>') + '</div>' +
       '<div class="demo-cue"><span class="demo-phase"></span><b class="demo-text"></b></div><div class="demo-bar"><i></i></div>' + (compact ? '' :
       '<div class="demo-ctrl"><button class="btn sm ghost" data-demo="pause">Pausa</button>' +
       [0.35, 0.6, 1].map(s => '<button class="btn sm ghost' + (s === st.speed ? ' on' : '') + '" data-demo="speed" data-s="' + s + '">' + (s === 0.35 ? 'Molto lento' : s === 0.6 ? 'Lento' : 'Normale') + '</button>').join('') + '</div>');

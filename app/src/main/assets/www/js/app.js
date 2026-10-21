@@ -44,6 +44,7 @@ const ICONS = {
   sparkle: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
   calc: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>',
   download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   more: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>'
 };
 const ic = (n, cls) => '<svg class="ic ' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[n] || '') + '</svg>';
@@ -58,7 +59,7 @@ function applyTheme() {
 
 /* ---------- Navigazione ---------- */
 const VIEWS = {};
-const TABS = [['home', 'Home', 'home'], ['schede', 'Schede', 'list'], ['coach', 'Coach', 'coach'], ['food', 'Calorie', 'flame'], ['library', 'Esercizi', 'book'], ['progress', 'Progressi', 'chart']];
+const TABS = [['home', 'Home', 'home'], ['schede', 'Schede', 'list'], ['coach', 'Coach', 'coach'], ['food', 'Cibo', 'flame'], ['library', 'Esercizi', 'book'], ['progress', 'Progressi', 'chart']];
 
 function go(v, p, replace) {
   if (replace || TABS.some(t => t[0] === v)) UI.stack = [{ v, p }];
@@ -83,7 +84,7 @@ function render(scrollTop) {
   main.scrollTop = scrollTop ? 0 : y;
   const demo = document.getElementById('demo');
   if (demo) Demo.mount(demo, demo.dataset.ex); else Demo.stop();
-  const isWorkout = c.v === 'workout';
+  const isWorkout = c.v === 'workout' || c.v === 'saveWo';
   $('#nav').hidden = isWorkout || c.v === 'aichat';
   $('#nav').innerHTML = TABS.map(t => '<button data-act="tab" data-v="' + t[0] + '" class="' + (navTab() === t[0] ? 'on' : '') + '">' + ic(t[2]) + '<span>' + t[1] + '</span></button>').join('');
   $('#banner').hidden = !S.active || isWorkout;
@@ -148,6 +149,7 @@ VIEWS.home = () => {
       '<button class="btn big ghost" data-act="tab" data-v="schede">' + ic('list') + 'Scegli una scheda</button></div>';
   }
   return header('GYM', { sub: fmtDateLong(now) }) + '<div class="pad">' + todayCard +
+    cycleCard() +
     breakCard() +
     homeKcalCard() +
     '<div class="grid2">' +
@@ -242,8 +244,10 @@ VIEWS.edit = () => {
       return '<div class="card edit-item"><div class="card-h"><button class="link" data-act="exInfo" data-id="' + i.ex + '"><b>' + (n + 1) + '. ' + esc(e.n) + '</b></button>' +
         '<div class="row"><button class="icon-btn sm" data-act="editMove" data-n="' + n + '" data-d="-1">' + ic('up') + '</button><button class="icon-btn sm" data-act="editMove" data-n="' + n + '" data-d="1">' + ic('down') + '</button><button class="icon-btn sm" data-act="editSwap" data-n="' + n + '">' + ic('swap') + '</button><button class="icon-btn sm" data-act="editDel" data-n="' + n + '">' + ic('trash') + '</button></div></div>' +
         (circ ? '<div class="grid2">' + (timed || i.secs ? field('Secondi', numIn(i.secs, 'data-in="editItem" data-n="' + n + '" data-k="secs"')) : field('Ripetizioni', numIn(i.reps, 'data-in="editItem" data-n="' + n + '" data-k="reps"'))) + '</div>'
-          : '<div class="grid4">' + field('Serie', numIn(i.sets, 'data-in="editItem" data-n="' + n + '" data-k="sets"')) +
+          : (timed ? '' : '<div class="seg sm-seg">' + chip('Intervallo di ripetizioni', i.repMode !== 'fixed', 'editRepMode', 'data-n="' + n + '" data-m="range"') + chip('Ripetizioni fisse', i.repMode === 'fixed', 'editRepMode', 'data-n="' + n + '" data-m="fixed"') + '</div>') +
+            '<div class="grid4">' + field('Serie', numIn(i.sets, 'data-in="editItem" data-n="' + n + '" data-k="sets"')) +
             (timed ? field('Secondi', numIn(i.secs || 40, 'data-in="editItem" data-n="' + n + '" data-k="secs"')) + '<span></span>' :
+              i.repMode === 'fixed' ? field('Ripetizioni', numIn(i.rmax, 'data-in="editItem" data-n="' + n + '" data-k="fixed"')) + '<span></span>' :
               field('Rip. min', numIn(i.rmin, 'data-in="editItem" data-n="' + n + '" data-k="rmin"')) + field('Rip. max', numIn(i.rmax, 'data-in="editItem" data-n="' + n + '" data-k="rmax"'))) +
             field('Recupero s', numIn(i.rest, 'data-in="editItem" data-n="' + n + '" data-k="rest"')) + '</div>') +
         '</div>';
@@ -285,6 +289,8 @@ VIEWS.settings = () => {
       '<div class="field"><span>Tema</span><div class="seg">' + [['light', 'Chiaro'], ['dark', 'Scuro'], ['system', 'Sistema']].map(x => chip(x[1], st.theme === x[0], 'setTheme', 'data-t="' + x[0] + '"')).join('') + '</div></div>' +
       '<div class="field"><span>Figura del corpo</span><div class="chips">' + Object.keys(B2_STYLES).map(k => chip(B2_STYLES[k].n, ((S.settings.body2) || 'vettoriale') === k, 'setBodyStyle', 'data-k="' + k + '"')).join('') + '</div></div>' +
       '<div class="body-prev">' + bodySvg(m => m === 'petto' ? { color: 'var(--accent)' } : m === 'tricipiti' ? { color: 'var(--accent)', op: .45 } : null) + '</div>' +
+      '<div class="field"><span>Omino degli esercizi</span><div class="chips">' + Object.keys(MQ_STYLES).map(k => chip(MQ_STYLES[k].n, mqStyle() === k, 'setMq', 'data-k="' + k + '"')).join('') + '</div><small>' + esc(MQ_STYLES[mqStyle()].d) + '</small></div>' +
+      '<div class="mq-prev">' + ['squat_bil', 'curl_man', 'lat_machine'].map(id => { const d = animDef(id); return '<svg viewBox="70 0 190 205">' + frameSvg(d, EX[id], 0, d.seq ? 0 : 1, d.seq ? 0 : 0.7) + '</svg>'; }).join('') + '</div>' +
       '<div class="field"><span>Colore</span><div class="swatches">' + Object.keys(ACCENTS).map(k => '<button class="sw ' + (st.accent === k ? 'on' : '') + '" style="background:' + ACCENTS[k] + '" data-act="setAccent" data-k="' + k + '" aria-label="' + k + '"></button>').join('') + '</div></div>' +
     '</div>' +
     '<h3 class="sec">Profilo</h3><div class="card">' +
@@ -296,6 +302,7 @@ VIEWS.settings = () => {
       '<button class="btn ghost wide" data-act="regen">' + ic('swap') + 'Rigenera le schede con questo profilo</button>' +
     '</div>' +
     '<h3 class="sec">Allenamento</h3><div class="card">' +
+      '<button class="list-item btnlike" data-act="go" data-v="cycle"><div><b>Programma a cicli</b><small>' + (cycleInfo().on ? 'Attivo · ' + cycleInfo().K.n + ' · settimana ' + cycleInfo().w : 'Spento') + '</small></div>' + ic('back', 'flip') + '</button>' +
       '<div class="list-item flat"><div><b>Recupero automatico</b><small>Il timer parte quando segni la serie</small></div>' + toggle(st.autoRest, 'setFlag', 'data-k="autoRest"') + '</div>' +
       '<div class="list-item flat"><div><b>Suono a fine recupero</b></div>' + toggle(st.sound, 'setFlag', 'data-k="sound"') + '</div>' +
       '<div class="list-item flat"><div><b>Esercizi a corpo libero</b><small>Piegamenti, plank, trazioni, burpees… nelle schede, nei circuiti e nel Coach</small></div>' + toggle(bodyweightOn(), 'toggleBW') + '</div>' +

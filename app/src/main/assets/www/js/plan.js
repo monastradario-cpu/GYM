@@ -53,7 +53,8 @@ const dietActive = () => goalsOf().includes('dimagrimento');
 function applyDietPlan(out, p) {
   if (!dietActive() || !out.w) return out;
   const D = dietState();
-  out.protein = Math.round(out.w * 2.2); // 2,3–3,1 g/kg di massa magra ≈ 2–2,4 g/kg di peso
+  const bf = typeof lastBF === 'function' ? lastBF() : null;
+  out.protein = bf ? Math.max(Math.round(out.w * 1.8), Math.round(out.w * (1 - bf.bf / 100) * 2.5)) : Math.round(out.w * 2.2); // 2,3–3,1 g/kg di massa magra
   out.diet = D;
   out.kgWeek = Math.round(out.w * D.rate / 100 * 100) / 100;
   if (out.ready) {

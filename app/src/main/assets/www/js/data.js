@@ -3,12 +3,12 @@
 
 const MUSCLES = {
   petto: 'Petto', dorso: 'Dorso', spalle: 'Spalle', bicipiti: 'Bicipiti', tricipiti: 'Tricipiti',
-  addome: 'Addome', quadricipiti: 'Quadricipiti', femorali: 'Femorali', glutei: 'Glutei', polpacci: 'Polpacci'
+  addome: 'Addome', quadricipiti: 'Quadricipiti', femorali: 'Femorali', glutei: 'Glutei', polpacci: 'Polpacci', avambracci: 'Avambracci'
 };
 const BIG_MUSCLES = ['petto', 'dorso', 'quadricipiti', 'femorali', 'glutei'];
 
-const EQUIP = { manubri: 'Manubri', macchinari: 'Macchinari', bilanciere: 'Bilanciere', corpo: 'Corpo libero' };
-const COACH_EQUIP = ['manubri', 'macchinari', 'bilanciere', 'corpo'];
+const EQUIP = { manubri: 'Manubri', macchinari: 'Macchinari', bilanciere: 'Bilanciere', cavi: 'Cavi', corpo: 'Corpo libero', kettlebell: 'Kettlebell', elastici: 'Elastici', smith: 'Smith machine', ez: 'Bilanciere EZ', altro: 'Altro' };
+const COACH_EQUIP = ['manubri', 'macchinari', 'bilanciere', 'cavi', 'corpo', 'kettlebell', 'elastici', 'smith', 'ez'];
 const bodyweightOn = () => typeof S === 'undefined' || S.profile.bodyweight !== false;
 
 const CARDIO_TYPES = ['Tapis roulant', 'Cyclette', 'Ellittica', 'Vogatore', 'Corsa', 'Step', 'Altro'];
@@ -505,7 +505,7 @@ function trainerNote(item) {
   if (role === 'core') return 'Movimento lento e controllato, espira nella contrazione.';
   return 'Isolamento: arriva a ' + rir + ' ripetizioni dal cedimento, contrazione di 1 s in alto.';
 }
-const deloadActive = () => typeof S !== 'undefined' && S.deloadUntil && S.deloadUntil > Date.now();
+const deloadActive = () => typeof S !== 'undefined' && ((S.deloadUntil && S.deloadUntil > Date.now()) || (typeof cycleInfo === 'function' && cycleInfo().deload));
 
 /* ===== Schede preimpostate da personal trainer =====
    ogni slot: [ruolo, esercizio, alternativa per principianti] */

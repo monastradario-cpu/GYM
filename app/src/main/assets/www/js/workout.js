@@ -3,11 +3,18 @@
 
 function newItem(src, kind) {
   const e = EX[src.ex] || {};
-  const it = { ex: src.ex, note: (S.exNotes || {})[src.ex] || '', ss: src.ss || null, role: src.role || defaultRole(src.ex), rmin: src.rmin || 8, rmax: src.rmax || 12, rest: src.rest || 90, secs: src.secs || 0, reps: src.reps || 0, sets: [] };
+  const it = { ex: src.ex, note: (S.exNotes || {})[src.ex] || '', ss: src.ss || null, role: src.role || defaultRole(src.ex), rmin: src.rmin || 8, rmax: src.rmax || 12, rest: src.rest || 90, secs: src.secs || 0, reps: src.reps || 0, repMode: src.repMode || (src.rmin && src.rmin === src.rmax ? 'fixed' : 'range'), sets: [] };
   const last = lastPerformance(src.ex);
-  const n = kind === 'circuito' ? 0 : deloadActive() ? Math.max(1, Math.ceil((src.sets || 3) / 2)) : (src.sets || 3);
+  let n = kind === 'circuito' ? 0 : deloadActive() ? Math.max(1, Math.ceil((src.sets || 3) / 2)) : (src.sets || 3);
   // obiettivi di oggi dal trainer (doppia progressione)
   let tg = kind === 'circuito' ? null : (progression(src.ex, it.rmin, it.rmax).targets || null);
+  // programma a cicli: +serie nelle settimane di carico, percentuali del massimale nel ciclo di forza
+  const cy = kind !== 'circuito' && typeof cycleInfo === 'function' ? cycleInfo() : { on: false };
+  if (cy.on && !cy.deload && (it.role === 'main' || it.role === 'sec')) {
+    const mx = cy.pct && it.role === 'main' && e.type !== 'time' ? maxOf(src.ex) : null;
+    if (mx) { const step = stepFor(src.ex), kg = Math.round(mx.kg * cy.pct / step) * step; n = cy.sets; it.rmin = it.rmax = cy.reps; tg = Array.from({ length: n }, () => ({ kg, reps: cy.reps })); }
+    else n += cy.setsAdd;
+  }
   if (deloadActive() && last) tg = last.sets.map(s => ({ kg: num(s.kg), reps: it.rmin })); // scarico: stesso carico, meno serie, lontano dal cedimento
   for (let i = 0; i < n; i++) {
     const ls = last && (last.sets[i] || last.sets[last.sets.length - 1]);
@@ -32,6 +39,7 @@ function startWorkout(t) {
 }
 
 /* ---------- Timer ---------- */
+const fmtElapsed = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return h ? h + 'h ' + m + 'min ' + x + 's' : m ? m + 'min ' + x + 's' : x + 's'; };
 function startRest(secs, label) {
   if (!S.active || !secs) return;
   S.active.rest = { until: Date.now() + secs * 1000, total: secs, label: label || 'Recupero' };
@@ -56,7 +64,7 @@ function beep() {
 
 function tick() {
   const a = S.active, now = Date.now();
-  document.querySelectorAll('[data-clock="elapsed"]').forEach(el => { if (a) el.textContent = fmtClock((now - a.start) / 1000); });
+  document.querySelectorAll('[data-clock="elapsed"]').forEach(el => { if (a) el.textContent = fmtElapsed((now - a.start) / 1000); });
   if (!a) return;
   if (a.rest) {
     const left = (a.rest.until - now) / 1000;
@@ -82,6 +90,7 @@ VIEWS.workout = () => {
   const vol = a.items.reduce((s, i) => s + workSets(i).reduce((x, st) => x + num(st.kg === '' ? st.pk : st.kg) * num(st.reps === '' ? st.pr : st.reps), 0), 0);
   const focus = S.settings.woMode === 'focus' && a.items.length;
   return '<header class="top workout-top"><button class="icon-btn" data-act="minimize">' + ic('down') + '</button><div class="top-title"><h1>' + esc(a.name) + '</h1></div><button class="icon-btn" data-act="manualRest">' + ic('timer') + '</button><button class="btn sm" data-act="finish">Termina</button></header>' +
+    '<div class="progress thin wo-prog"><i style="width:' + (allSets ? 100 * doneSets / allSets : 0) + '%"></i></div>' +
     '<div class="wo-stats"><div><small>Durata</small><b class="accent-t" data-clock="elapsed"></b></div><div><small>Volume</small><b>' + Math.round(vol) + ' kg</b></div><div><small>Serie</small><b>' + doneSets + (allSets ? '/' + allSets : '') + '</b></div>' +
       '<button class="mini-body" data-act="muscleDist" aria-label="Distribuzione dei muscoli">' + heatBody(activeMuscleLoad(), true) + '</button></div>' +
     (a.items.length ? '<div class="wo-mode seg">' + chip(ic('list', 'inline') + 'Lista', !focus, 'woMode', 'data-m="list"') + chip(ic('play', 'inline') + 'Una serie alla volta', focus, 'woMode', 'data-m="focus"') + '</div>' : '') +
@@ -91,9 +100,8 @@ VIEWS.workout = () => {
     a.items.map((it, n) => exerciseCard(it, n)).join('') + '</div>' +
     '<div class="pad">' +
     (a.cardio.length ? cardioCard(a) : '') +
-    '<button class="btn wide big" data-act="woAdd">' + ic('plus') + 'Aggiungi esercizio</button>' +
-    '<div class="grid2"><button class="btn ghost" data-act="cardio">' + ic('run') + 'Cardio</button>' + (a.items.length > 1 ? '<button class="btn ghost" data-act="reorder" data-k="wo">' + ic('list') + 'Riordina</button>' : '<button class="btn ghost" data-act="discard">Annulla</button>') + '</div>' +
-    (a.items.length > 1 ? '<button class="link danger-t wide center small" data-act="discard">Annulla allenamento senza salvare</button>' : '') +
+    '<button class="btn wide big hv-addex" data-act="woAdd">' + ic('plus') + 'Aggiungi esercizio</button>' +
+    '<div class="grid2"><button class="btn ghost" data-act="woSettings">Impostazioni</button><button class="btn ghost danger-t" data-act="discard">Abbandona l\'allenamento</button></div>' +
     '</div>') + restBar(a);
 };
 
@@ -148,30 +156,46 @@ function repRange(it, n) {
   return '<span class="rr"><input class="rr-in" inputmode="numeric" value="' + it.rmin + '" data-in="woItem" data-n="' + n + '" data-k="rmin" aria-label="Ripetizioni minime"><i>–</i><input class="rr-in" inputmode="numeric" value="' + it.rmax + '" data-in="woItem" data-n="' + n + '" data-k="rmax" aria-label="Ripetizioni massime"><small>rip</small></span>';
 }
 
+const repLabel = it => (EX[it.ex] || {}).type === 'time' ? (it.secs || 40) + ' s' : it.repMode === 'fixed' || it.rmin === it.rmax ? it.rmax + ' rip' : it.rmin + '–' + it.rmax + ' rip';
 function exerciseCard(it, n) {
   const e = EX[it.ex] || { n: it.ex, eq: '', m: '' }, timed = e.type === 'time';
-  const last = lastPerformance(it.ex), prog = exProg(it);
+  const last = lastPerformance(it.ex);
   const prevWork = last ? last.sets : [], prevWu = last ? (last.item.sets || []).filter(s => s.wu) : [];
   let wsN = 0, wuN = 0;
   const items = S.active.items, prevSS = n > 0 && items[n - 1].ss === it.ss;
   return (it.ss && !prevSS ? '<div class="ss-head">Superserie ' + it.ss + ': una serie di ciascuno senza pausa, poi recupera</div>' : '') +
-    '<div class="exl ex-card' + (it.ss ? ' ss' : '') + (it.sets.length && it.sets.every(s => s.done) ? ' done' : '') + '">' +
-    '<div class="exl-h"><button class="link ex-title" data-act="exInfo" data-id="' + it.ex + '"><span class="ex-thumb">' + exerciseThumb(it.ex) + '</span><h3>' + esc(e.n) + '</h3></button>' +
-      '<button class="icon-btn sm" data-act="exMenu" data-n="' + n + '" aria-label="Altro">' + ic('more') + '</button></div>' +
-    '<div class="exl-sub"><button class="exl-rest" data-act="restPick" data-n="' + n + '">' + ic('timer', 'inline') + restLabel(it.rest) + '</button>' + repRange(it, n) +
-      '<button class="exl-obj ' + prog.kind + '" data-act="trainerTip" data-n="' + n + '">' + esc(objLine(it, prog)) + '</button></div>' +
-    (it.note ? '<button class="exl-note" data-act="exNote" data-n="' + n + '">' + ic('edit', 'inline') + esc(it.note) + '</button>' : '') +
-    '<div class="sets"><div class="set-h"><span>Serie</span><span>Precedente</span><span>kg</span><span>' + (timed ? 'sec' : 'rip') + '</span><span></span></div>' +
+    '<div class="hv-ex ex-card' + (it.ss ? ' ss' : '') + '">' +
+    '<div class="hv-h"><button class="hv-title" data-act="exInfo" data-id="' + it.ex + '"><span class="hv-th">' + exerciseThumb(it.ex) + '</span><b>' + esc(e.n) + '</b></button>' +
+      '<button class="icon-btn sm hv-more" data-act="exMenu" data-n="' + n + '" aria-label="Altro">' + ic('more') + '</button></div>' +
+    '<div class="hv-pills"><button class="hv-pill" data-act="restPick" data-n="' + n + '">' + ic('timer', 'inline') + 'Recupero: ' + restLabel(it.rest) + '</button>' +
+      '<button class="hv-pill" data-act="repPick" data-n="' + n + '">' + ic('swap', 'inline') + repLabel(it) + '</button>' +
+      '<button class="hv-pill" data-act="exNote" data-n="' + n + '">' + ic('edit', 'inline') + 'Nota</button></div>' +
+    (it.note ? '<button class="hv-note" data-act="exNote" data-n="' + n + '">' + esc(it.note) + '</button>' : '') +
+    '<div class="hv-row hv-head"><span>Serie</span><span>Precedente</span><span>' + ic('dumbbell', 'inline') + 'kg</span><span>' + (timed ? 'Secondi' : 'Ripetizioni') + '</span><span>' + ic('check', 'inline') + '</span></div>' +
     it.sets.map((s, k) => {
       const label = s.wu ? 'R' : String(++wsN);
       const pv = s.wu ? prevWu[wuN++] : prevWork[wsN - 1];
-      return '<div class="set ' + (s.done ? 'done ' : '') + (s.wu ? 'wu' : '') + '"><button class="set-n" data-act="toggleWu" data-n="' + n + '" data-k="' + k + '">' + label + '</button>' +
-        '<button class="prev" data-act="usePrev" data-n="' + n + '" data-k="' + k + '"' + (pv ? ' data-kg="' + num(pv.kg) + '" data-r="' + num(pv.reps) + '"' : '') + '>' + (pv ? fmtKg(num(pv.kg)) + ' × ' + num(pv.reps) : '—') + '</button>' +
-        numIn(s.kg, 'data-in="setKg" data-n="' + n + '" data-k="' + k + '"', s.pk === '' ? '0' : fmtKg(s.pk)) +
-        numIn(s.reps, 'data-in="setReps" data-n="' + n + '" data-k="' + k + '"', s.pr === '' ? '' : s.pr) +
-        '<button class="chk ' + (s.done ? 'on' : '') + '" data-act="setDone" data-n="' + n + '" data-k="' + k + '" aria-label="Fatta">' + ic('check') + '</button></div>';
-    }).join('') + '</div>' +
-    '<button class="exl-add" data-act="addSet" data-n="' + n + '">+ Aggiungi serie</button></div>';
+      return '<div class="hv-row' + (s.done ? ' done' : '') + (s.wu ? ' wu' : '') + '"><button class="hv-n" data-act="toggleWu" data-n="' + n + '" data-k="' + k + '">' + label + '</button>' +
+        '<button class="hv-prev" data-act="usePrev" data-n="' + n + '" data-k="' + k + '"' + (pv ? ' data-kg="' + num(pv.kg) + '" data-r="' + num(pv.reps) + '"' : '') + '>' + (pv ? fmtKg(num(pv.kg)) + 'kg x ' + num(pv.reps) : '—') + '</button>' +
+        numIn(s.kg, 'class="hv-in" data-in="setKg" data-n="' + n + '" data-k="' + k + '"', s.pk === '' ? '0' : fmtKg(s.pk)) +
+        numIn(s.reps, 'class="hv-in" data-in="setReps" data-n="' + n + '" data-k="' + k + '"', s.pr === '' ? '' : s.pr) +
+        '<button class="hv-chk' + (s.done ? ' on' : '') + '" data-act="setDone" data-n="' + n + '" data-k="' + k + '" aria-label="Fatta">' + ic('check') + '</button></div>';
+    }).join('') +
+    '<button class="hv-add" data-act="addSet" data-n="' + n + '">' + ic('plus', 'inline') + 'Aggiungi serie</button></div>';
+}
+
+/* ---------- foglio ripetizioni: fisse o intervallo (per esercizio nuovo o in corso) ---------- */
+function repSheet() {
+  const R = UI.rx, e = EX[R.id] || {}, timed = e.type === 'time';
+  const stp = (k, v, lbl) => '<div class="rx-box"><small>' + lbl + '</small><div class="fo-num"><button data-act="rxStep" data-k="' + k + '" data-d="-1">−</button>' + numIn(v, 'data-in="rx" data-k="' + k + '"') + '<button data-act="rxStep" data-k="' + k + '" data-d="1">+</button></div></div>';
+  return '<h3>' + esc(e.n || '') + '</h3>' + (R.target === 'add' ? '<p class="small muted">Imposta serie e ripetizioni. Il trainer ti propone già i valori adatti ai tuoi obiettivi.</p>' : '') +
+    (R.target === 'item' ? '' : '<div class="rx-grid">' + stp('sets', R.sets, 'Serie') + '</div>') +
+    (timed ? '<div class="rx-grid">' + stp('secs', R.secs, 'Secondi') + '</div>' :
+      '<div class="field"><span>Ripetizioni</span><div class="seg">' + chip('Intervallo (es. 8–12)', R.mode === 'range', 'rxMode', 'data-m="range"') + chip('Fisse (es. 10)', R.mode === 'fixed', 'rxMode', 'data-m="fixed"') + '</div></div>' +
+      (R.mode === 'range' ? '<div class="rx-grid two">' + stp('rmin', R.rmin, 'Minimo') + stp('rmax', R.rmax, 'Massimo') + '</div><p class="small muted">Doppia progressione: quando fai il massimo in tutte le serie, il trainer ti fa aumentare il carico e ripartire dal minimo.</p>'
+        : '<div class="rx-grid">' + stp('reps', R.reps, 'Ripetizioni') + '</div><p class="small muted">Quando completi tutte le serie con queste ripetizioni, il trainer ti fa aumentare il carico.</p>')) +
+    (R.target === 'item' ? '' : '<div class="field"><span>Recupero</span><div class="chips">' + [60, 90, 120, 150, 180].map(x => chip(restLabel(x), R.rest === x, 'rxRest', 'data-s="' + x + '"')).join('') + '</div></div>') +
+    '<button class="btn wide big" data-act="rxOk">' + ic('check') + (R.target === 'add' ? 'Aggiungi all\'allenamento' : 'Salva') + '</button>';
 }
 
 /* ---------- Modalità "una serie alla volta" ---------- */
@@ -200,7 +224,7 @@ function focusView(a) {
         (e.eq === 'corpo' && !num(s.pk) && !num(s.kg) ? '' : '<div class="fo-box"><small>Chili</small><div class="fo-num"><button data-act="focStep" data-f="kg" data-d="-1">−</button>' + numIn(kgV, 'data-in="setKg" data-n="' + t.n + '" data-k="' + t.k + '"', '0') + '<button data-act="focStep" data-f="kg" data-d="1">+</button></div></div>') +
         '<div class="fo-box"><small>' + (timed ? 'Secondi' : 'Ripetizioni') + '</small><div class="fo-num"><button data-act="focStep" data-f="reps" data-d="-1">−</button>' + numIn(rV, 'data-in="setReps" data-n="' + t.n + '" data-k="' + t.k + '"', '') + '<button data-act="focStep" data-f="reps" data-d="1">+</button></div></div>' +
       '</div>' +
-      '<div class="fo-meta"><span class="muted small">Intervallo</span>' + repRange(it, t.n) + '<button class="exl-rest" data-act="restPick" data-n="' + t.n + '">' + ic('timer', 'inline') + restLabel(it.rest) + '</button></div>' +
+      '<div class="fo-meta hv-pills"><button class="hv-pill" data-act="repPick" data-n="' + t.n + '">' + ic('swap', 'inline') + repLabel(it) + '</button><button class="hv-pill" data-act="restPick" data-n="' + t.n + '">' + ic('timer', 'inline') + 'Recupero: ' + restLabel(it.rest) + '</button></div>' +
       '<button class="btn wide big fo-done' + (s.done ? ' ghost' : '') + '" data-act="setDone" data-n="' + t.n + '" data-k="' + t.k + '">' + (s.done ? 'Annulla serie fatta' : ic('check') + 'Serie fatta') + '</button>' +
       '<button class="fo-prev" data-act="trainerTip" data-n="' + t.n + '">' + (pv ? 'Ultima volta ' + fmtKg(num(pv.kg)) + ' kg × ' + num(pv.reps) + ' · ' : '') + '<b>' + esc(objLine(it, prog)) + '</b> ' + ic('info', 'inline') + '</button>' +
       '<div class="fo-dots">' + it.sets.map((x, k) => '<button class="' + (x.done ? 'on ' : '') + (k === t.k ? 'cur ' : '') + (x.wu ? 'wu' : '') + '" data-act="focSet" data-n="' + t.n + '" data-k="' + k + '" aria-label="Serie ' + (k + 1) + '"></button>').join('') + '<button class="add" data-act="addSet" data-n="' + t.n + '" aria-label="Aggiungi serie">+</button></div>' +
@@ -233,7 +257,7 @@ function circuitView(a) {
   out += '<div class="circ-info">' + (nx ? '<b>Giro ' + (nx.k + 1) + ' di ' + c.rounds + '</b> · ora: ' + esc((EX[a.items[nx.n].ex] || {}).n || '') : '<b>Circuito completato!</b> ' + esc(COOLDOWN_TEXT)) +
     '<small>Pausa ' + c.restEx + ' s tra le stazioni · ' + c.restRound + ' s tra i giri</small></div>';
   if (doneCount === 0 && c.warm) out += '<div class="card warm-mini"><div><b>' + ic('flame', 'inline') + 'Riscaldamento</b><small>' + esc(WARMUP_TEXT) + '</small></div><button class="btn sm ghost" data-act="circRest" data-s="' + ((c.warm || 8) * 60) + '" data-l="Riscaldamento">' + (c.warm || 8) + ' min</button></div>';
-  out += a.items.map((it, n) => circuitStationCard(a, it, n, nx)).join('');
+  out += '</div><div class="exl-wrap">' + a.items.map((it, n) => circuitStationCard(a, it, n, nx)).join('') + '</div><div class="pad">';
   if (!nx && c.cool !== 0) out += '<div class="card warm-mini"><div><b>' + ic('run', 'inline') + 'Defaticamento</b><small>' + esc(COOLDOWN_TEXT) + '</small></div><button class="btn sm ghost" data-act="circRest" data-s="' + ((c.cool || 5) * 60) + '" data-l="Defaticamento">' + (c.cool || 5) + ' min</button></div>';
   out += (a.items.length > 1 ? '<button class="btn ghost wide" data-act="reorder" data-k="wo">' + ic('list') + 'Riordina le stazioni</button>' : '') +
     '<button class="btn wide' + (nx ? ' ghost' : ' big') + '" data-act="finish">' + ic('check') + 'Termina allenamento</button>' +
@@ -244,22 +268,27 @@ function circuitView(a) {
 function circuitStationCard(a, it, n, nx) {
   const c = a.circ, e = EX[it.ex] || { n: it.ex, m: '', eq: '' }, timed = !!it.secs;
   const last = lastPerformance(it.ex), prev = last ? last.sets : [];
-  return '<div class="card ex-card' + (it.sets.every(s => s.done || s.skip) ? ' done' : '') + (nx && nx.n === n ? ' current' : '') + '" id="st-' + n + '">' +
-    '<div class="card-h"><button class="link ex-title" data-act="exInfo" data-id="' + it.ex + '"><span class="ex-thumb">' + exerciseThumb(it.ex) + '</span><span><h3>' + (n + 1) + '. ' + esc(e.n) + '</h3><small class="muted">' + muscleName(e.m) + ' · ' + (EQUIP[e.eq] || '') + ' · ' + (timed ? it.secs + ' sec' : it.reps + ' rip.') + '</small></span></button>' +
-      '<button class="icon-btn sm" data-act="swapEx" data-n="' + n + '">' + ic('swap') + '</button></div>' +
-    '<div class="row gap wrap ex-chips"><button class="pill" data-act="exNote" data-n="' + n + '">' + ic('edit', 'inline') + (it.note ? 'Nota' : 'Aggiungi nota') + '</button></div>' +
-    (it.note ? '<div class="ex-note">' + esc(it.note) + '</div>' : '') +
-    '<div class="sets"><div class="set-h"><span>Giro</span><span>Precedente</span><span>kg</span><span>' + (timed ? 'sec' : 'rip.') + '</span><span>' + ic('check', 'inline') + '</span></div>' +
+  const isCur = nx && nx.n === n, allDone = it.sets.every(s => s.done || s.skip);
+  return '<div class="exl ex-card circ-st' + (allDone ? ' done' : '') + (isCur ? ' cur' : '') + '" id="st-' + n + '">' +
+    '<div class="exl-h"><button class="link ex-title" data-act="exInfo" data-id="' + it.ex + '"><span class="ex-thumb">' + exerciseThumb(it.ex) + '</span><h3>' + (n + 1) + '. ' + esc(e.n) + '</h3></button>' +
+      '<span class="muted small nowrap">' + (timed ? it.secs + ' s' : it.reps + ' rip') + '</span><button class="icon-btn sm" data-act="circMenu" data-n="' + n + '" aria-label="Altro">' + ic('more') + '</button></div>' +
+    (it.note ? '<button class="exl-note" data-act="exNote" data-n="' + n + '">' + ic('edit', 'inline') + esc(it.note) + '</button>' : '') +
+    '<div class="sets"><div class="set-h"><span>Giro</span><span>Precedente</span><span>kg</span><span>' + (timed ? 'sec' : 'rip') + '</span><span></span></div>' +
     it.sets.map((s, k) => {
       const pv = prev[k] || prev[prev.length - 1], running = c.workUntil && c.idx === n && c.round === k, cur = running || (!c.workUntil && nx && nx.n === n && nx.k === k);
       const btn = s.done ? '<button class="chk on" data-act="setDone" data-n="' + n + '" data-k="' + k + '">' + ic('check') + '</button>'
         : timed ? (running ? '<span class="chk run" data-clock="work">' + fmtClock((c.workUntil - Date.now()) / 1000) + '</span>' : '<button class="chk play" data-act="circTimed" data-n="' + n + '" data-k="' + k + '">' + ic('play') + '</button>')
         : '<button class="chk" data-act="setDone" data-n="' + n + '" data-k="' + k + '">' + ic('check') + '</button>';
       return '<div class="set ' + (s.done ? 'done ' : '') + (s.skip ? 'skip ' : '') + (cur ? 'cur' : '') + '"><span class="set-n">' + (k + 1) + '</span>' +
-        '<button class="prev" data-act="usePrev" data-n="' + n + '" data-k="' + k + '"' + (pv ? ' data-kg="' + num(pv.kg) + '" data-r="' + num(pv.reps) + '"' : '') + '>' + (pv ? fmtKg(num(pv.kg)) + 'kg × ' + num(pv.reps) : '—') + '</button>' +
+        '<button class="prev" data-act="usePrev" data-n="' + n + '" data-k="' + k + '"' + (pv ? ' data-kg="' + num(pv.kg) + '" data-r="' + num(pv.reps) + '"' : '') + '>' + (pv ? fmtKg(num(pv.kg)) + ' × ' + num(pv.reps) : '—') + '</button>' +
         (e.eq === 'corpo' ? '<span class="prev">—</span>' : numIn(s.kg, 'data-in="setKg" data-n="' + n + '" data-k="' + k + '"', s.pk === '' ? '0' : fmtKg(s.pk))) +
         numIn(s.reps, 'data-in="setReps" data-n="' + n + '" data-k="' + k + '"', timed ? it.secs : it.reps) + btn + '</div>';
     }).join('') + '</div></div>';
+}
+function circMenuSheet(n) {
+  const it = S.active.items[n], row = (act, label, icon, extra) => '<button class="list-item btnlike" data-act="menuDo" data-a="' + act + '" data-n="' + n + '"' + (extra || '') + '><div><b>' + label + '</b></div>' + ic(icon) + '</button>';
+  return '<h3>' + exLine(it.ex) + '</h3>' + row('exInfo', 'Come si esegue', 'video', ' data-id="' + it.ex + '"') + row('exNote', it.note ? 'Modifica nota' : 'Aggiungi nota', 'edit') + row('swapEx', 'Occupato? Sostituisci', 'swap') +
+    ((EX[it.ex] || {}).eq === 'bilanciere' ? row('plates', 'Calcola i dischi', 'calc', ' data-kg=""') : '');
 }
 
 /* prossima serie da fare: giro per giro, stazione per stazione */
@@ -333,8 +362,9 @@ function quickView(a) {
 }
 
 /* ---------- Fine allenamento ---------- */
-function finishWorkout() {
+function finishWorkout(o) {
   const a = S.active; if (!a) return;
+  o = o || {};
   const items = a.items.map(it => ({ ex: it.ex, sets: it.sets.filter(s => s.done).map(s => ({ kg: s.kg === '' ? num(s.pk) : num(s.kg), reps: s.reps === '' ? num(s.pr) : num(s.reps), done: true, wu: !!s.wu })) })).filter(it => it.sets.length);
   if (!items.length && !a.cardio.length) { ask('Non hai segnato nessuna serie. Vuoi chiudere senza salvare?', 'Chiudi', () => { endActive(); go('home', null, true); }, true); return; }
   const before = {}; items.forEach(it => { before[it.ex] = records(it.ex); });
@@ -343,7 +373,8 @@ function finishWorkout() {
     S.breaks.push({ d: Date.now(), key: a.quick, zone: a.zone, min: Math.max(1, Math.round((Date.now() - a.start) / 60000)) });
     if (a.zone !== 'casa') { endActive(); save(true); go('starDone', null, true); return; }
   }
-  const h = { id: a.id, name: a.name, kind: a.kind, start: a.start, end: Date.now(), items, cardio: a.cardio };
+  const h = { id: a.id, name: o.name || a.name, kind: a.kind, start: o.start || a.start, end: o.end || Date.now(), items, cardio: a.cardio };
+  if (o.note) h.note = o.note;
   if (a.quick) { h.quick = a.quick; h.zone = a.zone; }
   S.history.push(h);
   const prs = [];
@@ -385,6 +416,38 @@ VIEWS.starDone = () => {
     '<button class="btn wide big" data-act="tab" data-v="home">Torna alla home</button></div>';
 };
 function starRow(n, g) { let o = ''; for (let i = 0; i < Math.max(g, n); i++) o += '<span class="star' + (i < n ? ' on' : '') + '">★</span>'; return o; }
+
+/* ---------- impostazioni dell'allenamento in corso ---------- */
+function woSettingsSheet() {
+  const st = S.settings, a = S.active;
+  return '<h3>Impostazioni allenamento</h3>' +
+    '<div class="list-item flat"><div><b>Timer automatico</b><small>Parte quando segni una serie</small></div>' + toggle(st.autoRest, 'setFlag', 'data-k="autoRest"') + '</div>' +
+    '<div class="list-item flat"><div><b>Suono a fine recupero</b></div>' + toggle(st.sound, 'setFlag', 'data-k="sound"') + '</div>' +
+    '<div class="list-item flat"><div><b>Schermo sempre acceso</b></div>' + toggle(st.keepScreen, 'setFlag', 'data-k="keepScreen"') + '</div>' +
+    '<div class="grid2"><button class="btn ghost" data-act="menuDo" data-a="cardio">' + ic('run') + 'Cardio</button>' + (a && a.items.length > 1 ? '<button class="btn ghost" data-act="menuDo" data-a="reorder" data-k="wo">' + ic('list') + 'Riordina</button>' : '<button class="btn ghost" data-act="menuDo" data-a="plates" data-kg="">' + ic('calc') + 'Dischi</button>') + '</div>' +
+    (a && a.items.length > 1 ? '<button class="btn ghost wide" data-act="menuDo" data-a="plates" data-kg="">' + ic('calc') + 'Calcola dischi</button>' : '');
+}
+
+/* ---------- salva allenamento: titolo, durata, data, descrizione, foto ---------- */
+function woTotals(a) {
+  let vol = 0, sets = 0; a.items.forEach(it => it.sets.filter(s => s.done && !s.wu).forEach(s => { sets++; vol += num(s.kg === '' ? s.pk : s.kg) * num(s.reps === '' ? s.pr : s.reps); }));
+  return { vol, sets };
+}
+const pad2 = n => String(n).padStart(2, '0');
+const dtLocal = t => { const d = new Date(t); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + 'T' + pad2(d.getHours()) + ':' + pad2(d.getMinutes()); };
+VIEWS.saveWo = () => {
+  const a = S.active; if (!a) return VIEWS.home();
+  const W = UI.saveWo, t = woTotals(a), h = Math.floor(W.min / 60), m = W.min % 60;
+  return '<header class="top"><button class="icon-btn" data-act="back">' + ic('back') + '</button><div class="top-title"><h1>Salva allenamento</h1></div><button class="btn sm" data-act="saveWoOk">Salva</button></header><div class="pad">' +
+    '<input type="text" class="sw-title" placeholder="Titolo dell\'allenamento" value="' + esc(W.name) + '" data-in="sw" data-k="name">' +
+    '<div class="wo-stats sw-stats"><button class="link" data-act="swDur"><small>Durata</small><b class="accent-t">' + (h ? h + 'h ' : '') + m + 'min</b></button><div><small>Volume</small><b>' + fmtKg(Math.round(t.vol)) + ' kg</b></div><div><small>Serie</small><b>' + t.sets + '</b></div></div>' +
+    (W.editDur ? '<div class="card"><h3>Durata</h3><div class="grid2">' + field('Ore', numIn(h, 'data-in="swH"')) + field('Minuti', numIn(m, 'data-in="swM"')) + '</div><p class="small muted">Inizio e fine vengono ricalcolati dall\'ora di inizio.</p></div>' : '') +
+    '<label class="sw-photo filebtn">' + ic('camera') + (W.photo ? 'Foto aggiunta ✓' : 'Aggiungi una foto') + '<input type="file" accept="image/*" data-in="swPhoto" hidden></label>' +
+    '<div class="field"><span>Descrizione</span><textarea rows="3" placeholder="Come è andato il tuo allenamento? Lascia qualche nota qui…" data-in="sw" data-k="note">' + esc(W.note) + '</textarea></div>' +
+    '<label class="list-item flat"><div><b>' + ic('calendar', 'inline') + 'Data e ora di inizio</b></div><input type="datetime-local" class="sw-date" value="' + dtLocal(W.start) + '" data-in="swStart"></label>' +
+    '<button class="btn wide big" data-act="saveWoOk">' + ic('check') + 'Salva allenamento</button>' +
+    '<button class="link danger-t wide center" data-act="discard">Abbandona allenamento</button></div>';
+};
 
 /* ---------- Fogli dell'allenamento ---------- */
 function cardioSheet() {
