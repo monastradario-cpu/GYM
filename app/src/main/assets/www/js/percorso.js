@@ -54,6 +54,8 @@ function isOlder() { return num(S.profile.age) >= 50; }
 function heavyBody() { return bmiOf() >= 30 || S.profile.body === 'obeso'; }
 
 /* l'esercizio va bene per te? (dolori, luogo, salti con BMI alto) */
+/* esercizio di equilibrio su una gamba compatibile con i dolori indicati (nessuno se non ce n'è uno sicuro) */
+function balanceEx() { return ['stacco_gamba_kettlebell', 'step_up'].find(id => okFor(id)) || null; }
 function okFor(id, extraZones) {
   const e = EX[id]; if (!e) return false;
   const p = S.profile, zones = (p.pain || []).concat(extraZones || []);
@@ -98,8 +100,8 @@ splitItems = function (key, level) {
   if (!pathOn()) return items;
   items = items.map(it => { const id = adaptEx(it.ex, null, it.role === 'main'); return id === it.ex ? it : prescribe(id, it.role); });
   // dopo i 50 anni: un esercizio di equilibrio nelle schede con le gambe (OMS 2020, Fragala 2019)
-  if (isOlder() && /full|lower|legs/.test(key) && EX.stacco_gamba_kettlebell && !items.some(i => i.ex === 'stacco_gamba_kettlebell'))
-    items.splice(Math.min(items.length, 3), 0, prescribe(adaptEx('stacco_gamba_kettlebell'), 'acc'));
+  const bal = isOlder() && /full|lower|legs/.test(key) ? balanceEx() : null;
+  if (bal && !items.some(i => i.ex === bal)) items.splice(Math.min(items.length, 3), 0, prescribe(bal, 'acc'));
   // togli doppioni nati dalle sostituzioni
   const seen = new Set(); items = items.filter(i => !seen.has(i.ex) && seen.add(i.ex));
   // sta nei minuti scelti: si tolgono prima isolamento e core
@@ -285,7 +287,7 @@ function ppSummary() {
   items.push('<b>Obiettivi:</b> ' + goalLabel(p) + '.');
   if (bmi) items.push('<b>BMI ' + bmi.toFixed(1).replace('.', ',') + '</b>' + (bmi >= 30 ? ': partiamo con macchine e cardio a basso impatto, niente salti.' : bmi >= 25 ? ': un deficit moderato e tanto movimento quotidiano.' : bmi < 18.5 ? ': serve mangiare di più, priorità alla massa.' : '.'));
   if (pal) items.push('<b>Attività quotidiana:</b> livello ' + String(pal).replace('.', ',') + ' (' + (pal < 1.7 ? 'sedentario-moderato' : pal < 2 ? 'attivo' : 'molto attivo') + '): lo uso per calcolare le calorie.');
-  if (num(p.age) >= 50) items.push('<b>Età:</b> riscaldamento più lungo, un esercizio di equilibrio, salite veloci per la potenza e ripetizioni un po\' più alte sui principali.');
+  if (num(p.age) >= 50) items.push('<b>Età:</b> riscaldamento più lungo, ' + (balanceEx() ? 'un esercizio di equilibrio, ' : '') + 'salite veloci per la potenza e ripetizioni un po\' più alte sui principali.');
   if (lowRecovery()) items.push('<b>Sonno e stress:</b> nella prima fase meno serie sugli esercizi complementari, per recuperare bene. Dormire almeno 7 ore aiuta più di qualsiasi integratore.');
   if ((p.pain || []).length) items.push('<b>Dolori (' + p.pain.map(z => PAIN_ZONES[z].toLowerCase()).join(', ') + '):</b> esclusi gli esercizi che caricano la zona, con alternative.');
   items.push('<b>Dove e quanto:</b> ' + PLACES[p.place || 'palestra'].toLowerCase() + ', ' + (p.days || []).length + ' giorni a settimana, circa ' + (num(p.minutes) || 60) + ' minuti.');

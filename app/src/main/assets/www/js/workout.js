@@ -93,7 +93,8 @@ VIEWS.workout = () => {
     '<div class="progress thin wo-prog"><i style="width:' + (allSets ? 100 * doneSets / allSets : 0) + '%"></i></div>' +
     '<div class="wo-stats"><div><small>Durata</small><b class="accent-t" data-clock="elapsed"></b></div><div><small>Volume</small><b>' + Math.round(vol) + ' kg</b></div><div><small>Serie</small><b>' + doneSets + (allSets ? '/' + allSets : '') + '</b></div>' +
       '<button class="mini-body" data-act="muscleDist" aria-label="Distribuzione dei muscoli">' + heatBody(activeMuscleLoad(), true) + '</button></div>' +
-    (a.items.length ? '<div class="wo-mode seg">' + chip(ic('list', 'inline') + 'Lista', !focus, 'woMode', 'data-m="list"') + chip(ic('play', 'inline') + 'Una serie alla volta', focus, 'woMode', 'data-m="focus"') + '</div>' : '') +
+    (a.items.length ? '<div class="wo-moderow"><div class="wo-mode seg">' + chip(ic('list', 'inline') + 'Lista', !focus, 'woMode', 'data-m="list"') + chip(ic('play', 'inline') + 'Una serie alla volta', focus, 'woMode', 'data-m="focus"') + '</div>' +
+      '<button class="btn sm wo-addtop" data-act="woAdd" aria-label="Aggiungi esercizio">' + ic('plus') + 'Esercizio</button></div>' : '') +
     (focus ? focusView(a) :
     '<div class="exl-wrap">' +
     (a.items.length ? '' : '<div class="pad">' + emptyWorkoutCard() + '</div>') +

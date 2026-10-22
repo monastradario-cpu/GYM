@@ -15,6 +15,9 @@ function coachPool(seed) {
   muscles.forEach(m => {
     let pool = EXERCISES.filter(e => e.m === m && eqs.includes(e.eq) && e.pat !== 'condizionamento' && !isBreakEx(e) && !e.niche && !(p.level === 'principiante' && e.lvl === 3));
     if (!pool.length) pool = EXERCISES.filter(e => e.m === m && e.pat !== 'condizionamento' && !isBreakEx(e) && (eqs.includes('corpo') || e.eq !== 'corpo'));
+    // niente esercizi che caricano le zone doloranti indicate nel percorso
+    const pain = p.pain || [];
+    if (pain.length && typeof painHit === 'function') { const safe = pool.filter(e => !pain.some(z => painHit(e, z))); if (safe.length) pool = safe; }
     pool = pool.map(e => ({ e, r: rnd() + (e.core ? 0.7 : 0) + (e.comp ? 0.6 : 0) + (goalsOf().includes('forza') && e.comp ? 0.5 : 0) + (p.level === 'principiante' && e.eq === 'macchinari' ? 0.4 : 0) })).sort((a, b) => b.r - a.r).map(x => x.e);
     // movimenti diversi prima, poi il resto
     const seen = new Set(), first = [], rest = [];
@@ -113,7 +116,7 @@ VIEWS.coach = () => {
       '<button class="btn sm" data-act="coachQuick" data-q="' + sugg.m.join(',') + '">Usa questo</button></div>' +
     '<div class="card"><h3>1. Cosa vuoi allenare?</h3><p class="muted small">Tocca i muscoli sulla figura o scegli dall\'elenco. Il puntino indica i muscoli ancora in recupero.</p>' +
       '<div class="body-pick">' + bodySvg(m => c.muscles.includes(m) ? { color: 'var(--accent)', op: 1 } : null, { click: true }) + '</div>' +
-      '<div class="chips">' + Object.keys(MUSCLES).map(m => chip(MUSCLES[m] + (rec[m].ready ? '' : ' <i class="rec-dot" title="in recupero"></i>'), c.muscles.includes(m), 'coachM', 'data-m="' + m + '"')).join('') + '</div>' +
+      '<div class="chips">' + Object.keys(MUSCLES).filter(m => m !== 'collo').map(m => chip(MUSCLES[m] + (rec[m].ready ? '' : ' <i class="rec-dot" title="in recupero"></i>'), c.muscles.includes(m), 'coachM', 'data-m="' + m + '"')).join('') + '</div>' +
       (pairs.length ? '<div class="pairs"><div class="eyebrow">Si abbinano bene</div>' + pairs.map(x => '<button class="pair" data-act="coachM" data-m="' + x.m + '"><b>+ ' + MUSCLES[x.m] + '</b><small>' + esc(x.why) + (rec[x.m].ready ? '' : ' · ancora in recupero') + '</small></button>').join('') + '</div>' : '') +
       '<div class="row gap wrap">' + DAY_GROUPS.map(g => '<button class="btn sm ghost" data-act="coachQuick" data-q="' + g.m.join(',') + '">' + g.n + '</button>').join('') + '</div>' +
       (c.muscles.some(m => !rec[m].ready) ? '<div class="note warn small">' + c.muscles.filter(m => !rec[m].ready).map(m => MUSCLES[m]).join(', ') + ': allenati da meno di ' + '48 ore. Puoi farlo, ma con meno volume.</div>' : '') +
@@ -308,12 +311,12 @@ PROG.settimana = () => {
 };
 function muscleBars(musc, target) {
   const max = Math.max(target || 1, ...Object.values(musc));
-  return Object.keys(MUSCLES).map(m => { const v = Math.round((musc[m] || 0) * 10) / 10; return '<div class="mbar' + (target && v < target ? ' under' : '') + '"><span>' + MUSCLES[m] + '</span><div>' + (target ? '<s style="left:' + (100 * target / max) + '%"></s>' : '') + '<i style="width:' + (100 * v / max) + '%"></i></div><b>' + fmtKg(v) + '</b></div>'; }).join('');
+  return Object.keys(MUSCLES).filter(m => !MINOR_MUSCLES.includes(m) || musc[m]).map(m => { const v = Math.round((musc[m] || 0) * 10) / 10; return '<div class="mbar' + (target && v < target ? ' under' : '') + '"><span>' + MUSCLES[m] + '</span><div>' + (target ? '<s style="left:' + (100 * target / max) + '%"></s>' : '') + '<i style="width:' + (100 * v / max) + '%"></i></div><b>' + fmtKg(v) + '</b></div>'; }).join('');
 }
 
 PROG.muscoli = () => {
   const load = muscleLoad(7), sorted = Object.keys(MUSCLES).sort((a, b) => (load[a] || 0) - (load[b] || 0));
-  const low = sorted.filter(m => (load[m] || 0) < 4).slice(0, 3);
+  const low = sorted.filter(m => !MINOR_MUSCLES.includes(m) && (load[m] || 0) < 4).slice(0, 3);
   return '<div class="card body-card"><h3>Ultimi 7 giorni</h3><p class="muted small">Più è intenso il colore, più serie hai fatto per quel muscolo (le secondarie contano metà).</p>' + heatBody(load) + '</div>' +
     (low.length ? '<div class="card"><h3>Da allenare di più</h3><p>' + low.map(m => '<b>' + MUSCLES[m] + '</b> (' + fmtKg(Math.round((load[m] || 0) * 10) / 10) + ' serie)').join(', ') + '.</p><p class="muted small">Per crescere servono circa 10–20 serie a settimana per muscolo.</p><button class="btn" data-act="coachFor" data-q="' + low.join(',') + '">' + ic('coach') + 'Crea un allenamento per questi</button></div>' : '') +
     '<div class="card">' + muscleBars(load) + '</div>';

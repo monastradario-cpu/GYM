@@ -3,8 +3,10 @@
 
 const MUSCLES = {
   petto: 'Petto', dorso: 'Dorso', spalle: 'Spalle', bicipiti: 'Bicipiti', tricipiti: 'Tricipiti',
-  addome: 'Addome', quadricipiti: 'Quadricipiti', femorali: 'Femorali', glutei: 'Glutei', polpacci: 'Polpacci', avambracci: 'Avambracci'
+  addome: 'Addome', quadricipiti: 'Quadricipiti', femorali: 'Femorali', glutei: 'Glutei', adduttori: 'Adduttori', polpacci: 'Polpacci', avambracci: 'Avambracci', collo: 'Collo'
 };
+/* muscoli piccoli o di nicchia: niente avvisi di volume basso */
+const MINOR_MUSCLES = ['addome', 'adduttori', 'collo', 'avambracci'];
 const BIG_MUSCLES = ['petto', 'dorso', 'quadricipiti', 'femorali', 'glutei'];
 
 const EQUIP = { manubri: 'Manubri', macchinari: 'Macchinari', bilanciere: 'Bilanciere', cavi: 'Cavi', corpo: 'Corpo libero', kettlebell: 'Kettlebell', elastici: 'Elastici', smith: 'Smith machine', ez: 'Bilanciere EZ', altro: 'Altro' };
@@ -389,7 +391,7 @@ const EXERCISES = [
     ['Restare seduti per ore senza pause.'],
     'Interrompere la seduta con pochi minuti di movimento ogni 20–30 minuti abbassa la glicemia dopo i pasti.', T),
   // ===== MOBILITÀ / STRETCHING =====
-  E('allunga_collo', 'Allungamento del collo', 'spalle', [], 'corpo', 'mobilita',
+  E('allunga_collo', 'Allungamento del collo', 'collo', [], 'corpo', 'mobilita',
     ['Seduto o in piedi, spalle basse.', 'Inclina l\'orecchio verso la spalla, senza alzarla.', 'Tieni, poi cambia lato.'],
     ['Tirare con forza la testa.', 'Alzare la spalla.'],
     'Movimento lento: deve tirare, non fare male.', T),
@@ -558,14 +560,15 @@ function splitForDays(n, level) {
 const PAIRS = {
   petto: ['tricipiti', 'spalle'], dorso: ['bicipiti', 'spalle'], spalle: ['petto', 'tricipiti'], bicipiti: ['dorso'],
   tricipiti: ['petto', 'spalle'], quadricipiti: ['femorali', 'glutei', 'polpacci'], femorali: ['glutei', 'quadricipiti'],
-  glutei: ['femorali', 'quadricipiti'], polpacci: ['quadricipiti', 'femorali'], addome: ['dorso', 'glutei']
+  glutei: ['femorali', 'quadricipiti'], polpacci: ['quadricipiti', 'femorali'], addome: ['dorso', 'glutei'],
+  adduttori: ['glutei', 'quadricipiti']
 };
 const PAIR_WHY = {
   petto: 'i tricipiti e le spalle lavorano già in tutte le spinte', dorso: 'i bicipiti lavorano già in tutte le tirate',
   spalle: 'spinte di petto e spalle condividono i muscoli', bicipiti: 'si completano con le tirate del dorso',
   tricipiti: 'si allenano bene dopo le spinte', quadricipiti: 'gambe complete in una sola seduta',
   femorali: 'catena posteriore completa', glutei: 'catena posteriore completa', polpacci: 'chiudi la seduta gambe',
-  addome: 'il core stabilizza dorso e gambe'
+  addome: 'il core stabilizza dorso e gambe', adduttori: 'interno ed esterno coscia insieme'
 };
 const DAY_GROUPS = [
   { k: 'spinta', n: 'Spinta', m: ['petto', 'spalle', 'tricipiti'] },
