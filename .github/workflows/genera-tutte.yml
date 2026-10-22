@@ -3,9 +3,9 @@ name: Genera figure esercizi
 # Manuale: disegna con VideoDB le figure di tutti gli esercizi e le salva nel repo.
 # Riprende da dove si era fermato. Non pubblica l'app.
 on:
-  # ogni notte riprende da dove si era fermato (piano gratuito Cloudflare: circa 160 immagini al giorno)
+  # ogni giorno alle 17:17 ora italiana: il limite gratuito Cloudflare si libera 24 ore dopo l'ultimo esaurimento
   schedule:
-    - cron: "17 1 * * *"
+    - cron: "17 15 * * *"
   workflow_dispatch:
     inputs:
       quanti:
