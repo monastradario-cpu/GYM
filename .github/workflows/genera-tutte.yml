@@ -3,9 +3,10 @@ name: Genera figure esercizi
 # Manuale: disegna con VideoDB le figure di tutti gli esercizi e le salva nel repo.
 # Riprende da dove si era fermato. Non pubblica l'app.
 on:
-  # ogni giorno alle 17:17 ora italiana: il limite gratuito Cloudflare si libera 24 ore dopo l'ultimo esaurimento
+  # ogni notte alle 2:07 ora italiana (due orari UTC per coprire ora legale e solare: parte solo quello delle 2)
   schedule:
-    - cron: "17 15 * * *"
+    - cron: "7 0 * * *"
+    - cron: "7 1 * * *"
   workflow_dispatch:
     inputs:
       quanti:
@@ -42,7 +43,13 @@ jobs:
       - name: Installa VideoDB
         run: pip install "videodb>=0.5.0" pillow
 
+      - name: Solo alle 2 ora italiana
+        if: github.event_name == 'schedule'
+        run: |
+          if [ "$(TZ=Europe/Rome date +%H)" != "02" ]; then echo "Non sono le 2 in Italia: salto"; echo "SALTA=1" >> $GITHUB_ENV; fi
+
       - name: Genera
+        if: env.SALTA != '1'
         env:
           VIDEO_DB_API_KEY: ${{ secrets.VIDEO_DB_API_KEY }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
