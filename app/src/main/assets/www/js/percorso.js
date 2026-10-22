@@ -20,6 +20,10 @@ const STRESS = { basso: 'Basso', medio: 'Medio', alto: 'Alto' };
 const SPORTS = { yoga: 'Yoga', pilates: 'Pilates', camminate: 'Camminate' };
 const PLACES = { palestra: 'In palestra', casa: 'A casa' };
 const HOME_EQ = ['corpo', 'manubri', 'elastici', 'kettlebell'];
+/* attrezzi che hai davvero a casa (il corpo libero c'è sempre) */
+/* a corpo libero ma serve un appoggio che a casa di solito non c'è (sbarra, TRX, parallele, fune) */
+const needsBar = e => e.pat === 'tirata_vert' || /sbarra|trx|anelli|fune|rematore inverso|parallele|glute-ham|nordic/i.test(e.n);
+const homeEq = () => ['corpo'].concat((S.profile.homeEq || HOME_EQ).filter(x => x !== 'corpo'));
 const PAIN_ZONES = { schiena: 'Schiena / lombari', spalle: 'Spalle', ginocchia: 'Ginocchia', polsi: 'Polsi', gomiti: 'Gomiti', anche: 'Anche', collo: 'Collo' };
 const JUMPS = /salt|jump|burpee|skip|balz|jack|plio|sprint|box jump|scatt/i;
 
@@ -60,7 +64,7 @@ function okFor(id, extraZones) {
   const e = EX[id]; if (!e) return false;
   const p = S.profile, zones = (p.pain || []).concat(extraZones || []);
   if (zones.some(z => painHit(e, z))) return false;
-  if (p.place === 'casa' && !HOME_EQ.includes(e.eq)) return false;
+  if (p.place === 'casa' && (!homeEq().includes(e.eq) || (needsBar(e) && !homeEq().includes('sbarra')))) return false;
   if (heavyBody() && JUMPS.test(e.n)) return false;
   return true;
 }
@@ -580,6 +584,91 @@ homeTrainerCards2 = function (t, doneToday) {
   if (checkTraguardi()) setTimeout(() => openSheet(traguardoSheet), 300);
   return _homeCards3(t, doneToday);
 };
+
+/* ---------- oggi niente palestra: alternative a casa ---------- */
+const HOME_EQ_N = { manubri: 'Manubri', elastici: 'Elastici', kettlebell: 'Kettlebell', sbarra: 'Sbarra per trazioni' };
+/* a casa, prima gli esercizi più comuni per muscolo */
+const HOME_PREF = {
+  dorso: ['rematore_man', 'rematore_alternato_kettlebell', 'rematore_due_kettlebell', 'superman'],
+  femorali: ['stacco_rumeno_man', 'stacco_gamba_kettlebell', 'pull_through_elastico', 'ponte_glutei_gamba', 'ponte_glutei'],
+  petto: ['panca_piana_man', 'piegamenti', 'piegamenti_ginocchia'], quadricipiti: ['goblet_squat', 'squat_corpo', 'affondi_corpo'],
+  spalle: ['lento_man', 'alzate_laterali', 'piegamenti_verticale'], tricipiti: ['estensioni_man', 'dip_sedia', 'piegamenti_presa_stretta'], glutei: ['hip_thrust_man', 'ponte_glutei_gamba', 'ponte_glutei']
+};
+/* esegue fn come se fossi a casa (con gli attrezzi che hai), poi rimette tutto com'era */
+function asHome(fn) {
+  const p = S.profile, old = p.place; p.place = 'casa';
+  try { return fn(); } finally { p.place = old; }
+}
+/* stessa scheda di oggi con esercizi fattibili a casa: stesso muscolo e, se possibile, stesso movimento */
+function homeVersion(t) {
+  return asHome(() => {
+    const used = new Set(), items = [];
+    t.items.forEach(it => {
+      const e = EX[it.ex]; if (!e) return;
+      let id = okFor(it.ex) ? it.ex : null;
+      const fits = x => okFor(x.id) && lvlOk(x.id) && !used.has(x.id);
+      const bar = e.pat === 'tirata_vert' && homeEq().includes('sbarra');
+      if (!id && !bar) id = (HOME_PREF[e.m] || []).find(x => EX[x] && fits(EX[x])) || null;
+      if (!id) {
+        const alts = alternatives(it.ex).filter(fits);
+        const a = alts.find(x => x.core && x.pat === e.pat) || alts.find(x => x.pat === e.pat) || alts.find(x => x.core) || alts[0];
+        id = a ? a.id : null;
+      }
+      if (!id && e.m === 'spalle') id = ['alzate_laterali', 'piegamenti'].find(x => EX[x] && okFor(x) && !used.has(x)) || null;
+      if (!id || used.has(id)) return;
+      used.add(id);
+      const r = prescribe(id, it.role);
+      // a casa i pesi sono più leggeri: più ripetizioni. Con carichi leggeri portati vicino alla fatica i muscoli crescono quanto con quelli pesanti (Schoenfeld 2017, doi:10.1519/JSC.0000000000002200)
+      if (!r.secs) { r.rmin = Math.max(r.rmin, 10); r.rmax = Math.max(r.rmax, 20); r.rest = Math.min(r.rest, 90); }
+      items.push(r);
+    });
+    const max = num(S.profile.minutes) || 60;
+    while (items.length > 4 && estMinutes(items) > max) { let k = items.map(i => i.role).lastIndexOf('acc'); if (k < 0) k = items.length - 1; items.splice(k, 1); }
+    return { id: uid(), kind: 'scheda', name: t.name + ' · a casa', items, days: [] };
+  });
+}
+function homeOptions(t) {
+  const out = [];
+  if (t && t.kind === 'scheda' && t.items.length) out.push({ k: 'scheda', n: t.name + ' a casa', d: 'La scheda di oggi con esercizi che puoi fare a casa: stessi muscoli, più ripetizioni se i pesi sono leggeri.', mk: () => homeVersion(t) });
+  out.push({ k: 'funz', n: 'Funzionale a casa', d: 'Circuito a tempo per tutto il corpo, con guida automatica.', mk: () => asHome(() => Object.assign(buildFunctional([]), { name: 'Funzionale a casa', preset: null })) });
+  QUICK_ROUTINES.filter(q => q.zone === 'casa').forEach(q => out.push({ k: q.key, n: q.n, d: q.desc, quick: q }));
+  out.push({ k: 'mob', n: 'Mobilità e stretching', d: 'Se oggi preferisci recuperare: circa 20 minuti per anche, schiena e spalle.', mk: () => Object.assign(buildMobility([]), { preset: null }) });
+  return out;
+}
+function homeSheet() {
+  const t = UI.homeT, eq = homeEq();
+  const opts = homeOptions(t);
+  return '<h3>Oggi niente palestra?</h3><p class="small muted">Nessun problema: allenarsi a casa conta lo stesso. Scegli cosa fare.</p>' +
+    '<div class="field"><span>Cosa hai a casa (il corpo libero c\'è sempre)</span><div class="chips wrap">' +
+      Object.keys(HOME_EQ_N).map(k => chip(HOME_EQ_N[k], eq.includes(k), 'homeEq', 'data-k="' + k + '"')).join('') + '</div></div>' +
+    opts.map((o, i) => {
+      const tpl = o.quick ? null : o.mk(), min = o.quick ? quickMinutes(o.quick) : templateMinutes(tpl);
+      const prev = tpl ? '<div class="ex-preview">' + tpl.items.slice(0, 5).map(x => '<span>' + exLine(x.ex) + '</span>').join('') + (tpl.items.length > 5 ? '<span>+' + (tpl.items.length - 5) + '</span>' : '') + '</div>' : '';
+      return '<div class="card tpl"><h3>' + esc(o.n) + '</h3><div class="muted small">circa ' + min + ' min</div><p class="small muted">' + esc(o.d) + '</p>' + prev +
+        '<button class="btn' + (i ? ' ghost' : '') + '" data-act="homeGo" data-k="' + o.k + '">' + ic('play') + 'Inizia</button></div>';
+    }).join('');
+}
+Object.assign(ACT, {
+  homeOpen: d => { UI.homeT = S.templates.find(x => x.id === d.id) || todayTemplate() || null; openSheet(homeSheet); },
+  homeEq: d => {
+    const p = S.profile, cur = homeEq().filter(x => x !== 'corpo');
+    p.homeEq = cur.includes(d.k) ? cur.filter(x => x !== d.k) : cur.concat([d.k]); save();
+    $('#sheet-body').innerHTML = homeSheet();
+  },
+  homeGo: d => {
+    const o = homeOptions(UI.homeT).find(x => x.k === d.k); if (!o) return;
+    closeSheet();
+    if (o.quick) { startWorkout(makeQuick(o.quick)); return; }
+    UI.ck = null; _startWorkout(o.mk());
+  }
+});
+/* anche dal check-in: "oggi sono a casa" */
+const _checkinSheet = checkinSheet;
+checkinSheet = function () {
+  const t = UI.ck && UI.ck.t;
+  return _checkinSheet() + ((S.profile.place || 'palestra') !== 'casa' && t && t.kind === 'scheda' ? '<button class="btn ghost wide" data-act="ckHome">' + ic('home') + 'Oggi sono a casa</button>' : '');
+};
+ACT.ckHome = () => { const t = UI.ck && UI.ck.t; UI.ck = null; closeSheet(); setTimeout(() => ACT.homeOpen({ id: t && t.id }), 250); };
 
 /* aggiornamento dalla versione con le schede pronte: via quelle generiche, restano quelle create da te */
 if (!S.mig23) {

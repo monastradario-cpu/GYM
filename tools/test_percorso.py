@@ -81,6 +81,16 @@ with sync_playwright() as p:
     pg.evaluate("S.active.items.forEach(it => it.sets.forEach(s => { s.done = true; s.reps = it.secs; })); save(true); render()"); pg.wait_for_timeout(200); shot("19_mobilita_fine")
     pg.evaluate("finishWorkout()"); pg.wait_for_timeout(300)
     salvato = pg.evaluate("S.history.slice(-1)[0] ? { n: S.history.slice(-1)[0].name, quick: S.history.slice(-1)[0].quick } : null")
+    # oggi niente palestra: alternative a casa
+    pg.evaluate("const t = S.templates.find(t => t.preset && t.kind === 'scheda'); S.templates.forEach(x => { x.days = (x.days || []).filter(d => d !== new Date().getDay()); }); t.days.push(new Date().getDay()); S.history = S.history.filter(h => new Date(h.start).toDateString() !== new Date().toDateString()); save(true); go('home')")
+    pg.wait_for_timeout(400); shot("19b_home_casa")
+    pg.click("[data-act=homeOpen]"); pg.wait_for_timeout(500); shot("19c_opzioni_casa")
+    casa_tutto = pg.evaluate("homeVersion(UI.homeT).items.map(i => i.ex + ':' + EX[i.ex].eq + ':' + i.rmin + '-' + i.rmax)")
+    pg.click("[data-act=homeEq][data-k=manubri]"); pg.click("[data-act=homeEq][data-k=kettlebell]"); pg.click("[data-act=homeEq][data-k=elastici]"); pg.wait_for_timeout(300); shot("19d_solo_corpo")
+    casa_corpo = pg.evaluate("homeVersion(UI.homeT).items.map(i => i.ex + ':' + EX[i.ex].eq)")
+    pg.click("[data-act=homeGo][data-k=scheda]"); pg.wait_for_timeout(500); shot("19e_scheda_casa")
+    casa_att = pg.evaluate("S.active ? S.active.items.map(i => i.ex) : null")
+    pg.evaluate("S.active = null; S.profile.homeEq = null; save(true)")
     # traguardo: costanza raggiunta -> nuovo traguardo e schede aggiornate
     prima = pg.evaluate("S.templates.filter(t => t.preset && t.kind === 'scheda').map(t => t.items.map(i => i.ex + ':' + i.sets).join(','))")
     pg.evaluate("S.profile.mgoals.costanza = { on: true, perWeek: 1, weeks: 1 }; S.path.start = Date.now() - 3 * 864e5; S.history.push({ id: 'x', name: 'x', kind: 'scheda', start: Date.now() - 864e5, end: Date.now() - 864e5 + 36e5, items: [], cardio: [] }); save(true); go('home')")
@@ -92,4 +102,4 @@ with sync_playwright() as p:
     mig = pg.evaluate("S.templates.map(t => t.name)")
     pg.evaluate("UI.schede = 'schede'; go('schede')"); pg.wait_for_timeout(300); shot("21_schede_senza_percorso")
     b.close()
-print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig}, ensure_ascii=False, indent=1))
+print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att}, ensure_ascii=False, indent=1))

@@ -142,7 +142,8 @@ VIEWS.home = () => {
     todayCard = '<div class="card hero"><div class="eyebrow">' + (doneToday ? 'Fatto oggi ' + ic('check', 'inline') : 'Allenamento di oggi') + '</div><h2>' + esc(t.name) + '</h2>' +
       '<div class="muted">' + t.items.length + (t.kind === 'circuito' ? ' stazioni · ' + t.rounds + ' giri' : ' esercizi') + ' · circa ' + templateMinutes(t) + ' min</div>' +
       '<div class="ex-preview">' + t.items.slice(0, 4).map(i => '<span>' + exLine(i.ex) + '</span>').join('') + (t.items.length > 4 ? '<span>+' + (t.items.length - 4) + '</span>' : '') + '</div>' +
-      '<button class="btn big" data-act="startTemplate" data-id="' + t.id + '">' + ic('play') + (S.active ? 'Riprendi allenamento' : 'Inizia') + '</button></div>';
+      '<button class="btn big" data-act="startTemplate" data-id="' + t.id + '">' + ic('play') + (S.active ? 'Riprendi allenamento' : 'Inizia') + '</button>' +
+      (!doneToday && !S.active && t.kind !== 'circuito' && (S.profile.place || 'palestra') !== 'casa' ? '<button class="btn ghost wide" data-act="homeOpen" data-id="' + t.id + '">' + ic('home') + 'Oggi niente palestra? Allenati a casa</button>' : '') + '</div>';
   } else {
     todayCard = '<div class="card hero rest"><div class="eyebrow">Oggi</div><h2>Giorno di riposo</h2><div class="muted">Il muscolo cresce mentre recuperi. Oggi: camminata e qualche minuto di mobilità. Se vuoi allenarti lo stesso, scegli una scheda o un circuito.</div>' +
       '<button class="btn ghost wide" data-act="quickStart" data-k="q_mob7">' + ic('run') + 'Mobilità guidata (7 min)</button>' +
