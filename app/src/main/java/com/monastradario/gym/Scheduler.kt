@@ -21,6 +21,7 @@ object Notify {
     const val ID_WATER = 3
     const val ID_WEIGH = 4
     const val ID_BREAK = 5
+    const val ID_SUMMARY = 6
 
     fun channels(ctx: Context) {
         val nm = ctx.getSystemService(NotificationManager::class.java)
@@ -78,7 +79,7 @@ object Scheduler {
         }
 
     fun scheduleAll(ctx: Context) {
-        listOf("workout", "water", "weigh", "breaks").forEach { schedule(ctx, it) }
+        listOf("workout", "water", "weigh", "breaks", "summary").forEach { schedule(ctx, it) }
     }
 
     fun schedule(ctx: Context, type: String) {
@@ -105,7 +106,7 @@ object Scheduler {
                     if (t.get(Calendar.DAY_OF_WEEK) in set && t.timeInMillis > now) return t.timeInMillis
                 }
             }
-            "weigh" -> {
+            "weigh", "summary" -> {
                 for (add in 0..7) {
                     val t = cal.clone() as Calendar
                     t.add(Calendar.DAY_OF_YEAR, add)
@@ -169,6 +170,10 @@ class AlarmReceiver : BroadcastReceiver() {
             }
             "breaks" -> {
                 Notify.show(ctx, Notify.ID_BREAK, Notify.CH_REM, "Pausa attiva ⭐", "2–3 minuti per muoverti e sgranchirti: guadagna una stella")
+                Scheduler.schedule(ctx, type)
+            }
+            "summary" -> {
+                Notify.show(ctx, Notify.ID_SUMMARY, Notify.CH_REM, "La tua settimana 📊", "Allenamenti, muscoli e traguardi: apri GYM per il riepilogo")
                 Scheduler.schedule(ctx, type)
             }
             "weigh" -> {

@@ -281,7 +281,7 @@ const ACT = {
   recipeLog: () => { const R = UI.recipe, r = RECIPES.find(x => x.id === R.id), m = recipeFor(r, foodPrefs(), R.kcal || 0); logIngredients(m.ing, R.meal || mealNow()); closeSheet(); toast('Ricetta aggiunta al diario'); render(); },
   recF: d => { UI.recF = d.k; render(); },
   shopChk: d => { S.shopChecked = S.shopChecked || {}; S.shopChecked[d.n] = !S.shopChecked[d.n]; save(); const v = $('#view'), y = v.scrollTop; render(); v.scrollTop = y; },
-  shopShare: () => { const by = shoppingList(); if (!by) return; const txt = 'Lista della spesa (GYM)\n' + Object.keys(FOOD_CATS).filter(c => by[c]).map(c => '\n' + FOOD_CAT_N[c] + ':\n' + by[c].map(([n, g]) => '- ' + n.replace(/ \(.*\)/, '') + ' ' + shopQty(n, g)).join('\n')).join('\n'); copyText(txt); toast('Lista copiata: incollala dove vuoi'); },
+  shopShare: () => { const by = shoppingList(); if (!by) return; const txt = 'Lista della spesa (GYM)\n' + Object.keys(FOOD_CATS).filter(c => by[c]).map(c => '\n' + FOOD_CAT_N[c] + ':\n' + by[c].map(([n, g]) => '- ' + n.replace(/ \(.*\)/, '') + ' ' + shopQty(n, g)).join('\n')).join('\n') + ((S.shopMine || []).length ? '\n\nAltro:\n' + S.shopMine.map(n => '- ' + n).join('\n') : ''); copyText(txt); toast('Lista copiata: incollala dove vuoi'); },
   foodAdd: d => { UI.fadd = { meal: d.m || mealNow(), q: '' }; openSheet(foodAddSheet); },
   foodScan: () => {
     UI.fadd = UI.fadd || { meal: mealNow() };
@@ -470,6 +470,7 @@ document.addEventListener('input', ev => {
     case 'aiModel': S.settings.ai.model = v.trim(); save(); break;
     case 'obWeight': UI.ob.weight = v; break;
     case 'prof': S.profile[d.k] = v === '' ? '' : num(v); save(); break;
+    case 'ftest': UI.ft = UI.ft || {}; UI.ft[d.k] = v; break;
     case 'pg': if (S.profile.mgoals && S.profile.mgoals[d.g]) { S.profile.mgoals[d.g][d.k] = num(v); save(); } break;
     case 'foodQ': UI.fadd.q = v; UI.fadd.online = []; { const b = $('#sheet-body'), y = b.scrollTop; b.innerHTML = foodAddSheet(); const i = b.querySelector('[data-in=foodQ]'); i.focus(); i.setSelectionRange(v.length, v.length); b.scrollTop = y; } break;
     case 'fname': UI.fprod.name = v; break;

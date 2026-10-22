@@ -96,13 +96,19 @@ trainerNote = function (item) {
   return t;
 };
 
+const MAIN_SAFE = ['hip_thrust_bil', 'leg_press', 'hip_thrust_man', 'goblet_squat', 'chest_press', 'row_machine'];
 /* minuti stimati di una scheda (riscaldamento 8 min) */
 function estMinutes(items) { return Math.round(8 + items.reduce((a, it) => a + (it.sets || 3) * ((it.secs || 40) + (it.rest || 60)) / 60 + 1, 0)); }
 const _splitItems = splitItems;
 splitItems = function (key, level) {
   let items = _splitItems(key, level);
   if (!pathOn()) return items;
-  items = items.map(it => { const id = adaptEx(it.ex, null, it.role === 'main'); return id === it.ex ? it : prescribe(id, it.role); });
+  items = items.map(it => {
+    let id = adaptEx(it.ex, null, it.role === 'main');
+    // un principale deve restare un multiarticolare: se la sostituzione non lo è, si sceglie un grande esercizio sicuro
+    if (it.role === 'main' && id !== it.ex && EX[id] && !EX[id].comp) id = MAIN_SAFE.find(x => EX[x] && okFor(x) && !items.some(i => i.ex === x)) || id;
+    return id === it.ex ? it : prescribe(id, it.role);
+  });
   // dopo i 50 anni: un esercizio di equilibrio nelle schede con le gambe (OMS 2020, Fragala 2019)
   const bal = isOlder() && /full|lower|legs/.test(key) ? balanceEx() : null;
   if (bal && !items.some(i => i.ex === bal)) items.splice(Math.min(items.length, 3), 0, prescribe(bal, 'acc'));
@@ -351,6 +357,7 @@ homeTrainerCards2 = function (t, doneToday) {
 };
 VIEWS.goals = () => header('I tuoi traguardi', { back: true, noGear: true, sub: 'Previsioni dai tuoi dati reali' }) + '<div class="pad">' +
   goalStatus().map(g => '<div class="card"><h3>' + esc(g.t) + '</h3>' + (g.pct != null ? '<div class="gbar"><i style="width:' + Math.round(g.pct * 100) + '%"></i></div>' : '') + '<p class="small">' + esc(g.eta) + '</p></div>').join('') +
+  ((S.ftests || []).length ? '<div class="card"><h3>Test di forma</h3><p class="small">' + (ftestCompare() || 'Punto di partenza salvato il ' + fmtDateLong(S.ftests[0].d) + '.') + '</p><button class="btn ghost sm" data-act="go" data-v="ftest">Apri i test</button></div>' : '') +
   '<button class="btn ghost wide" data-act="ppRedo" data-s="8">' + ic('gear') + 'Cambia i traguardi</button>' +
   '<p class="small muted">Le previsioni usano l\'andamento delle ultime settimane; con pochi dati uso i ritmi tipici del tuo livello. Sono stime: cambiano con te.</p></div>';
 VIEWS.checkpoint = () => {
@@ -358,8 +365,9 @@ VIEWS.checkpoint = () => {
   return header('Controllo di fase', { back: true, noGear: true, sub: 'Inizia la fase ' + due.ph + ': ' + ph.n }) + '<div class="pad">' +
     '<div class="card"><h3>1. Pesati e misura il girovita</h3>' + field('Peso di oggi (kg)', numIn('', 'data-in="profW"', fmtKg(curWeight() || 0))) +
     '<button class="btn ghost wide" data-act="go" data-v="progress">' + ic('chart', 'inline') + 'Misure (Progressi)</button></div>' +
-    '<div class="card"><h3>2. Come stanno andando i traguardi</h3>' + goalStatus().map(g => '<p class="small"><b>' + esc(g.t) + '</b><br>' + esc(g.eta) + '</p>').join('') + '</div>' +
-    '<div class="card"><h3>3. La prossima fase: ' + ph.n + '</h3><p class="small">' + esc(ph.d) + ' Ricalcolo calorie e schede con i dati aggiornati.</p>' +
+    '<div class="card"><h3>2. Test di forma</h3><p class="small">' + (typeof ftestCompare === 'function' && ftestCompare() ? ftestCompare() : 'Piegamenti, plank e sedia: 5 minuti per misurare i progressi.') + '</p><button class="btn ghost wide" data-act="go" data-v="ftest">' + ic('chart', 'inline') + 'Fai i test</button></div>' +
+    '<div class="card"><h3>3. Come stanno andando i traguardi</h3>' + goalStatus().map(g => '<p class="small"><b>' + esc(g.t) + '</b><br>' + esc(g.eta) + '</p>').join('') + '</div>' +
+    '<div class="card"><h3>4. La prossima fase: ' + ph.n + '</h3><p class="small">' + esc(ph.d) + ' Ricalcolo calorie e schede con i dati aggiornati.</p>' +
     '<button class="btn wide" data-act="ppCheckDone" data-k="' + due.key + '">' + ic('play') + 'Aggiorna il percorso</button>' +
     '<button class="btn ghost wide" data-act="ppRedo" data-s="1">Cambia le risposte del questionario</button></div></div>';
 };

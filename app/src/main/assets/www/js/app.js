@@ -150,6 +150,7 @@ VIEWS.home = () => {
       '<button class="btn big ghost" data-act="tab" data-v="schede">' + ic('list') + 'Scegli una scheda</button></div>';
   }
   return header('GYM', { sub: fmtDateLong(now) }) + '<div class="pad">' + todayCard +
+    (typeof homeTopCards === 'function' ? homeTopCards() : '') +
     cycleCard() +
     breakCard() +
     homeKcalCard() +
@@ -306,6 +307,7 @@ VIEWS.settings = () => {
       (r.water.on ? '<div class="grid3">' + field('Dalle', numIn(r.water.from, 'data-in="remNum" data-k="from"')) + field('Alle', numIn(r.water.to, 'data-in="remNum" data-k="to"')) + field('Ogni (ore)', numIn(r.water.every, 'data-in="remNum" data-k="every"')) + '</div>' : '') +
       '<div class="list-item flat"><div><b>Pesata</b></div>' + toggle(r.weigh.on, 'remOn', 'data-k="weigh"') + '</div>' +
       (r.weigh.on ? '<div class="field"><span>Giorno</span>' + '<div class="chips days">' + [1, 2, 3, 4, 5, 6, 0].map(d => chip(WEEKDAYS[d], r.weigh.day === d, 'weighDay', 'data-d="' + d + '"')).join('') + '</div></div>' + field('Ora', timeIn(r.weigh.hour, r.weigh.min, 'weigh')) : '') +
+      '<div class="list-item flat"><div><b>Riepilogo della settimana</b><small>Domenica alle 19:00</small></div>' + toggle(!r.summary || r.summary.on !== false, 'remOn', 'data-k="summary"') + '</div>' +
       '<div class="list-item flat"><div><b>Pause attive al lavoro ⭐</b><small>' + (r.breaks.on ? 'Alle ' + breakTimes().map(m => pad(m / 60 | 0) + ':' + pad(m % 60)).join(' · ') : 'Ti ricorda di muoverti 2–5 minuti') + '</small></div>' + toggle(r.breaks.on, 'remOn', 'data-k="breaks"') + '</div>' +
       (r.breaks.on ? '<div class="field"><span>Giorni di lavoro</span>' + daysChips(r.breaks.days, 'brkDay') + '</div>' +
         '<div class="grid3">' + field('Dalle (ora)', numIn(r.breaks.from, 'data-in="brkNum" data-k="from"')) + field('Alle (ora)', numIn(r.breaks.to, 'data-in="brkNum" data-k="to"')) +
@@ -387,6 +389,7 @@ VIEWS.onboarding = () => {
     '<div class="list-item flat"><div><b>Allenamento</b><small>Nei tuoi giorni</small></div>' + toggle(r.workout.on, 'remOn', 'data-k="workout"') + '</div>' + (r.workout.on ? field('Ora', timeIn(r.workout.hour, r.workout.min, 'workout')) : '') +
     '<div class="list-item flat"><div><b>Bere acqua</b><small>Ogni ' + r.water.every + ' ore dalle ' + r.water.from + ' alle ' + r.water.to + '</small></div>' + toggle(r.water.on, 'remOn', 'data-k="water"') + '</div>' +
     '<div class="list-item flat"><div><b>Pesata</b><small>' + WEEKDAYS_LONG[r.weigh.day] + ' alle ' + pad(r.weigh.hour) + ':' + pad(r.weigh.min) + '</small></div>' + toggle(r.weigh.on, 'remOn', 'data-k="weigh"') + '</div>' +
+    '<div class="list-item flat"><div><b>Riepilogo della settimana</b><small>Domenica alle 19:00</small></div>' + toggle(!r.summary || r.summary.on !== false, 'remOn', 'data-k="summary"') + '</div>' +
     '<p class="muted small">Puoi cambiarli quando vuoi nelle impostazioni.</p>' + nav('obFinish', 'Fatto, entriamo!');
   return '<div class="pad ob">' + dots + body + '</div>';
 };

@@ -49,6 +49,7 @@ function defaultState() {
       workout: { on: true, hour: 18, min: 0 },
       water: { on: true, from: 9, to: 21, every: 2 },
       weigh: { on: true, day: 1, hour: 8, min: 0 },
+      summary: { on: true },
       breaks: { on: true, days: [1, 2, 3, 4, 5], from: 9, to: 18, count: 4 }
     },
     breaks: [],
@@ -342,6 +343,7 @@ function syncReminders() {
     workout: { on: r.workout.on, days: S.profile.days.map(d => d + 1), hour: r.workout.hour, min: r.workout.min, names },
     water: { on: r.water.on, from: r.water.from, to: r.water.to, every: r.water.every },
     weigh: { on: r.weigh.on, day: r.weigh.day + 1, hour: r.weigh.hour, min: r.weigh.min },
+    summary: { on: !r.summary || r.summary.on !== false, day: 1, hour: 19, min: 0 }, // domenica sera: riepilogo della settimana
     breaks: { on: r.breaks.on, days: r.breaks.days.map(d => d + 1), times: breakTimes() }
   });
 }

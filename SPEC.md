@@ -169,3 +169,16 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Funzionale: circuito a tempo con guida automatica (accosciata, spinta, anche, tirata, una gamba, trasporto, anti-rotazione, potenza, fiato se l'obiettivo è dimagrire/tonificare), adattato a livello, luogo, dolori, età e peso (ACSM, Garber 2011).
 - Mobilità: prima movimenti dinamici, poi posizioni (30 s per lato, 45 s simmetriche, 60 s per lato dopo i 65 anni), 1–2 volte a settimana, circa 20 minuti; personalizzata per lavoro seduto, mal di schiena, età e dolori (ACSM 2011, Behm 2016).
 - Traguardi raggiunti: nuovo traguardo (peso, forza +5%, girovita, costanza +12 settimane), livello principiante → intermedio, schede rigenerate con varianti dei complementari, +1 serie sui principali dal secondo traguardo, funzionale e mobilità più impegnativi.
+
+## Consigli in più (ottobre 2026) — js/extra.js
+- Oggi niente palestra (percorso.js): la scheda del giorno in versione casa con gli attrezzi che hai (manubri, elastici, kettlebell, sbarra), più funzionale a casa, circuiti veloci e mobilità. Anche dal check-in ("Oggi sono a casa").
+- Settimana leggera suggerita: sonno/energia bassi nei check-in, dolori ripetuti, forza in calo sui principali (Bell 2023).
+- Seduta saltata: nei 2 giorni dopo, "Falla oggi" o versione breve da circa 30 minuti.
+- Test di forma ogni 4 settimane: piegamenti in 1 minuto, plank massimo, alzate dalla sedia in 30 s (Jones 1999).
+- Riepilogo della settimana domenica sera e lunedì, con notifica alle 19 (Scheduler.kt, tipo "summary").
+- Foto di confronto: "Prima e adesso" in Progressi → Foto e promemoria ogni 4 settimane.
+- Proteine per pasto: 0,4 g/kg a pasto in almeno 4 pasti (Schoenfeld e Aragon 2018) nel diario e promemoria serale.
+- Lista della spesa: voci aggiunte a mano.
+- Riscaldamento specifico di circa 5 minuti scelto sui muscoli della seduta, guidato a tempo.
+- Allarme dolori: stessa zona in 3 check-in di fila → consiglio di sentire medico/fisioterapista ed esercizi della zona tolti finché non passa.
+- Esercizio principale sostituito per un dolore: resta un multiarticolare (hip thrust, leg press…), mai un isolamento.

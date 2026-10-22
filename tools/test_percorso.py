@@ -58,7 +58,7 @@ with sync_playwright() as p:
     shot("8_traguardi"); click("[data-act=ppNext]")
     shot("9_percorso"); pg.evaluate("document.querySelector('.pad').scrollTo(0, 2000)"); click("[data-act=ppFinish]")
     pg.wait_for_timeout(800); shot("10_home")
-    st = pg.evaluate("({ path: S.profile.path, pal: palFor(S.profile), goals: S.profile.goals, kind: cycleInfo().kind, len: cycleInfo().len, tpl: S.templates.filter(t => t.preset && t.kind === 'scheda').map(t => ({ n: t.name, min: estMinutes(t.items), ex: t.items.map(i => i.ex + ':' + i.sets + 'x' + i.rmin + '-' + i.rmax) })), kcal: nutritionTargets().kcal, prot: nutritionTargets().protein })")
+    st = pg.evaluate("({ path: S.profile.path, pal: palFor(S.profile), goals: S.profile.goals, kind: cycleInfo().kind, len: cycleInfo().len, tpl: S.templates.filter(t => t.preset && t.kind === 'scheda').map(t => ({ n: t.name, min: estMinutes(t.items), ex: t.items.map(i => i.ex + ':' + i.sets + 'x' + (i.secs ? i.secs + 's' : i.rmin + '-' + i.rmax)) })), kcal: nutritionTargets().kcal, prot: nutritionTargets().protein })")
     # nessun esercizio che carica la schiena nelle schede
     bad = pg.evaluate("S.templates.filter(t => t.preset && t.kind === 'scheda').flatMap(t => t.items).filter(i => painHit(EX[i.ex], 'schiena')).map(i => i.ex)")
     pg.evaluate("go('schede')"); pg.wait_for_timeout(400); shot("11_schede")
