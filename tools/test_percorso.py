@@ -1,0 +1,78 @@
+"""Test del percorso su misura: nuovo utente che compila il questionario, poi check-in e controllo di fase.
+Uso: python tools/test_percorso.py <cartella_screenshot>"""
+import http.server
+import json
+import os
+import socketserver
+import sys
+import threading
+
+from playwright.sync_api import sync_playwright
+
+WWW = os.path.join(os.path.dirname(__file__), "..", "app/src/main/assets/www")
+OUT = sys.argv[1] if len(sys.argv) > 1 else "screens"
+os.makedirs(OUT, exist_ok=True)
+
+
+class H(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *a, **k):
+        super().__init__(*a, directory=WWW, **k)
+
+    def log_message(self, *a):
+        pass
+
+
+srv = socketserver.TCPServer(("127.0.0.1", 0), H)
+threading.Thread(target=srv.serve_forever, daemon=True).start()
+errors = []
+with sync_playwright() as p:
+    b = p.chromium.launch()
+    pg = b.new_page(viewport={"width": 412, "height": 915}, device_scale_factor=2)
+    pg.on("pageerror", lambda e: errors.append(f"pageerror: {e}"))
+    pg.on("console", lambda m: m.type == "error" and "Failed to load resource" not in m.text and errors.append(f"console: {m.text}"))
+    pg.goto(f"http://127.0.0.1:{srv.server_address[1]}/index.html")
+    pg.evaluate("localStorage.clear()")
+    pg.reload(); pg.wait_for_timeout(600)
+
+    def click(sel):
+        pg.click(sel); pg.wait_for_timeout(250)
+
+    def shot(n):
+        pg.screenshot(path=f"{OUT}/pp_{n}.png", full_page=False)
+
+    shot("0_benvenuto"); click("[data-act=ppNext]")
+    click("[data-act=setSex][data-k=m]"); click("[data-act=ppBody][data-k=skinnyfat]"); shot("1_fisico"); click("[data-act=ppNext]")
+    pg.fill("[data-in=prof][data-k=age]", "52"); pg.fill("[data-in=prof][data-k=height]", "176"); pg.fill("[data-in=obWeight]", "84")
+    pg.dispatch_event("[data-in=obWeight]", "input"); click("[data-act=setLevel][data-k=intermedio]"); shot("2_dati"); click("[data-act=ppNext]")
+    click("[data-act=ppJob][data-k=seduto]"); click("[data-act=ppSteps][data-k=s2]"); click("[data-act=ppSleep][data-k=h1]"); click("[data-act=ppStress][data-k=alto]"); shot("3_vita"); click("[data-act=ppNext]")
+    for d in ("1", "3", "5"):
+        if not pg.is_visible(f"[data-act=setDay][data-d='{d}'].on"):
+            try:
+                click(f"[data-act=setDay][data-d='{d}']")
+            except Exception:  # noqa: BLE001
+                pass
+    click("[data-act=ppSport][data-k=camminate][data-n='3']"); shot("4_attivita"); click("[data-act=ppNext]")
+    click("[data-act=ppPlace][data-k=palestra]"); click("[data-act=ppMin][data-k='60']"); shot("5_luogo"); click("[data-act=ppNext]")
+    click("[data-act=ppPain][data-k=schiena]"); shot("6_dolori"); click("[data-act=ppNext]")
+    shot("7_obiettivi"); click("[data-act=ppNext]")
+    shot("8_traguardi"); click("[data-act=ppNext]")
+    shot("9_percorso"); pg.evaluate("document.querySelector('.pad').scrollTo(0, 2000)"); click("[data-act=ppFinish]")
+    pg.wait_for_timeout(800); shot("10_home")
+    st = pg.evaluate("({ path: S.profile.path, pal: palFor(S.profile), goals: S.profile.goals, kind: cycleInfo().kind, len: cycleInfo().len, tpl: S.templates.filter(t => t.preset && t.kind === 'scheda').map(t => ({ n: t.name, min: estMinutes(t.items), ex: t.items.map(i => i.ex + ':' + i.sets + 'x' + i.rmin + '-' + i.rmax) })), kcal: nutritionTargets().kcal, prot: nutritionTargets().protein })")
+    # nessun esercizio che carica la schiena nelle schede
+    bad = pg.evaluate("S.templates.filter(t => t.preset && t.kind === 'scheda').flatMap(t => t.items).filter(i => painHit(EX[i.ex], 'schiena')).map(i => i.ex)")
+    pg.evaluate("go('schede')"); pg.wait_for_timeout(400); shot("11_schede")
+    # check-in prima della seduta
+    pg.evaluate("startWorkout(S.templates.find(t => t.preset && t.kind === 'scheda'))"); pg.wait_for_timeout(400); shot("12_checkin")
+    click("[data-act=ckSet][data-k=sleep][data-v='0']"); click("[data-act=ckSet][data-k=energy][data-v='0']"); click("[data-act=ckPain][data-k=spalle]"); click("[data-act=ckGo]")
+    pg.wait_for_timeout(700); shot("13_allenamento")
+    wo = pg.evaluate("S.active ? S.active.items.map(i => i.ex + ':' + i.sets.length) : null")
+    sp = pg.evaluate("S.active ? S.active.items.filter(i => painHit(EX[i.ex], 'spalle')).map(i => i.ex) : []")
+    pg.evaluate("S.active = null; save(true)")
+    # traguardi e controllo di fase (simula 4 settimane passate)
+    pg.evaluate("go('goals')"); pg.wait_for_timeout(300); shot("14_traguardi")
+    pg.evaluate("S.cycle.start -= 28 * 864e5; save(true); go('home')"); pg.wait_for_timeout(300); shot("15_home_controllo")
+    due = pg.evaluate("checkpointDue()")
+    pg.evaluate("go('checkpoint')"); pg.wait_for_timeout(300); shot("16_controllo")
+    b.close()
+print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due}, ensure_ascii=False, indent=1))

@@ -153,3 +153,13 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Figura anatomica: nuovi stili realistico (predefinito), moderno, chiaro, morbido.
 - Impostazioni → "Immagini negli esercizi": omino animato, disegni o mappa muscolare.
 - Disegni degli esercizi di Everkinetic (245 esercizi, posizione iniziale e finale con dissolvenza), licenza CC BY-SA 4.0, credito in Impostazioni e nella scheda esercizio.
+
+## Percorso su misura (dalla 1.0.22)
+- Questionario iniziale (anche per chi ha già l'app, dalla Home): sesso e tipo di fisico scelto toccando una figura anatomica (magro, normopeso, skinny fat, atletico, sovrappeso, obesità), età, altezza, peso, esperienza; lavoro, passi, sonno, stress; giorni di pesi e altre attività (yoga, pilates, camminate); palestra o casa e minuti per seduta; dolori per zona; obiettivi (consigliati dal fisico); traguardi misurabili (peso, forza su un esercizio, girovita, costanza) con previsione.
+- Calorie con livello di attività PAL (FAO/OMS/UNU) da lavoro, passi, allenamenti e attività.
+- Schede adattate: esercizi esclusi per i dolori con alternative, attrezzi di casa, niente salti con BMI ≥ 30, durata nei minuti scelti, dopo i 50 anni equilibrio e potenza, con sonno scarso o stress alto meno serie nella prima fase.
+- Percorso di 12 settimane in 3 fasi da 4 (Base, Sviluppo, Intensificazione; 3 di carico + 1 di scarico) con controllo di fine fase che ricalcola e rigenera le schede.
+- Check-in prima di ogni seduta (sonno, energia, dolori): seduta più leggera e sostituzioni per i dolori di oggi.
+- Prime 2 sedute di taratura dei carichi (nessun test iniziale).
+- Foto vere di inizio e fine (free-exercise-db, pubblico dominio) per 689 esercizi, figura anatomica con i muscoli accanto; figure generate di notte solo per gli esercizi senza foto.
+- Stile unico: figura anatomica realistica (tolti gli altri stili di figura e omino). Coach unico.

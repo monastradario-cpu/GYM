@@ -215,7 +215,7 @@ function keyFrame(id, k) { const d = animDef(id); return '<svg viewBox="40 -10 2
 VIEWS.exercise = p => {
   const e = EX[p.id]; if (!e) return VIEWS.library();
   const md = mediaMode(), showAnim = md === 'omino' || (md === 'mappa_anim' && UI.showAnim);
-  let tab = UI.exTab || 'esecuzione'; if (md !== 'omino' && tab === 'muscoli') tab = 'esecuzione';
+  let tab = UI.exTab || 'esecuzione'; if (tab === 'muscoli') tab = 'esecuzione';
   const d = animDef(e.id), presc = prescribe(e.id);
   const yt = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(e.n + ' esecuzione corretta');
   const keys = d.seq ? d.keys.map((_, i) => i).slice(0, 4) : [0, 1];
@@ -244,8 +244,8 @@ VIEWS.exercise = p => {
     (md !== 'omino' ? '<div class="card ex-map">' + exerciseBody(e) + '<div class="mchips center"><span class="on">' + muscleName(e.m) + '</span>' + e.s.map(m => '<span>' + muscleName(m) + '</span>').join('') + '</div>' +
       (md === 'mappa_anim' ? '<button class="btn ghost wide" data-act="toggleAnim">' + ic(showAnim ? 'close' : 'play') + (showAnim ? 'Nascondi l\'animazione' : 'Guarda l\'animazione') + '</button>' : '') + '</div>' : '') +
     (showAnim ? (ekImgs(e.id) && !UI.forceMq ? '<div class="card demo-card ex-demo ek-card">' + ekPlayer(e.id) + '</div>' : '<div class="card demo-card ex-demo"><div id="demo" data-ex="' + e.id + '"></div></div>') : '') +
-    (md === 'omino' ? '<div class="mchips"><span class="on">' + muscleName(e.m) + '</span>' + e.s.map(m => '<span>' + muscleName(m) + '</span>').join('') + '</div>' : '') +
-    '<div class="seg ex-tabs">' + EX_TABS.filter(t => md === 'omino' || t[0] !== 'muscoli').map(t => chip(t[1], tab === t[0], 'exTab', 'data-t="' + t[0] + '"')).join('') + '</div>' + body +
+    (md === 'omino' ? '<div class="card ex-muscles">' + exerciseBody(e) + '<div class="mchips center"><span class="on">' + muscleName(e.m) + '</span>' + e.s.map(m => '<span>' + muscleName(m) + '</span>').join('') + '</div></div>' : '') +
+    '<div class="seg ex-tabs">' + EX_TABS.filter(t => t[0] !== 'muscoli').map(t => chip(t[1], tab === t[0], 'exTab', 'data-t="' + t[0] + '"')).join('') + '</div>' + body +
     '<div class="card"><h3>Alternative</h3>' + alternatives(e.id).slice(0, 5).map(x => '<button class="list-item btnlike" data-act="exInfo" data-id="' + x.id + '"><div><b>' + esc(x.n) + '</b><small>' + (EQUIP[x.eq] || '') + '</small></div>' + ic('back', 'flip') + '</button>').join('') + '</div>' +
     '<button class="btn ghost wide" data-act="openUrl" data-u="' + yt + '">' + ic('video') + 'Cerca anche un video su YouTube</button>' +
     (S.active && !S.active.circ ? '<button class="btn wide" data-act="addToActive" data-id="' + e.id + '">' + ic('plus') + 'Aggiungi all\'allenamento in corso</button>' : '') +

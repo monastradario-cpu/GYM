@@ -6,10 +6,11 @@ function nutritionTargets() {
   const p = S.profile, w = S.weights.length ? S.weights[S.weights.length - 1].kg : 0;
   const goals = goalsOf(p);
   const days = (p.days || []).length;
-  const act = days <= 1 ? 1.3 : days <= 3 ? 1.45 : days <= 5 ? 1.6 : 1.72;
+  // livello di attività: dal questionario del percorso (lavoro, passi, allenamenti) se c'è, altrimenti dai giorni di allenamento
+  const act = (typeof palFor === 'function' && palFor(p)) || (days <= 1 ? 1.3 : days <= 3 ? 1.45 : days <= 5 ? 1.6 : 1.72);
   const kcalAdj = Math.round(goals.reduce((a, g) => a + GOALS[g].kcal, 0) / goals.length);
   const protK = Math.max(...goals.map(g => GOALS[g].protein));
-  const out = { w, ready: !!(w && p.height && p.age && p.sex), goals, kcalAdj, protK };
+  const out = { w, ready: !!(w && p.height && p.age && p.sex), goals, kcalAdj, protK, pal: act };
   if (w) {
     out.protein = Math.round(w * protK);
     out.water = Math.round(w * 35 / 100) / 10; // litri

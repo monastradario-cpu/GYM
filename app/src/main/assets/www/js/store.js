@@ -199,7 +199,14 @@ function progression(exId, rmin, rmax) {
     const last = hist[0], secs = last ? Math.max(...last.sets.map(s => num(s.reps))) : 0;
     return { kind: 'info', text: secs ? 'L\'ultima volta ' + secs + ' s: oggi prova ' + (secs + 5) + ' s mantenendo la forma perfetta.' : 'Tieni la posizione con forma perfetta, poi aggiungi 5 s alla volta.', targets: secs ? [{ kg: 0, reps: secs + 5 }] : null };
   }
-  if (!hist.length) return { kind: 'info', text: 'Prima volta: scegli un carico con cui arrivi a ' + rmax + ' ripetizioni lasciandone 2 di scorta. Annota bene: sarà il tuo punto di partenza.' };
+  if (!hist.length) return { kind: 'info', text: 'Seduta di taratura 1 di 2: scegli un carico con cui arrivi a ' + rmax + ' ripetizioni lasciandone 2–3 di scorta. Annota bene: sarà il tuo punto di partenza.' };
+  if (hist.length === 1) {
+    const l = hist[0].sets, k0 = Math.max(...l.map(s => num(s.kg))), r0 = Math.max(...l.map(s => num(s.reps))), st = stepFor(exId);
+    if (k0 > 0 && r0 > 0) {
+      const nk = r0 > rmax + 2 ? Math.round(bestE1(l) / (1 + rmax / 30) / st) * st : r0 < rmin ? Math.max(st, Math.floor(bestE1(l) / (1 + rmin / 30) / st) * st) : k0;
+      return { kind: nk > k0 ? 'up' : nk < k0 ? 'down' : 'keep', kg: nk, text: 'Seduta di taratura 2 di 2: ' + (nk === k0 ? 'il carico è giusto, resta a ' + fmtKg(k0) + ' kg' + per + ' e lascia 2 ripetizioni di scorta.' : 'dalla prima seduta il carico giusto è circa ' + fmtKg(nk) + ' kg' + per + ' per ' + rmin + '–' + rmax + ' ripetizioni.'), targets: l.map(() => ({ kg: nk, reps: nk === k0 ? Math.min(rmax, r0) : rmin })) };
+    }
+  }
   const last = hist[0], step = stepFor(exId);
   const kg = Math.max(...last.sets.map(s => num(s.kg)));
   if (kg === 0) {

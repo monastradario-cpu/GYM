@@ -738,3 +738,23 @@ img.ek-th{width:100%;height:100%;object-fit:contain;background:#fff;padding:3px}
 .b2-anatomico .an-mu{mix-blend-mode:multiply;transition:fill-opacity .25s}
 .b2-anatomico.clickable .an-mu{cursor:pointer}
 .b2-anatomico.clickable .an-mu:not(.on):active{fill-opacity:.18}
+
+.ek-stage.foto{background:#111}
+.ek-stage.foto img{inset:0 0 26px;width:100%;height:calc(100% - 26px);object-fit:contain}
+.kf img{object-fit:contain}
+.ex-muscles{padding:10px 12px}
+.ex-muscles .body-svg{max-height:230px}
+
+/* percorso */
+.bt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 4px}
+.bt{background:var(--card);border:2px solid transparent;border-radius:14px;padding:6px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;color:inherit}
+.bt.on{border-color:var(--accent)}
+.bt b{font-size:13px}.bt small{font-size:10.5px;color:var(--muted);line-height:1.2}
+.bt-img{display:block;width:100%;height:120px;background:#fff;border-radius:10px;overflow:hidden;position:relative}
+.bt-img img{width:100%;height:100%;object-fit:contain}
+.bt-img .bt-ph{object-fit:contain;transform-origin:center}
+.phase-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.phase{background:var(--bg);border-radius:10px;padding:8px}.phase b{display:block;font-size:13px}.phase small{font-size:11px;color:var(--muted)}
+.goal-l{margin:8px 0}.goal-l b{display:block;font-size:14px}
+.gbar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:4px 0}.gbar i{display:block;height:100%;background:var(--accent)}
+.chips.wrap{flex-wrap:wrap}

@@ -23,7 +23,9 @@ const EK_SWAP = new Set(["alzata_frontale_bilanciere_fin_sopra_tes", "alzate_fro
 ["iperestensioni_inverse", "panca_inclinata_smith_machine", "stacco_gambe_tese_smith_machine", "stacco_laterale_braccio", "t_bar_row"].forEach(id => delete EK[id]);
 const hasFig = id => (typeof FIGS !== 'undefined' && FIGS.has(id)) || FIGS_R.has(id);
 const figBase = id => typeof FIGS !== 'undefined' && FIGS.has(id) ? 'fig/' : FIG_REMOTE;
-const ekImgs = id => hasFig(id) ? [figBase(id) + id + '-1.webp', figBase(id) + id + '-2.webp'] : EK[id] ? (EK_SWAP.has(id) ? [2, 1] : [1, 2]).map(n => 'ek/' + EK[id] + '-' + n + '.webp') : null;
+const hasFoto = id => typeof FOTO !== 'undefined' && FOTO.has(id);
+/* ordine: foto vera (free-exercise-db) > figura anatomica generata > disegno Everkinetic > omino animato */
+const ekImgs = id => hasFoto(id) ? ['foto/' + id + '-1.webp', 'foto/' + id + '-2.webp'] : hasFig(id) ? [figBase(id) + id + '-1.webp', figBase(id) + id + '-2.webp'] : EK[id] ? (EK_SWAP.has(id) ? [2, 1] : [1, 2]).map(n => 'ek/' + EK[id] + '-' + n + '.webp') : null;
 const EK_CREDIT = 'Disegni: Everkinetic (Greg Priday) · CC BY-SA 4.0';
 const EK_URL = 'https://github.com/everkinetic/data';
 
@@ -31,8 +33,8 @@ const EK_URL = 'https://github.com/everkinetic/data';
 function ekPlayer(id, compact) {
   const im = ekImgs(id); if (!im) return '';
   const sp = (typeof UI !== 'undefined' && UI.ekSpeed) || 5;
-  return '<div class="ek-stage' + (compact ? ' compact' : '') + '" data-act="ekPause" style="--ekd:' + sp + 's"><img src="' + im[0] + '" alt="Posizione iniziale" class="ek-a"><img src="' + im[1] + '" alt="Posizione finale" class="ek-b">' +
+  return '<div class="ek-stage' + (compact ? ' compact' : '') + (hasFoto(id) ? ' foto' : '') + '" data-act="ekPause" style="--ekd:' + sp + 's"><img src="' + im[0] + '" alt="Posizione iniziale" class="ek-a"><img src="' + im[1] + '" alt="Posizione finale" class="ek-b">' +
     '<span class="ek-lbl a">1 · Inizio</span><span class="ek-lbl b">2 · Fine</span></div>' +
     (compact ? '' : '<div class="ek-speed">' + [[7.5, 'Molto lento'], [5, 'Lento'], [3.4, 'Normale']].map(([v, n]) => '<button class="btn sm ghost' + (v === sp ? ' on' : '') + '" data-act="ekSpeed" data-v="' + v + '">' + n + '</button>').join('') + '</div>') +
-    (compact ? '' : hasFig(id) ? '<p class="ek-credit">Figura anatomica disegnata per GYM · tocca per mettere in pausa</p>' : '<button class="ek-credit" data-act="openUrl" data-u="' + EK_URL + '">' + EK_CREDIT + '</button>');
+    (compact ? '' : hasFoto(id) ? '<p class="ek-credit">Foto: free-exercise-db (pubblico dominio) · tocca per mettere in pausa</p>' : hasFig(id) ? '<p class="ek-credit">Figura anatomica disegnata per GYM · tocca per mettere in pausa</p>' : '<button class="ek-credit" data-act="openUrl" data-u="' + EK_URL + '">' + EK_CREDIT + '</button>');
 }

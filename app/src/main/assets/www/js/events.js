@@ -49,7 +49,7 @@ const ACT = {
     save(); syncReminders(); render(); toast('Schede aggiornate');
   }),
   newTemplate: d => {
-    if (d.k !== 'circuito' && !d.blank) { openSheet(() => '<h3>Nuova scheda</h3><button class="list-item btnlike" data-act="coachFromNew"><div><b>Creala con il trainer</b><small>Scegli muscoli, attrezzi e durata: ti propongo più opzioni</small></div>' + ic('coach') + '</button><button class="list-item btnlike" data-act="newTemplate" data-k="scheda" data-blank="1"><div><b>Scheda vuota</b><small>Aggiungi tu gli esercizi</small></div>' + ic('plus') + '</button>'); return; }
+    if (d.k !== 'circuito' && !d.blank) { openSheet(() => '<h3>Nuova scheda</h3><button class="list-item btnlike" data-act="coachFromNew"><div><b>Creala con il Coach</b><small>Scegli muscoli, attrezzi e durata: ti propongo più opzioni</small></div>' + ic('coach') + '</button><button class="list-item btnlike" data-act="newTemplate" data-k="scheda" data-blank="1"><div><b>Scheda vuota</b><small>Aggiungi tu gli esercizi</small></div>' + ic('plus') + '</button>'); return; }
     closeSheet(); UI.edit = d.k === 'circuito' ? { id: uid(), kind: 'circuito', name: 'Nuovo circuito', days: [], rounds: 4, restEx: 15, restRound: 120, warm: 8, cool: 5, work: 45, items: [] } : { id: uid(), kind: 'scheda', name: 'Nuova scheda', days: [], items: [] }; go('edit'); },
   editTemplate: d => { UI.edit = JSON.parse(JSON.stringify(S.templates.find(t => t.id === d.id))); go('edit'); },
   editDay: d => { const t = UI.edit, x = +d.d; t.days = t.days.includes(x) ? t.days.filter(y => y !== x) : t.days.concat(x); render(); },
@@ -478,6 +478,7 @@ document.addEventListener('input', ev => {
     case 'aiModel': S.settings.ai.model = v.trim(); save(); break;
     case 'obWeight': UI.ob.weight = v; break;
     case 'prof': S.profile[d.k] = v === '' ? '' : num(v); save(); break;
+    case 'pg': if (S.profile.mgoals && S.profile.mgoals[d.g]) { S.profile.mgoals[d.g][d.k] = num(v); save(); } break;
     case 'foodQ': UI.fadd.q = v; UI.fadd.online = []; { const b = $('#sheet-body'), y = b.scrollTop; b.innerHTML = foodAddSheet(); const i = b.querySelector('[data-in=foodQ]'); i.focus(); i.setSelectionRange(v.length, v.length); b.scrollTop = y; } break;
     case 'fname': UI.fprod.name = v; break;
     case 'fgrams': UI.fprod.g = v; foodQtyUpdate(); break;
@@ -546,7 +547,7 @@ if (S.onboarded && S.needRegen) {
 }
 delete S.needRegen;
 if (!S.b2real) { S.settings.body2 = 'realistico'; S.settings.mq = 'realistico'; S.settings.media = 'omino'; S.b2real = true; save(); } // stile scelto dall'utente: realistico
-if (!S.b2anat) { S.settings.body2 = 'anatomico'; S.b2anat = true; save(); } // nuova figura anatomica realistica
+S.settings.body2 = 'anatomico'; S.settings.mq = 'realistico'; S.settings.media = 'omino'; // stile unico: figura anatomica, foto/omino realistico
 if (S.onboarded) cycleState();
 UI.stack = [{ v: S.active ? 'workout' : 'home' }];
 render(true);

@@ -141,7 +141,7 @@ def salva_webp(data, path):
 
 def git_commit(msg):
     subprocess.run([sys.executable, "tools/esporta_desc.py"], check=False)
-    subprocess.run(["git", "add", OUT, DESC_F, "tools/esito_figure.json", "app/src/main/assets/www/js/figdesc.js"], check=False)
+    subprocess.run(["git", "add", OUT, f"{OUT}/fisici", DESC_F, "tools/esito_figure.json", "app/src/main/assets/www/js/figdesc.js"], check=False)
     if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
         return
     subprocess.run(["git", "commit", "-q", "-m", msg + " [skip ci]"], check=False)
@@ -290,6 +290,41 @@ def fai(s):
         LOG["ok"].append(s["id"])
 
 
+FISICI = {
+    "magro": "a very lean slim build with narrow shoulders, thin arms and legs and little muscle mass",
+    "normo": "an average healthy build with moderate muscle tone and normal body fat",
+    "skinnyfat": "slim arms and legs with little muscle, narrow shoulders and a soft belly with some fat around the waist",
+    "atletico": "an athletic muscular build with broad shoulders, defined muscles and low body fat",
+    "sovrappeso": "an overweight build with a round belly, soft thick arms and thighs",
+    "obeso": "an obese build with a large round belly, wide hips and thick soft limbs",
+}
+
+
+def fisici():
+    """Figure dei tipi di fisico per il questionario (6 tipi x uomo/donna), prima di tutto il resto."""
+    os.makedirs(f"{OUT}/fisici", exist_ok=True)
+    for k, desc in FISICI.items():
+        for sx, who in (("m", "adult man"), ("f", "adult woman")):
+            path = f"{OUT}/fisici/{k}_{sx}.webp"
+            if os.path.exists(path) or STOP.is_set():
+                continue
+            clothes = "plain dark grey athletic shorts" + (" and a plain dark grey sports top" if sx == "f" else "") + ", barefoot"
+            prompt = (f"Front view, full body, centered. Medical anatomy illustration of an {who} with {desc}, standing upright in a "
+                      f"neutral pose, arms relaxed at the sides, feet hip-width apart, calm neutral face. Light grey anatomical skin "
+                      f"with subtle muscle shading, {clothes}. Plain pure white background, whole body in frame with margin, no text.")
+            for tent in range(3):
+                try:
+                    salva_webp(cf_image(prompt, 0), path)
+                    LOG.setdefault("fisici", []).append(f"{k}_{sx}")
+                    break
+                except Exception as e:  # noqa: BLE001
+                    msg = str(e)
+                    LOG.setdefault("messaggi", []).append(f"fisico {k}_{sx}: {msg[:200]}")
+                    if "4006" in msg or "daily free allocation" in msg:
+                        STOP.set(); LOG["fermato"] = msg[:300]; return
+                    time.sleep(15)
+
+
 def main():
     todo = [s for s in SPEC if (not SOLO or s["id"] in SOLO)]
     if RIFAI:
@@ -302,9 +337,14 @@ def main():
     else:
         todo = [s for s in todo if not (os.path.exists(f"{OUT}/{s['id']}-1.webp") and os.path.exists(f"{OUT}/{s['id']}-2.webp"))]
         todo = [s for s in todo if SALT.get(s["id"], 0) < 2]  # dopo 2 notti senza figure giuste resta l'omino
+        # gli esercizi con la foto vera non hanno bisogno della figura generata
+        todo = [s for s in todo if SOLO or not os.path.exists(f"app/src/main/assets/www/foto/{s['id']}-1.webp")]
     if QUANTI:
         todo = todo[:QUANTI]
     print(f"Esercizi da fare: {len(todo)}", flush=True)
+    if CF_ID and not SOLO_TESTI and not SOLO:
+        fisici()
+        git_commit("Figure dei tipi di fisico")
     c = conn()
     fase1(c, todo)
     git_commit("Figure: descrizioni delle pose")
