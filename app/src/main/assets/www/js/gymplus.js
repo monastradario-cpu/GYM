@@ -2,7 +2,7 @@
 'use strict';
 
 /* ===== Programma a cicli (mesocicli di 5 settimane: 4 di progressione + 1 di scarico) =====
-   Il trainer sceglie il tipo dagli obiettivi. Basi: progressione di volume e vicinanza al cedimento (Pelland 2024,
+   Il trainer sceglie il tipo dagli obiettivi. Basi: progressione di volume e vicinanza al cedimento (Pelland 2025,
    Robinson 2024), scarico ogni 4–6 settimane (Bell 2023), percentuali del massimale per la forza (ACSM 2026). */
 const CYCLE_KINDS = {
   ipertrofia: { n: 'Ipertrofia', d: 'Volume che sale e ti avvicini al cedimento settimana dopo settimana, poi scarico.',

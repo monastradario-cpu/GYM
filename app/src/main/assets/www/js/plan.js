@@ -131,7 +131,8 @@ VIEWS.diet = () => {
     '<li>Ritmo 0,5–1% del peso a settimana; più lento se sei asciutto (Helms 2014, ISSN 2017).</li>' +
     '<li>Proteine 2,3–3,1 g per kg di massa magra in deficit; grassi 15–30% delle calorie (Helms 2014).</li>' +
     '<li>Low-fat, low-carb, chetogenica e digiuno funzionano in modo simile a parità di calorie: conta riuscire a seguirla (ISSN 2017, DIETFITS 2018).</li>' +
-    '<li>Il digiuno intermittente non dà vantaggi certi rispetto al deficit giornaliero (ISSN 2017; Most 2024).</li></ul>' +
+    '<li>Il digiuno intermittente non dà vantaggi certi rispetto al deficit giornaliero (ISSN 2017; Most 2024).</li>' +
+    '<li>Il deficit parte dalla regola delle 7.700 kcal per kg, che è solo una stima: il dimagrimento rallenta col tempo, per questo il controllo settimanale corregge le calorie sul tuo peso reale.</li></ul>' +
     DIET_SOURCES.map(s => '<button class="list-item btnlike" data-act="openUrl" data-u="' + s[1] + '"><div><b>' + s[0] + '</b></div>' + ic('back', 'flip') + '</button>').join('') + '</div>' +
     '<p class="small muted center">Indicazioni generali per adulti sani, non sostituiscono medico o nutrizionista. In gravidanza, con patologie o disturbi alimentari rivolgiti a un professionista.</p></div>';
   return out;
@@ -157,15 +158,15 @@ PROG.andamento = () => {
 /* ===== Su cosa si basa il trainer ===== */
 const TRAIN_SOURCES = [
   ['ACSM 2026 – Position Stand sull\'allenamento con i pesi (137 revisioni, oltre 30.000 persone)', 'https://acsm.org/resistance-training-guidelines-update-2026/'],
-  ['Pelland 2024 – Volume e frequenza: meta-regressione (67 studi)', 'https://sportrxiv.org/index.php/server/preprint/view/460'],
+  ['Pelland 2025 – Volume e frequenza: meta-regressione (67 studi)', 'https://doi.org/10.1007/s40279-025-02344-w'],
   ['Robinson 2024 – Vicinanza al cedimento (meta-regressioni)', 'https://doi.org/10.1007/s40279-024-02069-2'],
   ['Schoenfeld 2017 – Carichi leggeri vs pesanti (21 studi)', 'https://doi.org/10.1519/JSC.0000000000002200'],
   ['Singer 2024 – Recupero tra le serie', 'https://doi.org/10.3389/fspor.2024.1429789'],
   ['Plotkin 2022 – Progressione di carico o di ripetizioni', 'https://peerj.com/articles/14142'],
-  ['Bell 2023 – Consenso internazionale sullo scarico', 'https://shura.shu.ac.uk/32417/'],
+  ['Bell 2023 – Consenso internazionale sullo scarico', 'https://doi.org/10.1186/s40798-023-00633-0'],
   ['Schumann 2021 – Cardio e pesi insieme (43 studi)', 'https://doi.org/10.1007/s40279-021-01587-7'],
   ['Nunes 2020 – Ordine degli esercizi', 'https://doi.org/10.1080/17461391.2020.1733672'],
-  ['OMS 2020 – Linee guida sull\'attività fisica', 'https://www.acefitness.org/resources/pros/expert-articles/7751/who-releases-new-guidelines-on-physical-activity-and-sedentary-behavior/']
+  ['OMS 2020 – Linee guida sull\'attività fisica', 'https://doi.org/10.1136/bjsports-2020-102955']
 ];
 const NUTR_SOURCES = [
   ['Morton 2018 – Proteine e allenamento: meta-analisi (49 studi)', 'https://doi.org/10.1136/bjsports-2017-097608'],
@@ -184,8 +185,8 @@ const NUTR_RULES = [
   ['Passi', 'Più passi al giorno riducono il rischio di mortalità fino a circa 6.000–8.000 dopo i 60 anni e 8.000–10.000 prima.', 'Paluch 2022', 'Il consiglio del giorno ricorda di camminare.']
 ];
 const TRAIN_RULES = [
-  ['Frequenza', 'Ogni muscolo almeno 2 volte a settimana. Per la crescita, a parità di serie, la frequenza conta poco; per la forza allenarsi più spesso aiuta.', 'ACSM 2026, Pelland 2024', 'Le schede da 3 giorni in su allenano ogni muscolo almeno 2 volte, anche per gli avanzati.'],
-  ['Volume', 'Circa 10 serie a settimana per muscolo; di più dà ancora risultati ma con guadagni sempre minori, soprattutto per la forza. Le serie in cui il muscolo aiuta contano circa metà.', 'ACSM 2026, Pelland 2024', 'Progressi → Settimana mostra le serie per muscolo con la soglia di 10.'],
+  ['Frequenza', 'Ogni muscolo almeno 2 volte a settimana. Per la crescita, a parità di serie, la frequenza conta poco; per la forza allenarsi più spesso aiuta.', 'ACSM 2026, Pelland 2025', 'Le schede da 3 giorni in su allenano ogni muscolo almeno 2 volte, anche per gli avanzati.'],
+  ['Volume', 'Circa 10 serie a settimana per muscolo; di più dà ancora risultati ma con guadagni sempre minori, soprattutto per la forza. Le serie in cui il muscolo aiuta contano circa metà.', 'ACSM 2026, Pelland 2025', 'Progressi → Settimana mostra le serie per muscolo con la soglia di 10.'],
   ['Carico e ripetizioni', 'Per la forza servono carichi pesanti (circa 80% del massimale, 2–3 serie per esercizio). Per i muscoli funzionano sia carichi pesanti sia leggeri, se la serie è impegnativa.', 'ACSM 2026, Schoenfeld 2017', 'Forza: 3×4–6 sui principali. Massa e tonificazione: 8–20 ripetizioni.'],
   ['Vicinanza al cedimento', 'Per la crescita, più ti avvicini al cedimento più cresci. Per la forza conta poco. Il cedimento non è obbligatorio.', 'Robinson 2024, ACSM 2026', 'Ogni esercizio indica quante ripetizioni lasciare di scorta (0–3 per i muscoli, 2–4 per la forza).'],
   ['Recupero tra le serie', 'Oltre 60 secondi per la crescita: recuperi più brevi danno un po\' meno risultato, oltre 90 secondi la differenza diventa minima. Negli esercizi pesanti per la forza servono 2–3 minuti.', 'Singer 2024', 'Recuperi minimi di 60 s (tranne nei circuiti), 2–3 minuti per i principali.'],
@@ -193,7 +194,7 @@ const TRAIN_RULES = [
   ['Ordine degli esercizi', 'Metti per primo l\'esercizio che ti interessa di più; per la forza, quello che vuoi migliorare.', 'Nunes 2020', 'I multiarticolari principali sono all\'inizio; puoi riordinare.'],
   ['Scarico', 'Periodi a carico ridotto ogni 4–8 settimane o quando serve: meno serie, più lontano dal cedimento, carico uguale o poco più basso, di solito una settimana.', 'Bell 2023', 'Con "Attiva settimana di scarico" le serie si dimezzano per 7 giorni.'],
   ['Attrezzi', 'Macchine, pesi liberi, elastici e corpo libero danno risultati simili: conta la costanza più della complessità del programma.', 'ACSM 2026', 'Scegli liberamente gli attrezzi nel Coach.'],
-  ['Cardio e pesi', 'Fare anche cardio non riduce in modo importante i guadagni di forza e massa; la corsa interferisce più della bici con le gambe.', 'Schumann 2021', 'Nei giorni di gambe l\'app consiglia bici o ellittica.'],
+  ['Cardio e pesi', 'Fare anche cardio non riduce i guadagni di forza massima e di massa, con corsa o bici allo stesso modo. Può frenare un po\' la forza esplosiva se fatto nella stessa seduta.', 'Schumann 2021', 'Nei giorni di gambe l\'app consiglia di fare il cardio dopo i pesi o in un altro momento della giornata.'],
   ['Attività per la salute', '150–300 minuti a settimana di attività moderata (o 75–150 intensa) più almeno 2 giorni di esercizi di forza; dopo i 65 anni anche equilibrio 3 volte a settimana.', 'OMS 2020', 'La home mostra i minuti di cardio della settimana su 150.']
 ];
 VIEWS.science = () => header('Su cosa si basa', { back: true, noGear: true, sub: 'Studi e linee guida del trainer' }) + '<div class="pad">' +

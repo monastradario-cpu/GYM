@@ -97,7 +97,7 @@ function coachAdvice() {
   if (goals.includes('massa')) t.push('Massa: 10–20 serie a settimana per muscolo, aumenta il carico appena completi tutte le ripetizioni.');
   if (goals.includes('forza')) t.push('Forza: riscaldamento progressivo prima delle serie pesanti, recuperi lunghi (2–3 minuti).');
   if (goals.includes('tonificazione')) t.push('Tonificazione: ripetizioni controllate con 2–3 secondi in discesa e contrazione in alto.');
-  if (goals.includes('dimagrimento')) t.push('Dimagrimento: mantieni carichi impegnativi per non perdere muscolo e aggiungi cardio (150–300 min a settimana, OMS). Il cardio non frena i guadagni di forza e massa; nei giorni di gambe preferisci bici o ellittica alla corsa.');
+  if (goals.includes('dimagrimento')) t.push('Dimagrimento: mantieni carichi impegnativi per non perdere muscolo e aggiungi cardio (150–300 min a settimana, OMS). Il cardio non frena i guadagni di forza e massa: nei giorni di pesi fallo dopo l\'allenamento o a distanza di qualche ora.');
   if (goals.includes('benessere')) t.push('Benessere: cura la mobilità ogni giorno e non trascurare dorso e glutei per una postura migliore.');
   return t;
 }
@@ -143,7 +143,7 @@ VIEWS.coach = () => {
           '<button class="icon-btn sm" data-act="coachSwap" data-n="' + n + '">' + ic('swap') + '</button></div>';
       }).join('');
     }
-    out += (goalsOf().includes('dimagrimento') && !o.circuit ? '<div class="note small">' + ic('run', 'inline') + 'Se hai ancora 15 minuti, chiudi con cardio moderato: cyclette o ellittica (meglio della corsa nei giorni di gambe).</div>' : '') +
+    out += (goalsOf().includes('dimagrimento') && !o.circuit ? '<div class="note small">' + ic('run', 'inline') + 'Se hai ancora 15 minuti, chiudi con cardio moderato: camminata veloce, cyclette, ellittica o corsa leggera.</div>' : '') +
       '<div class="grid2"><button class="btn" data-act="coachStart">' + ic('play') + 'Inizia ora</button><button class="btn ghost" data-act="coachSave">Salva come scheda</button></div></div>';
   }
   out += '<div class="card"><h3>' + ic('info', 'inline') + 'Consigli per i tuoi obiettivi</h3><ul class="tips">' + coachAdvice().map(t => '<li>' + esc(t) + '</li>').join('') + '</ul><button class="btn ghost wide" data-act="go" data-v="science">' + ic('book') + 'Su cosa si basa il trainer (studi)</button></div>' +

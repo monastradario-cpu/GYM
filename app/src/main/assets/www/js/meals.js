@@ -198,7 +198,7 @@ function macroAlerts(list, n) {
 /* ---------- integratori ---------- */
 const SUPPLEMENTS = [
   { lv: 'forte', n: 'Creatina monoidrato', dose: '3–5 g al giorno, tutti i giorni (anche nei giorni di riposo). Facoltativo: 20 g/giorno divisi in 4 dosi per 5–7 giorni per saturare prima.', why: 'È l\'integratore più studiato: aumenta forza, potenza e massa magra se ti alleni con i pesi. Sicura negli adulti sani alle dosi indicate. Può dare +1–2 kg di acqua nei muscoli.', src: 0 },
-  { lv: 'forte', n: 'Caffeina', dose: '3–6 mg per kg di peso, 30–60 minuti prima dell\'allenamento (un caffè espresso ≈ 60–80 mg). Non superare circa 400 mg al giorno.', why: 'Migliora forza, resistenza e concentrazione. Evitala nel pomeriggio tardi se ti rovina il sonno: dormire bene conta di più.', src: 1 },
+  { lv: 'forte', n: 'Caffeina', dose: '3–6 mg per kg di peso, circa 60 minuti prima dell\'allenamento (un caffè espresso ≈ 60–80 mg); spesso bastano 3 mg/kg. Non superare circa 400 mg al giorno in totale.', why: 'Migliora forza, resistenza e concentrazione. Evitala nel pomeriggio tardi se ti rovina il sonno: dormire bene conta di più.', src: 1 },
   { lv: 'utile', n: 'Proteine in polvere (whey o vegetali)', dose: 'Solo se non arrivi al tuo obiettivo di proteine con il cibo: 20–40 g dopo l\'allenamento o in uno spuntino.', why: 'Non fanno magie: conta il totale della giornata. Gli studi mostrano che oltre circa 1,6 g di proteine per kg al giorno il beneficio in più è minimo.', src: 2 },
   { lv: 'moderata', n: 'Beta-alanina', dose: '4–6 g al giorno divisi in dosi da 1,5–2 g, per almeno 2–4 settimane.', why: 'Utile per sforzi intensi da 1 a 4 minuti (circuiti, HIIT, serie lunghe). Il formicolio sulla pelle è innocuo.', src: 3 },
   { lv: 'moderata', n: 'Nitrati (succo di barbabietola)', dose: 'Circa 500 ml di succo o un concentrato equivalente 2–3 ore prima.', why: 'Aiuta soprattutto negli sport di resistenza; per i pesi le prove sono più deboli.', src: 4 },
@@ -208,8 +208,8 @@ const SUPPLEMENTS = [
 ];
 const SUPP_LV = { forte: ['Prove forti', 'good'], utile: ['Utile in certi casi', 'info'], moderata: ['Prove moderate', 'info'], carenza: ['Solo se carente', 'warn'], no: ['Non serve', 'bad'] };
 const SUPP_SOURCES = [
-  ['ISSN 2017 – Creatina: sicurezza ed efficacia (Kreider e coll.)', 'https://exerciseandsportnutritionlab.com/new-issn-position-stand-on-creatine-supplementation/'],
-  ['ISSN 2021 – Caffeina e prestazione (Guest e coll.)', 'https://jissn.biomedcentral.com/track/pdf/10.1186/s12970-020-00383-4'],
+  ['ISSN 2017 – Creatina: sicurezza ed efficacia (Kreider e coll.)', 'https://doi.org/10.1186/s12970-017-0173-z'],
+  ['ISSN 2021 – Caffeina e prestazione (Guest e coll.)', 'https://doi.org/10.1186/s12970-020-00383-4'],
   ['Morton 2018 – Meta-analisi integrazione proteica (BJSM)', 'https://pubmed.ncbi.nlm.nih.gov/28698222/'],
   ['ISSN 2015 – Beta-alanina (Trexler e coll.)', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC4501114/'],
   ['IOC 2018 – Integratori e atleti (Maughan e coll.)', 'https://pubmed.ncbi.nlm.nih.gov/29540367/'],
@@ -280,7 +280,7 @@ function nutShop() {
 function nutSupp() {
   const w = S.weights.length ? S.weights[S.weights.length - 1].kg : 0;
   return '<div class="note small">Gli integratori sono un\'aggiunta: prima vengono allenamento, calorie, proteine e sonno. Se hai problemi di salute, assumi farmaci o sei in gravidanza chiedi al medico. Scegli prodotti con certificazione antidoping (es. Informed Sport).</div>' +
-    SUPPLEMENTS.map(x => { const lv = SUPP_LV[x.lv]; return '<div class="card supp s-' + lv[1] + '"><div class="eyebrow">' + lv[0] + '</div><h3>' + esc(x.n) + '</h3><p class="small"><b>Quanto:</b> ' + esc(x.dose) + (x.n === 'Caffeina' && w ? ' Per te: ' + Math.round(w * 3) + '–' + Math.round(w * 6) + ' mg.' : '') + '</p><p class="small muted">' + esc(x.why) + '</p></div>'; }).join('') +
+    SUPPLEMENTS.map(x => { const lv = SUPP_LV[x.lv]; return '<div class="card supp s-' + lv[1] + '"><div class="eyebrow">' + lv[0] + '</div><h3>' + esc(x.n) + '</h3><p class="small"><b>Quanto:</b> ' + esc(x.dose) + (x.n === 'Caffeina' && w ? ' Per te: ' + Math.min(400, Math.round(w * 3)) + '–' + Math.min(400, Math.round(w * 6)) + ' mg (parti dalla dose più bassa).' : '') + '</p><p class="small muted">' + esc(x.why) + '</p></div>'; }).join('') +
     '<h3 class="sec">Fonti</h3><div class="card">' + SUPP_SOURCES.map(([t, u]) => '<button class="list-item btnlike" data-act="openUrl" data-u="' + u + '"><div><b>' + esc(t) + '</b></div>' + ic('back', 'flip') + '</button>').join('') + '</div>';
 }
 

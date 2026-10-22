@@ -52,7 +52,7 @@ const MEALS = {
 function goalNutritionTips(goals) {
   const t = [];
   if (goals.includes('massa')) t.push('Massa: mangia leggermente sopra il fabbisogno (+250–300 kcal). Se il peso non sale in 2 settimane, aggiungi una porzione di carboidrati.');
-  if (goals.includes('forza')) t.push('Forza: carboidrati sufficienti nei giorni di allenamento pesante, non allenarti a digiuno.');
+  if (goals.includes('forza')) t.push('Forza: carboidrati sufficienti nei giorni di allenamento pesante; per le sedute pesanti meglio un pasto 1–3 ore prima che allenarsi a digiuno.');
   if (goals.includes('dimagrimento')) t.push('Dimagrimento: deficit moderato (−300/−500 kcal), proteine alte per non perdere muscolo. Punta a perdere 0,5–1% del peso a settimana.');
   if (goals.includes('tonificazione')) t.push('Tonificazione: mangia intorno al fabbisogno, proteine alte e carboidrati concentrati intorno all\'allenamento.');
   if (goals.includes('benessere')) t.push('Benessere: cibi poco lavorati, verdura a ogni pasto, acqua e sonno regolare (7–9 ore).');
@@ -63,12 +63,12 @@ function goalNutritionTips(goals) {
 const TRAINER_TIPS = [
   'Il riscaldamento non è facoltativo: 5–10 minuti di attività leggera e serie di avvicinamento preparano muscoli e articolazioni.',
   'Progressione: quando completi tutte le serie al massimo delle ripetizioni, aumenta il carico la volta dopo.',
-  'Dormi 7–9 ore: è durante il sonno che i muscoli crescono e si riparano.',
-  'Bevi acqua durante l\'allenamento: anche una leggera disidratazione riduce la forza.',
+  'Dormi almeno 7 ore: dormire poco peggiora recupero, forza e fame. Il sonno è parte dell\'allenamento.',
+  'Bevi durante l\'allenamento: perdere acqua pari al 2–3% del peso riduce un po\' forza e resistenza.',
   'La tecnica viene prima del carico: un\'esecuzione pulita allena meglio il muscolo e protegge le articolazioni.',
   'Ogni 4–8 settimane, o quando la forza cala, fai una settimana di scarico: metà delle serie, carico uguale o poco più basso, lontano dal cedimento.',
   'Espira durante lo sforzo, inspira durante la fase di ritorno.',
-  'Allenare ogni muscolo 2 volte a settimana è più efficace che una volta sola.',
+  'Allena ogni muscolo almeno 2 volte a settimana: dividi meglio le serie e, per la forza, allenarsi più spesso aiuta.',
   'Le proteine vanno distribuite: 20–40 g in ogni pasto principale.',
   'Annota sempre i carichi: quello che si misura, migliora.',
   'Il dolore articolare non è normale: se senti dolore, fermati e cambia esercizio.',
@@ -77,7 +77,7 @@ const TRAINER_TIPS = [
   'Recuperi più lunghi negli esercizi pesanti, più brevi nell\'isolamento.',
   'La costanza batte l\'intensità: meglio 3 allenamenti a settimana per un anno che 6 per un mese.',
   'Cammina ogni giorno: 7.000–10.000 passi aiutano recupero e dimagrimento.',
-  'Non saltare le gambe: sono più della metà dei muscoli del corpo.',
+  'Non saltare le gambe: sono circa metà dei muscoli del corpo.',
   'Prima dei pesi mobilità e movimenti dinamici; lo stretching statico lungo (oltre 60 s) meglio a fine allenamento.',
   'Mangia frutta e verdura colorate: vitamine e minerali aiutano il recupero.',
   'Se una settimana non migliori, non scoraggiarti: i progressi non sono mai una linea dritta.'

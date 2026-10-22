@@ -513,7 +513,7 @@ function moveItem(k, from, to) {
   document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
 })();
 
-/* volume settimanale per muscolo: almeno ~10 serie (ACSM 2026), con rendimenti decrescenti oltre (Pelland 2024) */
+/* volume settimanale per muscolo: almeno ~10 serie (ACSM 2026), con rendimenti decrescenti oltre (Pelland 2025) */
 function weekVolumeAdvice() {
   const m = weekStats().musc, low = Object.keys(MUSCLES).filter(k => k !== 'addome' && (m[k] || 0) < 10);
   return { m, low };
