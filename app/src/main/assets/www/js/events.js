@@ -37,16 +37,8 @@ const ACT = {
   /* schede */
   schedeTab: d => { UI.schede = d.t; render(); },
   goQuick: () => { UI.schede = 'casa'; ACT.tab({ v: 'schede' }); },
-  presets: () => openSheet(presetsSheet),
-  addPreset: d => { S.templates.push(makeTemplateFromPreset(d.k, [])); save(); closeSheet(); UI.schede = 'schede'; render(); toast('Scheda aggiunta'); },
-  addCircuit: d => { S.templates.push(makeCircuit(PRESET_CIRCUITS.find(c => c.key === d.k))); save(); closeSheet(); UI.schede = 'circuiti'; render(); toast('Circuito aggiunto'); },
-  regen: () => ask('Rigenerare le schede per i tuoi giorni? Le schede con giorni assegnati verranno sostituite; le altre restano.', 'Rigenera', () => {
-    const fresh = buildDefaultTemplates();
-    const keep = S.templates.filter(t => t.kind === 'circuito' || !(t.days || []).length);
-    keep.forEach(t => { t.days = []; });
-    const hasCirc = keep.some(t => t.kind === 'circuito');
-    S.templates = fresh.filter(t => t.kind !== 'circuito').concat(keep, hasCirc ? [] : fresh.filter(t => t.kind === 'circuito'));
-    save(); syncReminders(); render(); toast('Schede aggiornate');
+  regen: () => ask('Rigenerare le schede del percorso con le tue risposte di oggi? Quelle create da te restano.', 'Rigenera', () => {
+    regenPath(); save(); syncReminders(); render(); toast('Schede aggiornate');
   }),
   newTemplate: d => {
     if (d.k !== 'circuito' && !d.blank) { openSheet(() => '<h3>Nuova scheda</h3><button class="list-item btnlike" data-act="coachFromNew"><div><b>Creala con il Coach</b><small>Scegli muscoli, attrezzi e durata: ti propongo più opzioni</small></div>' + ic('coach') + '</button><button class="list-item btnlike" data-act="newTemplate" data-k="scheda" data-blank="1"><div><b>Scheda vuota</b><small>Aggiungi tu gli esercizi</small></div>' + ic('plus') + '</button>'); return; }
@@ -232,7 +224,7 @@ const ACT = {
   coachFromNew: () => { closeSheet(); UI.coachTab = 'train'; go('coach'); toast('Scegli muscoli, attrezzi e durata'); },
   toggleBW: () => {
     S.profile.bodyweight = !bodyweightOn(); save();
-    ask((bodyweightOn() ? 'Corpo libero incluso. ' : 'Corpo libero escluso. ') + 'Aggiorno anche le schede e i circuiti pronti? Quelli creati da te restano.', 'Aggiorna', () => { regenPresets(); toast('Schede e circuiti aggiornati'); });
+    ask((bodyweightOn() ? 'Corpo libero incluso. ' : 'Corpo libero escluso. ') + 'Aggiorno anche le schede del percorso? Quelle create da te restano.', 'Aggiorna', () => { regenPresets(); toast('Schede e circuiti aggiornati'); });
     render();
   },
   reorder: d => { UI.reorderKey = d.k; openSheet(reorderSheet); },
@@ -538,7 +530,7 @@ if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListen
 
 /* ---------- Avvio ---------- */
 applyTheme();
-if (S.onboarded && !S.templates.length) S.templates = buildDefaultTemplates();
+
 if (S.onboarded && S.needRegen) {
   // nuove schede del trainer: sostituisce quelle preimpostate, tiene quelle create da te
   regenPresets(true);

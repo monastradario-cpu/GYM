@@ -255,6 +255,9 @@ VIEWS.onboarding = () => {
     '<div class="field"><span>Stress</span><div class="seg">' + Object.keys(STRESS).map(k => chip(STRESS[k], p.stress === k, 'ppStress', 'data-k="' + k + '"')).join('') + '</div></div>' + ppNav(o);
   if (o.step === 4) body = '<h2>Allenamento e attività</h2><div class="field"><span>Giorni di pesi</span>' + daysChips(p.days, 'setDay') + '</div>' +
     '<p class="muted small">' + (p.days.length ? 'Schede: ' + splitForDays(p.days.length, p.level).map(k => PRESET_SPLITS[k].n).join(' · ') : 'Scegli almeno un giorno') + '</p>' +
+    '<div class="field"><span>Nei giorni liberi</span></div>' +
+    (() => { const ex = Object.assign({ funz: true, mob: true }, p.extra); return '<div class="list-item flat"><div><b>Allenamento funzionale</b><small>Movimenti di tutti i giorni, equilibrio e coordinazione · 1 volta</small></div>' + toggle(ex.funz, 'ppExtra', 'data-k="funz"') + '</div>' +
+      '<div class="list-item flat"><div><b>Mobilità e stretching</b><small>Anche, schiena, spalle · 1–2 volte, circa 20 minuti</small></div>' + toggle(ex.mob, 'ppExtra', 'data-k="mob"') + '</div>'; })() +
     '<div class="field"><span>Fai anche altro? (volte a settimana)</span></div>' + Object.keys(SPORTS).map(k => { const v = num((p.sport || {})[k]); return '<div class="list-item flat"><div><b>' + SPORTS[k] + '</b></div><div class="row gap">' + [0, 1, 2, 3, 5].map(n => chip(n ? n + '×' : 'No', v === n, 'ppSport', 'data-k="' + k + '" data-n="' + n + '"')).join('') + '</div></div>'; }).join('') + ppNav(o);
   if (o.step === 5) body = '<h2>Dove e quanto tempo</h2>' + Object.keys(PLACES).map(k => ppChoice((p.place || 'palestra') === k, 'ppPlace', k, PLACES[k], k === 'casa' ? 'Corpo libero, manubri, elastici, kettlebell' : 'Macchine, bilanciere, manubri e cavi')).join('') +
     '<div class="field"><span>Minuti per seduta (riscaldamento compreso)</span><div class="chips">' + [30, 45, 60, 75, 90].map(m => chip(m + ' min', num(p.minutes || 60) === m, 'ppMin', 'data-k="' + m + '"')).join('') + '</div></div>' + ppNav(o);
@@ -291,6 +294,9 @@ function ppSummary() {
   if (lowRecovery()) items.push('<b>Sonno e stress:</b> nella prima fase meno serie sugli esercizi complementari, per recuperare bene. Dormire almeno 7 ore aiuta più di qualsiasi integratore.');
   if ((p.pain || []).length) items.push('<b>Dolori (' + p.pain.map(z => PAIN_ZONES[z].toLowerCase()).join(', ') + '):</b> esclusi gli esercizi che caricano la zona, con alternative.');
   items.push('<b>Dove e quanto:</b> ' + PLACES[p.place || 'palestra'].toLowerCase() + ', ' + (p.days || []).length + ' giorni a settimana, circa ' + (num(p.minutes) || 60) + ' minuti.');
+  const ex = Object.assign({ funz: true, mob: true }, p.extra);
+  if (ex.funz || ex.mob) items.push('<b>Nei giorni liberi:</b> ' + [ex.funz ? 'un allenamento funzionale' : '', ex.mob ? 'mobilità e stretching' : ''].filter(Boolean).join(' e ') + ', a tempo con guida automatica.');
+  items.push('<b>Traguardi:</b> ogni volta che ne raggiungi uno, ti propongo il successivo e aggiorno le schede.');
   items.push('<b>Prime 2 sedute:</b> di taratura. Scegli carichi con cui ti restano 2–3 ripetizioni: da lì il trainer calcola i progressi.');
   return '<h2>Il tuo percorso</h2><div class="card"><div class="eyebrow">12 settimane · 3 fasi</div>' +
     '<div class="phase-row">' + PHASES.map((f, i) => '<div class="phase"><b>' + (i + 1) + '. ' + f.n + '</b><small>' + f.d + '</small></div>').join('') + '</div>' +
@@ -374,6 +380,7 @@ Object.assign(ACT, {
   ppSleep: d => { S.profile.sleep = d.k; save(); render(); },
   ppStress: d => { S.profile.stress = d.k; save(); render(); },
   ppSport: d => { S.profile.sport = S.profile.sport || {}; S.profile.sport[d.k] = num(d.n); save(); render(); },
+  ppExtra: d => { const p = S.profile; p.extra = Object.assign({ funz: true, mob: true }, p.extra); p.extra[d.k] = !p.extra[d.k]; save(); render(); },
   ppPlace: d => { S.profile.place = d.k; save(); render(); },
   ppMin: d => { S.profile.minutes = num(d.k); save(); render(); },
   ppPain: d => { const a = S.profile.pain || []; S.profile.pain = a.includes(d.k) ? a.filter(x => x !== d.k) : a.concat([d.k]); save(); render(); },
@@ -387,8 +394,8 @@ Object.assign(ACT, {
     p.path = true; S.path = S.path || {};
     if (first || !S.path.start) { S.path.start = Date.now(); S.cycle = { on: true, start: startOfWeek(Date.now()).getTime() }; }
     S.onboarded = true;
-    const mine = S.templates.filter(t => !t.preset);
-    S.templates = buildDefaultTemplates().concat(mine);
+    if (p.mgoals && p.mgoals.peso) p.mgoals.peso.from = curWeight();
+    regenPath();
     if (goalsOf().includes('dimagrimento')) dietState();
     save(true); if (!UI.ob.redo) { Native.askNotifications(); } syncReminders();
     UI.ob = { step: 0 }; UI.stack = [{ v: 'home' }]; render(true);
@@ -396,7 +403,7 @@ Object.assign(ACT, {
   },
   ppCheckDone: d => {
     S.path = S.path || {}; S.path.checks = S.path.checks || {}; S.path.checks[d.k] = Date.now();
-    const mine = S.templates.filter(t => !t.preset); S.templates = buildDefaultTemplates().concat(mine);
+    regenPath();
     save(true); UI.stack = [{ v: 'home' }]; render(true); toast('Percorso aggiornato: si parte con la nuova fase!');
   },
   ckSet: d => { UI.ck[d.k] = num(d.v); $('#sheet-body').innerHTML = checkinSheet(); },
@@ -409,6 +416,177 @@ Object.assign(ACT, {
 ACT.obNext = ACT.ppNext;
 const _setGoal = ACT.setGoal;
 ACT.setGoal = d => { if (UI.ob) UI.ob.goalsTouched = true; _setGoal(d); };
+
+/* ---------- allenamenti funzionali e di mobilità ----------
+   Funzionale: schemi di movimento della vita quotidiana (accosciarsi, spingere, tirare, sollevare da terra, portare pesi,
+   resistere alle rotazioni) e allenamento neuromotorio 2–3 volte a settimana (ACSM, Garber 2011, doi:10.1249/MSS.0b013e318213fefb).
+   Mobilità: allungamenti per i principali gruppi muscolari almeno 2–3 volte a settimana, circa 60 s totali per muscolo,
+   tenendo ogni posizione 10–30 s (30–60 s dopo i 65 anni) (ACSM, Garber 2011). In giorni separati dai pesi: l'allungamento
+   statico lungo subito prima della forza la riduce un po' (Behm 2016, doi:10.1139/apnm-2015-0235). */
+const LV_MAX = { principiante: 1, intermedio: 2, avanzato: 3 };
+const lvlOk = id => (EX[id].lvl || 1) <= (LV_MAX[S.profile.level] || 2);
+const FUNC_SLOTS = [
+  { k: 'Accosciata', c: ['goblet_squat', 'front_squat_due_kettlebell', 'squat_corpo', 'ponte_glutei'] },
+  { k: 'Spinta', c: ['piegamenti', 'piegamenti_inclinati', 'piegamenti_ginocchia', 'floor_press_alternata_kettlebell'] },
+  { k: 'Anche', c: ['swing_man', 'stacco_rumeno_man', 'ponte_glutei'] },
+  { k: 'Tirata', gym: ['rematore_inverso_anelli_trx', 'rematore_man'], c: ['rematore_man', 'rematore_alternato_kettlebell', 'superman'] },
+  { k: 'Una gamba', c: ['affondi_camminati_corpo_libero', 'step_up', 'affondi_corpo', 'ponte_glutei_gamba'] },
+  { k: 'Trasporto', c: ['camminata_contadino'] },
+  { k: 'Anti-rotazione', gym: ['pallof_press', 'dead_bug', 'plank_laterale'], c: ['dead_bug', 'plank_laterale', 'plank'] },
+  { k: 'Potenza', gym: ['slam_palla_medica', 'wood_chop_cavo', 'mountain_climber'], c: ['mountain_climber', 'dead_bug'] },
+  { k: 'Fiato', fat: true, c: ['burpees', 'jumping_jack', 'skip', 'step_up_ginocchio_alto', 'mountain_climber'] }
+];
+/* mobilità: [esercizio, per lato (tempo diviso tra destra e sinistra)] — prima i movimenti dinamici, poi le posizioni */
+const MOB_DYN = [['circonduzioni_braccia', 0], ['circonduzioni_anche', 1], ['gatto_mucca', 0], ['mob_worlds', 1], ['slanci_gamba', 1], ['inchworm', 0], ['passaggi_bastone', 0]];
+const MOB_STAT = [['allunga_flessori', 1], ['piriforme', 1], ['femorali_sdraiato', 1], ['adduttori_farfalla', 0], ['quadricipite_fianco', 1], ['polpacci_muro', 1],
+  ['torsione_terra', 1], ['apri_petto', 0], ['allunga_spalla', 1], ['allunga_dorso_alto', 0], ['allunga_tricipite', 1], ['ginocchia_petto', 0], ['posizione_bambino', 0]];
+const MOB_AVOID = {
+  ginocchia: ['posizione_bambino', 'quadricipite_fianco', 'allunga_flessori', 'mob_worlds', 'allunga_avambracci'],
+  polsi: ['inchworm', 'gatto_mucca', 'allunga_avambracci', 'mob_worlds'],
+  spalle: ['passaggi_bastone', 'allunga_tricipite'],
+  schiena: ['inchworm'], anche: ['mob_worlds', 'slanci_gamba'], gomiti: ['allunga_tricipite'], collo: []
+};
+const mobOk = id => EX[id] && !(S.profile.pain || []).some(z => (MOB_AVOID[z] || []).includes(id));
+const pathStage = () => (S.path && S.path.stage) || 0;
+function freeDays() {
+  const tr = S.profile.days || [];
+  return [1, 2, 3, 4, 5, 6, 0].filter(d => !tr.includes(d));
+}
+function buildFunctional(days) {
+  const p = S.profile, gym = (p.place || 'palestra') !== 'casa', g = goalsOf(), st = pathStage(), used = new Set(), items = [];
+  const fat = g.includes('dimagrimento') || g.includes('tonificazione');
+  FUNC_SLOTS.forEach(sl => {
+    if (sl.fat && !fat) return;
+    const id = (gym && sl.gym ? sl.gym : sl.c).find(x => EX[x] && !used.has(x) && okFor(x) && lvlOk(x) &&
+      !(x === 'slam_palla_medica' && (p.pain || []).includes('schiena')) && !(x === 'burpees' && (p.level === 'principiante' || isOlder())));
+    if (id) { used.add(id); items.push(id); }
+  });
+  const L = { principiante: [2, 30, 30], intermedio: [3, 40, 20], avanzato: [4, 45, 15] }[p.level] || [3, 40, 20];
+  let rounds = Math.min(5, L[0] + (st >= 2 ? 1 : 0)), secs = Math.min(50, L[1] + 5 * Math.min(st, 2)), rest = L[2] + (isOlder() || heavyBody() ? 10 : 0);
+  const t = { id: uid(), kind: 'circuito', name: 'Funzionale', quick: 'f_funz', zone: 'allenamento', preset: 'f_funz', days: days || [],
+    desc: 'Movimenti di tutti i giorni: accosciarsi, spingere, tirare, portare pesi e stabilizzare il busto. A tempo, con guida automatica.',
+    focus: 'Forza utile, equilibrio e coordinazione',
+    note: 'Una stazione dopo l\'altra: ' + secs + ' s di lavoro e ' + rest + ' s di pausa, ' + rounds + ' giri. Con i pesi scegli un carico con cui chiudi il tempo con buona tecnica. Il movimento allena anche equilibrio e coordinazione (ACSM).',
+    rounds, restEx: rest, restRound: 90, warm: 5, cool: 3, work: secs, items: items.map(ex => ({ ex, reps: 0, secs: EX[ex].id === 'camminata_contadino' ? secs + 10 : secs })) };
+  const max = num(p.minutes) || 60;
+  while (t.rounds > 2 && templateMinutes(t) > max) t.rounds--;
+  return t;
+}
+function buildMobility(days) {
+  const p = S.profile, st = pathStage(), older = isOlder(), pick = [];
+  const add = (id, side) => { if (mobOk(id) && !pick.some(x => x[0] === id)) pick.push([id, side]); };
+  MOB_DYN.forEach(([id, sd]) => add(id, sd));
+  // seduti a lungo: anche, petto e dorso alto prima di tutto; mal di schiena: posizioni dolci per la colonna
+  if (p.job === 'seduto') { add('allunga_flessori', 1); add('apri_petto', 0); add('allunga_dorso_alto', 0); }
+  if ((p.pain || []).includes('schiena')) { add('ponte_bacino', 0); add('ginocchia_petto', 0); add('torsione_terra', 1); }
+  if (older) add('circonduzioni_caviglie', 1);
+  MOB_STAT.forEach(([id, sd]) => add(id, sd));
+  // per lato: 30 s a lato (60 s dopo i 65 anni); posizioni simmetriche 45 s; i dinamici 40 s
+  const dyn = new Set(MOB_DYN.map(x => x[0]).concat(['circonduzioni_caviglie', 'ponte_bacino']));
+  const hold = (id, side) => dyn.has(id) ? 40 + (side ? 20 : 0) : side ? (num(p.age) >= 65 ? 120 : 60) + 10 * Math.min(st, 2) : 45 + 5 * Math.min(st, 3);
+  let items = pick.map(([ex, sd]) => ({ ex, reps: 0, secs: hold(ex, sd) }));
+  const t = { id: uid(), kind: 'circuito', name: 'Mobilità e stretching', quick: 'f_mob', zone: 'allenamento', preset: 'f_mob', days: days || [],
+    desc: 'Prima movimenti dinamici per scaldare le articolazioni, poi le posizioni da tenere. Per gli esercizi su un lato, cambia lato a metà del tempo.',
+    focus: 'Anche, schiena, spalle e caviglie',
+    note: 'Allunga fino a sentire tirare, mai dolore, respirando lento. Meglio nei giorni senza pesi o dopo l\'allenamento: almeno 2–3 volte a settimana (ACSM).',
+    rounds: 1, restEx: 8, restRound: 0, warm: 0, cool: 0, work: 45, items };
+  const max = Math.min(num(p.minutes) || 30, 30);
+  while (t.items.length > 8 && templateMinutes(t) > max) t.items.splice(t.items.length - 2, 1);
+  return t;
+}
+/* schede del percorso: pesi nei giorni scelti, funzionale e mobilità nei giorni liberi. Senza questionario: nessuna scheda pronta */
+const _buildDefaultTemplates = buildDefaultTemplates;
+buildDefaultTemplates = function () {
+  if (!pathOn()) return [];
+  const p = S.profile, ex = Object.assign({ funz: true, mob: true }, p.extra), free = freeDays();
+  const days = (p.days || []).slice().sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7));
+  const list = splitForDays(days.length, p.level).map((k, i) => makeTemplateFromPreset(k, [days[i]]));
+  const out = [];
+  list.forEach(t => { const m = out.find(x => x.preset === t.preset); if (m) m.days.push(...t.days); else out.push(t); });
+  // giorni liberi: prima la mobilità (1–2 volte, 1 se fai già yoga o pilates), poi un funzionale a metà settimana
+  const flex = num((p.sport || {}).yoga) + num((p.sport || {}).pilates);
+  const mobN = ex.mob ? (flex >= 2 ? 1 : 2) : 0, funDay = ex.funz ? (free.find(d => d >= 3 && d <= 5) ?? free[0]) : undefined;
+  const rest = free.filter(d => d !== funDay), mobDays = [];
+  for (let i = 0; i < mobN && rest.length; i++) mobDays.push(rest.splice(i === 0 ? 0 : Math.floor(rest.length / 2), 1)[0]);
+  if (ex.funz) out.push(buildFunctional(funDay != null ? [funDay] : []));
+  if (ex.mob) out.push(buildMobility(mobDays.sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7))));
+  return out;
+};
+/* variazione ai traguardi: i principali restano (servono a misurare i progressi), complementari e isolamento cambiano */
+const _splitItems2 = splitItems;
+splitItems = function (key, level) {
+  const items = _splitItems2(key, level), st = pathStage();
+  if (!pathOn() || !st) return items;
+  const out = items.map(it => {
+    if (it.role === 'main') return Object.assign({}, it, { sets: Math.min(5, it.sets + (st >= 2 ? 1 : 0)) });
+    if (it.secs || (isOlder() && it.ex === balanceEx())) return it;
+    // solo varianti comuni (quelle scritte a mano), stesso schema di movimento
+    const e = EX[it.ex], alts = alternatives(it.ex).filter(x => x.core && x.pat === e.pat && okFor(x.id) && lvlOk(x.id) && !items.some(i => i.ex === x.id)).slice(0, 3);
+    return alts.length ? prescribe(alts[(st - 1) % alts.length].id, it.role) : it;
+  });
+  const seen = new Set(); return out.filter(i => !seen.has(i.ex) && seen.add(i.ex));
+};
+function regenPath() {
+  const mine = S.templates.filter(t => !t.preset);
+  S.templates = buildDefaultTemplates().concat(mine);
+}
+
+/* ---------- traguardi raggiunti: nuovo traguardo e schede aggiornate ---------- */
+function checkTraguardi() {
+  if (!pathOn() || S.active) return null;
+  const G = S.profile.mgoals || {}, p = S.profile, done = [];
+  goalStatus().forEach(g => {
+    if (g.eta !== 'Raggiunto!' && !(g.pct >= 1)) return;
+    const x = G[g.k]; let next = '';
+    if (g.k === 'peso') {
+      const w = curWeight(), bmi = bmiOf(), loss = x.from ? x.kg < x.from : (p.goals.includes('dimagrimento') || bmi >= 25);
+      if (loss && bmi >= 25) { x.kg = Math.round(w * 0.97); next = 'Nuovo obiettivo di peso: ' + x.kg + ' kg.'; }
+      else if (!loss && bmi < 23) { x.kg = Math.round(w + 2); next = 'Nuovo obiettivo di peso: ' + x.kg + ' kg.'; }
+      else {
+        x.on = false; next = 'Peso raggiunto: ora lo manteniamo.';
+        if (p.goals.includes('dimagrimento')) { p.goals = p.goals.filter(k => k !== 'dimagrimento'); if (!p.goals.includes('tonificazione')) p.goals.push('tonificazione'); if (S.diet) S.diet.on = false; next += ' Obiettivo cambiato in Tonificazione (stesse calorie del mantenimento).'; }
+      }
+    }
+    if (g.k === 'forza') {
+      const tr = exerciseTrend(x.ex), cur = tr.length ? tr[0].e1 : num(x.kg);
+      x.kg = Math.round(cur * 1.05 / 2.5) * 2.5; next = 'Nuovo massimale da raggiungere: ' + x.kg + ' kg (+5%).';
+    }
+    if (g.k === 'vita') {
+      const lim = p.sex === 'f' ? 80 : 94;
+      if (x.cm > lim) { x.cm = Math.max(lim, x.cm - 3); next = 'Nuovo obiettivo: ' + x.cm + ' cm.'; } else { x.on = false; next = 'Girovita nella fascia sana: ora lo manteniamo.'; }
+    }
+    if (g.k === 'costanza') { x.weeks += 12; next = 'Nuova sfida: arrivare a ' + x.weeks + ' settimane.'; }
+    done.push({ k: g.k, t: g.t, next });
+  });
+  if (!done.length) return null;
+  S.path.stage = pathStage() + 1;
+  // la costanza o un traguardo di forza da principiante: si passa al livello intermedio
+  if (p.level === 'principiante' && done.some(d => d.k === 'forza' || d.k === 'costanza')) { p.level = 'intermedio'; done.push({ k: 'livello', t: 'Livello', next: 'Passi al livello Intermedio: più serie e qualche esercizio nuovo.' }); }
+  S.path.reached = (S.path.reached || []).concat(done.map(d => ({ d: Date.now(), k: d.k, t: d.t }))).slice(-50);
+  regenPath(); save(true); syncReminders();
+  UI.traguardi = done;
+  return done;
+}
+function traguardoSheet() {
+  const d = UI.traguardi || [];
+  return '<div class="center"><div class="big-ic">🏆</div><h3>Traguardo raggiunto!</h3></div>' +
+    d.filter(x => x.k !== 'livello').map(x => '<p><b>' + esc(x.t) + '</b><br><small class="muted">' + esc(x.next) + '</small></p>').join('') +
+    d.filter(x => x.k === 'livello').map(x => '<p class="small">' + esc(x.next) + '</p>').join('') +
+    '<div class="card"><p class="small"><b>Schede aggiornate.</b> Gli esercizi principali restano (così vedi i progressi), cambiano complementari e isolamento' + (pathStage() >= 2 ? ', una serie in più sui principali' : '') + '; funzionale e mobilità salgono di un gradino.</p></div>' +
+    '<button class="btn wide" data-act="go" data-v="schede">' + ic('list') + 'Vedi le schede</button><button class="btn ghost wide" data-act="closeSheet">Chiudi</button>';
+}
+const _homeCards3 = homeTrainerCards2;
+homeTrainerCards2 = function (t, doneToday) {
+  if (checkTraguardi()) setTimeout(() => openSheet(traguardoSheet), 300);
+  return _homeCards3(t, doneToday);
+};
+
+/* aggiornamento dalla versione con le schede pronte: via quelle generiche, restano quelle create da te */
+if (!S.mig23) {
+  S.templates = S.templates.filter(t => !t.preset);
+  if (pathOn()) regenPath();
+  S.mig23 = 1; save(true);
+}
 
 /* events.js ha già disegnato la prima schermata: ridisegna con il percorso */
 UI.stack = [{ v: S.active ? 'workout' : 'home' }];

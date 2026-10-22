@@ -761,3 +761,4 @@ img.ek-th{width:100%;height:100%;object-fit:contain;background:#fff;padding:3px}
 
 /* aggiungi esercizio sempre a portata, in alto */
 .wo-moderow{display:flex;align-items:center;gap:8px;margin:10px 16px 6px}.wo-moderow .wo-mode{flex:1;margin:0;min-width:0}.wo-addtop{flex:none;white-space:nowrap}
+.wide-tile{width:100%;min-height:0;margin:4px 0 10px}

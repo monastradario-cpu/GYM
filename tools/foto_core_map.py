@@ -29,4 +29,13 @@ CORE = {
  'arrampicata_fune':'Rope_Climb','collo_imbracatura_seduto':'Seated_Head_Harness_Neck_Resistance','fallout_trx':'Suspended_Fallout',
  'dip_panca_peso':'Weighted_Bench_Dip','trazioni_zavorrate':'Weighted_Pull_Ups','swing_man':'One-Arm_Kettlebell_Swings',
  'allunga_flessori':'Kneeling_Hip_Flexor','allunga_collo':'Side_Neck_Stretch',
+ 'circonduzioni_braccia':'Arm_Circles','allungamento_laterale':'Standing_Lateral_Stretch','apri_petto':'Elbows_Back',
+ 'torsione_seduta':'Spinal_Stretch','allunga_femorali':'Runners_Stretch',
+ 'mob_worlds':'Worlds_Greatest_Stretch','inchworm':'Inchworm','ginocchia_petto':'Hug_Knees_To_Chest','piriforme':'Ankle_On_The_Knee',
+ 'quadricipite_fianco':'On_Your_Side_Quad_Stretch','polpacci_muro':'Calf_Stretch_Hands_Against_Wall','adduttori_farfalla':'Groin_and_Back_Stretch',
+ 'allunga_adduttori':'The_Straddle','circonduzioni_anche':'Standing_Hip_Circles','circonduzioni_caviglie':'Ankle_Circles',
+ 'ponte_bacino':'Pelvic_Tilt_Into_Bridge','slanci_gamba':'Front_Leg_Raises','allunga_tricipite':'Triceps_Stretch','allunga_spalla':'Shoulder_Stretch',
+ 'allunga_dorso_alto':'Upper_Back_Stretch','torsione_terra':'Knee_Across_The_Body','allunga_avambracci':'Kneeling_Forearm_Stretch',
+ 'femorali_sdraiato':'90_90_Hamstring','apri_petto_dinamico':'Dynamic_Chest_Stretch','passaggi_bastone':'Chest_And_Front_Of_Shoulder_Stretch',
+ 'camminata_contadino':'Farmers_Walk','slam_palla_medica':'Overhead_Slam',
 }

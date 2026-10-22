@@ -347,8 +347,8 @@ function quickView(a) {
   let out = '<header class="top workout-top"><button class="icon-btn" data-act="minimize">' + ic('down') + '</button><div class="top-title"><h1>' + esc(a.name) + '</h1></div><button class="btn sm" data-act="finish">Termina</button></header>' +
     '<div class="progress thin"><i style="width:' + (100 * doneCount / total) + '%"></i></div><div class="pad">';
   if (!cur) {
-    out += '<div class="card qk-now center"><div class="big-ic">⭐</div><h2>Fatto!</h2><p class="muted">' + (a.zone === 'casa' ? 'Allenamento completato.' : 'Pausa attiva completata.') + ' Tocca <b>Salva</b> per prendere la stella.</p>' +
-      '<button class="btn wide big" data-act="finish">' + ic('check') + 'Salva e prendi la stella</button></div>';
+    out += '<div class="card qk-now center"><div class="big-ic">' + (a.zone === 'allenamento' ? '💪' : '⭐') + '</div><h2>Fatto!</h2><p class="muted">' + (a.zone === 'allenamento' ? 'Allenamento completato. Tocca <b>Salva</b>.' : (a.zone === 'casa' ? 'Allenamento completato.' : 'Pausa attiva completata.') + ' Tocca <b>Salva</b> per prendere la stella.') + '</p>' +
+      '<button class="btn wide big" data-act="finish">' + ic('check') + (a.zone === 'allenamento' ? 'Salva' : 'Salva e prendi la stella') + '</button></div>';
   } else {
     out += '<div class="card qk-now"><div class="qk-phase">' + phase + ' <span>' + step + '/' + total + (c.rounds > 1 ? ' · giro ' + (cur.k + 1) + ' di ' + c.rounds : '') + '</span></div>' +
       '<h2 class="qk-name">' + esc(e.n || '') + '</h2>' +
@@ -376,7 +376,7 @@ function finishWorkout(o) {
   const items = a.items.map(it => ({ ex: it.ex, sets: it.sets.filter(s => s.done).map(s => ({ kg: s.kg === '' ? num(s.pk) : num(s.kg), reps: s.reps === '' ? num(s.pr) : num(s.reps), done: true, wu: !!s.wu })) })).filter(it => it.sets.length);
   if (!items.length && !a.cardio.length) { ask('Non hai segnato nessuna serie. Vuoi chiudere senza salvare?', 'Chiudi', () => { endActive(); go('home', null, true); }, true); return; }
   const before = {}; items.forEach(it => { before[it.ex] = records(it.ex); });
-  if (a.quick) {
+  if (a.quick && a.zone !== 'allenamento') {
     S.breaks = S.breaks || [];
     S.breaks.push({ d: Date.now(), key: a.quick, zone: a.zone, min: Math.max(1, Math.round((Date.now() - a.start) / 60000)) });
     if (a.zone !== 'casa') { endActive(); save(true); go('starDone', null, true); return; }

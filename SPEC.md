@@ -163,3 +163,9 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Prime 2 sedute di taratura dei carichi (nessun test iniziale).
 - Foto vere di inizio e fine (free-exercise-db, pubblico dominio) per 689 esercizi, figura anatomica con i muscoli accanto; figure generate di notte solo per gli esercizi senza foto.
 - Stile unico: figura anatomica realistica (tolti gli altri stili di figura e omino). Coach unico.
+
+## Funzionale, mobilità e schede che crescono (ottobre 2026)
+- Niente schede pronte: le schede nascono solo dal questionario del percorso (pesi nei giorni scelti, funzionale e mobilità nei giorni liberi). Quelle create dall'utente restano sempre.
+- Funzionale: circuito a tempo con guida automatica (accosciata, spinta, anche, tirata, una gamba, trasporto, anti-rotazione, potenza, fiato se l'obiettivo è dimagrire/tonificare), adattato a livello, luogo, dolori, età e peso (ACSM, Garber 2011).
+- Mobilità: prima movimenti dinamici, poi posizioni (30 s per lato, 45 s simmetriche, 60 s per lato dopo i 65 anni), 1–2 volte a settimana, circa 20 minuti; personalizzata per lavoro seduto, mal di schiena, età e dolori (ACSM 2011, Behm 2016).
+- Traguardi raggiunti: nuovo traguardo (peso, forza +5%, girovita, costanza +12 settimane), livello principiante → intermedio, schede rigenerate con varianti dei complementari, +1 serie sui principali dal secondo traguardo, funzionale e mobilità più impegnativi.

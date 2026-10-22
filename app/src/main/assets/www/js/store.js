@@ -100,11 +100,6 @@ function makeTemplateFromPreset(key, days) {
   return { id: uid(), kind: 'scheda', name: p.n, focus: p.focus, note: p.note, days: days || [], preset: key,
     items: splitItems(key, S.profile.level) };
 }
-function makeCircuit(c) {
-  return { id: uid(), kind: 'circuito', name: c.n, desc: c.desc, days: [], preset: c.key,
-    rounds: c.rounds, restEx: c.restEx, restRound: c.restRound, warm: c.warm, cool: c.cool, work: c.work,
-    items: c.st.map(s => { const id = noBodyweight(s.ex), timed = EX[id].type === 'time'; return id === s.ex ? { ex: s.ex, reps: s.reps || 0, secs: s.secs || 0 } : { ex: id, reps: timed ? 0 : 15, secs: timed ? 40 : 0 }; }) };
-}
 /* routine Casa e lavoro -> scheda da avviare (guida automatica, tutto a tempo) */
 function makeQuick(q) {
   return { id: q.key, kind: 'circuito', name: q.n, desc: q.desc, zone: q.zone, quick: q.key, days: [],
@@ -134,8 +129,6 @@ function buildDefaultTemplates() {
   // con 1 solo giorno o schede ripetute, unisci nomi uguali
   const merged = [];
   list.forEach(t => { const m = merged.find(x => x.preset === t.preset); if (m) m.days.push(...t.days); else merged.push(t); });
-  // circuiti sempre disponibili, senza giorno fisso
-  PRESET_CIRCUITS.forEach(c => merged.push(makeCircuit(c)));
   return merged;
 }
 function todayTemplate() {

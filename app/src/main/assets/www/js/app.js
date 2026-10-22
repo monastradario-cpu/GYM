@@ -194,15 +194,19 @@ function breakCard(inSchede) {
     (inSchede ? '' : '<button class="btn ghost" data-act="goQuick">Altre</button>') + '</div></div>';
 }
 VIEWS.schede = () => {
-  const tabs = '<div class="seg">' + chip('Le mie schede', UI.schede === 'schede', 'schedeTab', 'data-t="schede"') + chip('Circuiti 1 ora', UI.schede === 'circuiti', 'schedeTab', 'data-t="circuiti"') + chip('Casa e lavoro', UI.schede === 'casa', 'schedeTab', 'data-t="casa"') + '</div>';
+  const tabs = '<div class="seg">' + chip('Pesi', UI.schede === 'schede', 'schedeTab', 'data-t="schede"') + chip('Funzionale e mobilità', UI.schede === 'circuiti', 'schedeTab', 'data-t="circuiti"') + chip('Casa e lavoro', UI.schede === 'casa', 'schedeTab', 'data-t="casa"') + '</div>';
   if (UI.schede === 'casa') return header('Schede') + '<div class="pad">' + tabs + quickList() + '</div>';
-  const list = S.templates.filter(t => UI.schede === 'circuiti' ? t.kind === 'circuito' : t.kind !== 'circuito');
+  const circ = UI.schede === 'circuiti', path = !!S.profile.path;
+  const list = S.templates.filter(t => circ ? t.kind === 'circuito' : t.kind !== 'circuito');
+  const reached = path && S.path && (S.path.reached || []).slice(-1)[0];
   return header('Schede') + '<div class="pad">' +
     tabs +
-    (UI.schede === 'circuiti' ? '<p class="muted small">Circuiti pronti da circa un\'ora, riscaldamento e defaticamento inclusi. Puoi modificarli o crearne di nuovi.</p>' : '') +
+    (!path ? '<button class="card trainer" data-act="ppStart"><div class="eyebrow">' + ic('sparkle', 'inline') + 'Le tue schede</div><p><b>Le creo io dopo il questionario</b><br><small class="muted">Fisico, stile di vita, dolori e obiettivi: poi preparo pesi, funzionale e mobilità su misura e le aggiorno a ogni traguardo.</small></p></button>' : '') +
+    (reached ? '<p class="small muted">' + ic('coach', 'inline') + 'Aggiornate il ' + new Date(reached.d).toLocaleDateString('it-IT') + ' dopo il traguardo: ' + esc(reached.t) + '.</p>' : '') +
+    (circ ? '<p class="muted small">A tempo, con guida automatica: funzionale (forza utile, equilibrio, coordinazione) e mobilità (allungamenti e articolazioni). Puoi anche creare un circuito tuo.</p>' : '') +
     (list.length ? list.map(t => '<div class="card tpl">' +
       '<div class="card-h"><div><h3>' + esc(t.name) + '</h3><div class="muted small">' +
-        (t.kind === 'circuito' ? t.items.length + ' stazioni · ' + t.rounds + ' giri' : t.items.length + ' esercizi') + ' · circa ' + templateMinutes(t) + ' min' +
+        (t.kind === 'circuito' ? t.items.length + ' esercizi' + (t.rounds > 1 ? ' · ' + t.rounds + ' giri' : '') : t.items.length + ' esercizi') + ' · circa ' + templateMinutes(t) + ' min' +
         ((t.days || []).length ? ' · ' + t.days.map(d => WEEKDAYS[d]).join(', ') : '') + '</div></div>' +
         '<button class="icon-btn" data-act="editTemplate" data-id="' + t.id + '">' + ic('edit') + '</button></div>' +
       (t.desc ? '<p class="small muted">' + esc(t.desc) + '</p>' : '') +
@@ -210,21 +214,11 @@ VIEWS.schede = () => {
       (t.note ? '<p class="small muted">' + ic('coach', 'inline') + esc(t.note) + '</p>' : '') +
       '<div class="ex-preview">' + t.items.slice(0, 6).map(i => '<span>' + exLine(i.ex) + '</span>').join('') + (t.items.length > 6 ? '<span>+' + (t.items.length - 6) + '</span>' : '') + '</div>' +
       '<button class="btn" data-act="startTemplate" data-id="' + t.id + '">' + ic('play') + 'Inizia</button></div>').join('')
-      : '<div class="empty">Nessuna ' + (UI.schede === 'circuiti' ? 'circuito' : 'scheda') + ' qui.</div>') +
-    '<div class="grid2">' +
-      '<button class="tile" data-act="newTemplate" data-k="' + (UI.schede === 'circuiti' ? 'circuito' : 'scheda') + '">' + ic('plus') + '<b>' + (UI.schede === 'circuiti' ? 'Nuovo circuito' : 'Nuova scheda') + '</b></button>' +
-      '<button class="tile" data-act="presets">' + ic('list') + '<b>Schede pronte</b><small>Aggiungi dai modelli</small></button>' +
-    '</div>' +
-    (UI.schede === 'schede' ? '<button class="btn ghost wide" data-act="regen">' + ic('swap') + 'Rigenera per i miei giorni</button>' : '') +
+      : (path ? '<div class="empty">Nessuna scheda qui.</div>' : '')) +
+    '<button class="tile wide-tile" data-act="newTemplate" data-k="' + (circ ? 'circuito' : 'scheda') + '">' + ic('plus') + '<b>' + (circ ? 'Nuovo circuito' : 'Nuova scheda') + '</b><small>Creata da te: resta anche quando aggiorno le altre</small></button>' +
+    (path ? '<button class="btn ghost wide" data-act="regen">' + ic('swap') + 'Rigenera le schede del percorso</button>' : '') +
     '</div>';
 };
-
-function presetsSheet() {
-  return '<h3>Schede pronte</h3><p class="muted small">Le serie e le ripetizioni si adattano a obiettivo e livello del tuo profilo.</p>' +
-    Object.keys(PRESET_SPLITS).map(k => '<div class="list-item"><div><b>' + PRESET_SPLITS[k].n + '</b><small>' + PRESET_SPLITS[k].ex.length + ' esercizi</small></div><button class="btn sm" data-act="addPreset" data-k="' + k + '">Aggiungi</button></div>').join('') +
-    '<h3>Circuiti da un\'ora</h3>' +
-    PRESET_CIRCUITS.map(c => '<div class="list-item"><div><b>' + c.n + '</b><small>circa ' + circuitMinutes(c) + ' min · ' + c.desc + '</small></div><button class="btn sm" data-act="addCircuit" data-k="' + c.key + '">Aggiungi</button></div>').join('');
-}
 
 /* ---------- Modifica scheda ---------- */
 VIEWS.edit = () => {

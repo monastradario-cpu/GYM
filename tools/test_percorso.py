@@ -74,5 +74,22 @@ with sync_playwright() as p:
     pg.evaluate("S.cycle.start -= 28 * 864e5; save(true); go('home')"); pg.wait_for_timeout(300); shot("15_home_controllo")
     due = pg.evaluate("checkpointDue()")
     pg.evaluate("go('checkpoint')"); pg.wait_for_timeout(300); shot("16_controllo")
+    # funzionale e mobilità: create nei giorni liberi, a tempo con guida
+    fm = pg.evaluate("S.templates.filter(t => t.zone === 'allenamento').map(t => ({ n: t.name, days: t.days, min: templateMinutes(t), giri: t.rounds, ex: t.items.map(i => i.ex + ':' + i.secs) }))")
+    pg.evaluate("UI.schede = 'circuiti'; go('schede')"); pg.wait_for_timeout(300); shot("17_funz_mob")
+    pg.evaluate("startWorkout(S.templates.find(t => t.quick === 'f_mob'))"); pg.wait_for_timeout(400); shot("18_mobilita")
+    pg.evaluate("S.active.items.forEach(it => it.sets.forEach(s => { s.done = true; s.reps = it.secs; })); save(true); render()"); pg.wait_for_timeout(200); shot("19_mobilita_fine")
+    pg.evaluate("finishWorkout()"); pg.wait_for_timeout(300)
+    salvato = pg.evaluate("S.history.slice(-1)[0] ? { n: S.history.slice(-1)[0].name, quick: S.history.slice(-1)[0].quick } : null")
+    # traguardo: costanza raggiunta -> nuovo traguardo e schede aggiornate
+    prima = pg.evaluate("S.templates.filter(t => t.preset && t.kind === 'scheda').map(t => t.items.map(i => i.ex + ':' + i.sets).join(','))")
+    pg.evaluate("S.profile.mgoals.costanza = { on: true, perWeek: 1, weeks: 1 }; S.path.start = Date.now() - 3 * 864e5; S.history.push({ id: 'x', name: 'x', kind: 'scheda', start: Date.now() - 864e5, end: Date.now() - 864e5 + 36e5, items: [], cardio: [] }); save(true); go('home')")
+    pg.wait_for_timeout(900); shot("20_traguardo")
+    dopo = pg.evaluate("({ stage: S.path.stage, liv: S.profile.level, costanza: S.profile.mgoals.costanza.weeks, schede: S.templates.filter(t => t.preset && t.kind === 'scheda').map(t => t.items.map(i => i.ex + ':' + i.sets).join(',')), reached: S.path.reached })")
+    # migrazione: chi aveva le schede pronte senza percorso le perde, tiene le sue
+    pg.evaluate("localStorage.setItem('gym.v1', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('gym.v1')), { mig23: 0, profile: Object.assign(S.profile, { path: false }), templates: [{ id: 'a', kind: 'scheda', name: 'Full body A', preset: 'fullA', days: [1], items: [] }, { id: 'b', kind: 'scheda', name: 'Mia', days: [], items: [] }] })))")
+    pg.reload(); pg.wait_for_timeout(700)
+    mig = pg.evaluate("S.templates.map(t => t.name)")
+    pg.evaluate("UI.schede = 'schede'; go('schede')"); pg.wait_for_timeout(300); shot("21_schede_senza_percorso")
     b.close()
-print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due}, ensure_ascii=False, indent=1))
+print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig}, ensure_ascii=False, indent=1))
