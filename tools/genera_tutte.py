@@ -292,10 +292,10 @@ def fai(s):
 
 FISICI = {
     "magro": "a very lean slim build with narrow shoulders, thin arms and legs and little muscle mass",
-    "normo": "an average healthy build with moderate muscle tone and normal body fat",
-    "skinnyfat": "slim arms and legs with little muscle, narrow shoulders and a soft belly with some fat around the waist",
+    "normo": "an average everyday build with normal body fat, smooth flat stomach without visible six-pack abs, ordinary non-athletic muscles",
+    "skinnyfat": "a skinny-fat build: thin untoned arms and legs, narrow shoulders, no visible muscle definition and no abs, a soft slightly protruding belly with love handles",
     "atletico": "an athletic muscular build with broad shoulders, defined muscles and low body fat",
-    "sovrappeso": "an overweight build with a round belly, soft thick arms and thighs",
+    "sovrappeso": "a moderately overweight build, a little heavier than average, with a slightly round belly, soft arms and thighs (not obese)",
     "obeso": "an obese build with a large round belly, wide hips and thick soft limbs",
 }
 
@@ -311,7 +311,7 @@ def fisici():
             clothes = "plain dark grey athletic shorts" + (" and a plain dark grey sports top" if sx == "f" else "") + ", barefoot"
             prompt = (f"Front view, full body, centered. Medical anatomy illustration of an {who} with {desc}, standing upright in a "
                       f"neutral pose, arms relaxed at the sides, feet hip-width apart, calm neutral face. Light grey anatomical skin "
-                      f"with subtle muscle shading, {clothes}. Plain pure white background, whole body in frame with margin, no text.")
+                      f"with subtle muscle shading, {clothes}. Plain pure white background, whole body from the top of the head to the feet in frame with margin, a single person, no text.")
             for tent in range(3):
                 try:
                     salva_webp(cf_image(prompt, 0), path)
