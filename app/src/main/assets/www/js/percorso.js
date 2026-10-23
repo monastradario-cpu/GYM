@@ -176,12 +176,16 @@ const STRENGTH_EX = ['panca_piana_bil', 'squat_bil', 'stacco_bil', 'military_bil
 function defaultMGoals() {
   const p = S.profile, w = curWeight(), bmi = bmiOf(), g = {};
   if (w) {
-    if (bmi >= 25 || ['sovrappeso', 'obeso', 'skinnyfat'].includes(p.body)) g.peso = { on: true, kg: Math.round(w * (bmi >= 30 ? 0.9 : 0.95)) };
+    // con fisico atletico il BMI alto viene dai muscoli e nello skinny fat si punta alla ricomposizione (meno grasso, più muscolo,
+    // peso simile): in questi casi l'obiettivo è il girovita, non la bilancia
+    const muscoli = p.body === 'atletico' && bmi < 30, ricomp = p.body === 'skinnyfat' && bmi < 25;
+    if (muscoli || ricomp) g.peso = { on: false, kg: Math.round(w) };
+    else if (bmi >= 25 || ['sovrappeso', 'obeso'].includes(p.body)) g.peso = { on: true, kg: Math.round(w * (bmi >= 30 ? 0.9 : 0.95)) };
     else if (p.body === 'magro' || bmi < 20) g.peso = { on: true, kg: Math.round(w + 3) };
     else g.peso = { on: false, kg: Math.round(w) };
   }
   g.forza = { on: !!(p.place !== 'casa'), ex: p.place === 'casa' ? 'panca_piana_man' : 'panca_piana_bil', kg: 0 };
-  g.vita = { on: ['sovrappeso', 'obeso', 'skinnyfat'].includes(p.body), cm: p.sex === 'f' ? 80 : 94 };
+  g.vita = { on: ['sovrappeso', 'obeso', 'skinnyfat'].includes(p.body) || (p.body === 'atletico' && bmi >= 25), cm: p.sex === 'f' ? 80 : 94 };
   g.costanza = { on: true, perWeek: (p.days || []).length || 3, weeks: 12 };
   return g;
 }
@@ -298,7 +302,7 @@ function ppSummary() {
   const p = S.profile, w = num(UI.ob.weight) || curWeight(), h = num(p.height) / 100, bmi = w && h ? w / (h * h) : 0;
   const pal = palFor(p), items = [];
   items.push('<b>Obiettivi:</b> ' + goalLabel(p) + '.');
-  if (bmi) items.push('<b>BMI ' + bmi.toFixed(1).replace('.', ',') + '</b>' + (bmi >= 30 ? ': partiamo con macchine e cardio a basso impatto, niente salti.' : bmi >= 25 ? ': un deficit moderato e tanto movimento quotidiano.' : bmi < 18.5 ? ': serve mangiare di più, priorità alla massa.' : '.'));
+  if (bmi) items.push('<b>BMI ' + bmi.toFixed(1).replace('.', ',') + '</b>' + (bmi >= 30 ? ': partiamo con macchine e cardio a basso impatto, niente salti.' : bmi >= 25 && p.body === 'atletico' ? ': con tanti muscoli il BMI esce alto anche senza grasso in eccesso, quindi guardiamo il girovita più della bilancia.' : bmi >= 25 ? ': un deficit moderato e tanto movimento quotidiano.' : p.body === 'skinnyfat' ? ': il peso va bene, l\'obiettivo è cambiare la composizione: più muscolo e meno grasso sulla pancia, con il girovita come misura.' : bmi < 18.5 ? ': serve mangiare di più, priorità alla massa.' : '.'));
   if (pal) items.push('<b>Attività quotidiana:</b> livello ' + String(pal).replace('.', ',') + ' (' + (pal < 1.7 ? 'sedentario-moderato' : pal < 2 ? 'attivo' : 'molto attivo') + '): lo uso per calcolare le calorie.');
   if (num(p.age) >= 50) items.push('<b>Età:</b> riscaldamento più lungo, ' + (balanceEx() ? 'un esercizio di equilibrio, ' : '') + 'salite veloci per la potenza e ripetizioni un po\' più alte sui principali.');
   if (lowRecovery()) items.push('<b>Sonno e stress:</b> nella prima fase meno serie sugli esercizi complementari, per recuperare bene. Dormire almeno 7 ore aiuta più di qualsiasi integratore.');
