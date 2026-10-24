@@ -63,9 +63,10 @@ function beep() {
 }
 
 function tick() {
-  const a = S.active, now = Date.now();
-  document.querySelectorAll('[data-clock="elapsed"]').forEach(el => { if (a) el.textContent = fmtElapsed((now - a.start) / 1000); });
-  if (!a) return;
+  const a = S.active;
+  if (!a) return; // nessun allenamento: niente da aggiornare (risparmio batteria)
+  const now = Date.now();
+  document.querySelectorAll('[data-clock="elapsed"]').forEach(el => { el.textContent = fmtElapsed((now - a.start) / 1000); });
   if (a.rest) {
     const left = (a.rest.until - now) / 1000;
     if (left <= 0) { a.rest = null; Native.vibrate(600); beep(); save(); if (a.circ) circAfterRest(); render(); return; }

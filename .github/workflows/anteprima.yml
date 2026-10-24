@@ -1,0 +1,44 @@
+name: Anteprima (non pubblica l'app)
+
+# Compila i rami diversi da main e mette l'APK in una pre-release di prova.
+# L'aggiornamento dall'app non la vede: vale solo la versione pubblicata da main.
+on:
+  push:
+    branches-ignore: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  anteprima:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Android SDK
+        run: echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+
+      - name: Controllo sintassi JavaScript
+        run: for f in app/src/main/assets/www/js/*.js; do node --check "$f"; done
+
+      - name: Compila APK
+        run: gradle assembleRelease --no-daemon --stacktrace
+
+      - name: Pubblica anteprima
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: anteprima-${{ github.ref_name }}-${{ github.run_number }}
+          name: Anteprima ${{ github.ref_name }} ${{ github.run_number }}
+          body: ${{ github.event.head_commit.message }}
+          prerelease: true
+          make_latest: false
+          files: app/build/outputs/apk/release/app-release.apk

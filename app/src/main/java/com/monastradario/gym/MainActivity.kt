@@ -151,8 +151,37 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    override fun onResume() { super.onResume(); inForeground = true; Notify.cancel(this, Notify.ID_REST) }
-    override fun onPause() { super.onPause(); inForeground = false }
+    private var webPaused = false
+
+    override fun onResume() {
+        super.onResume()
+        inForeground = true
+        Notify.cancel(this, Notify.ID_REST)
+        if (webPaused) {
+            web.resumeTimers()
+            web.onResume()
+            webPaused = false
+        }
+    }
+
+    /**
+     * Risparmio batteria: quando GYM va in sottofondo senza un allenamento in corso,
+     * ferma timer e animazioni della pagina. Durante un allenamento li lascia attivi,
+     * così i segnali di circuito e riscaldamento funzionano anche a schermo spento
+     * (il fine recupero è già gestito dal sistema con una sveglia).
+     */
+    override fun onPause() {
+        super.onPause()
+        inForeground = false
+        web.evaluateJavascript(
+            "(typeof S!=='undefined'&&S&&S.active)||(typeof UI!=='undefined'&&UI&&UI.wu)?'1':'0'"
+        ) { r ->
+            if (r?.contains("1") == true || inForeground || isFinishing) return@evaluateJavascript
+            web.onPause()
+            web.pauseTimers()
+            webPaused = true
+        }
+    }
 
     private fun js(code: String) = main.post { web.evaluateJavascript(code, null) }
 

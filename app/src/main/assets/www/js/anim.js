@@ -405,9 +405,13 @@ const Demo = {
       if (b.dataset.demo === 'speed') { st.speed = +b.dataset.s; st.t0 = performance.now(); el.querySelectorAll('[data-demo=speed]').forEach(x => x.classList.toggle('on', x === b)); }
     };
     const svg = el.querySelector('svg'), txt = el.querySelector('.demo-text'), ph = el.querySelector('.demo-phase'), bar = el.querySelector('.demo-bar i');
+    let lastDraw = 0;
     const loop = now => {
       if (!document.body.contains(el)) { this.stop(); return; }
-      if (!st.paused) {
+      // Risparmio batteria: al massimo 30 disegni al secondo, nessuno se la pagina è nascosta.
+      const skip = document.hidden || now - lastDraw < 33;
+      if (!skip) lastDraw = now;
+      if (!st.paused && !skip) {
         const segs = timeline(def, st.speed), total = segs.reduce((a, s) => a + s.dur, 0);
         let t = ((now - st.t0) / 1000) % total, i = 0;
         while (t > segs[i].dur && i < segs.length - 1) { t -= segs[i].dur; i++; }
