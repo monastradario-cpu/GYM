@@ -4,7 +4,8 @@ plugins {
 }
 
 // numero di build da GitHub Actions: cresce a ogni build, serve per gli aggiornamenti dall'app
-val buildNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
+// Le anteprime usano lo stesso numero dell'ultima versione pubblicata, così si installano sopra senza perdere i dati.
+val buildNumber = (System.getenv("GYM_BUILD_NUMBER") ?: System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
 
 android {
     namespace = "com.monastradario.gym"

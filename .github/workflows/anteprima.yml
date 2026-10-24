@@ -30,6 +30,14 @@ jobs:
       - name: Controllo sintassi JavaScript
         run: for f in app/src/main/assets/www/js/*.js; do node --check "$f"; done
 
+      - name: Numero di versione (uguale all'ultima pubblicata)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=$(gh release view --repo "${{ github.repository }}" --json tagName --jq .tagName)
+          echo "GYM_BUILD_NUMBER=${TAG##*-}" >> "$GITHUB_ENV"
+          echo "Ultima versione pubblicata: $TAG"
+
       - name: Compila APK
         run: gradle assembleRelease --no-daemon --stacktrace
 
