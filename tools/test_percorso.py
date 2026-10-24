@@ -96,10 +96,15 @@ with sync_playwright() as p:
     pg.evaluate("S.profile.mgoals.costanza = { on: true, perWeek: 1, weeks: 1 }; S.path.start = Date.now() - 3 * 864e5; S.history.push({ id: 'x', name: 'x', kind: 'scheda', start: Date.now() - 864e5, end: Date.now() - 864e5 + 36e5, items: [], cardio: [] }); save(true); go('home')")
     pg.wait_for_timeout(900); shot("20_traguardo")
     dopo = pg.evaluate("({ stage: S.path.stage, liv: S.profile.level, costanza: S.profile.mgoals.costanza.weeks, schede: S.templates.filter(t => t.preset && t.kind === 'scheda').map(t => t.items.map(i => i.ex + ':' + i.sets).join(',')), reached: S.path.reached })")
+    # obiettivo di peso superato (es. 80 kg e ora 79,5): deve risultare raggiunto, non "non ti stai avvicinando"
+    peso_superato = pg.evaluate("(() => { const g = S.profile.mgoals.peso, old = S.weights.slice(); g.on = true; g.from = 84; g.kg = 80; S.weights.push({ d: Date.now(), kg: 79.5 }); const r = goalStatus().find(x => x.k === 'peso'); S.weights = old; return r && r.eta; })()")
+    peso_in_corso = pg.evaluate("(() => { const g = S.profile.mgoals.peso, old = S.weights.slice(); g.from = 84; g.kg = 80; S.weights.push({ d: Date.now(), kg: 82 }); const r = goalStatus().find(x => x.k === 'peso'); S.weights = old; return r && r.eta; })()")
+    if peso_superato != "Raggiunto!" or peso_in_corso == "Raggiunto!":
+        errors.append(f"obiettivo di peso: superato={peso_superato} in corso={peso_in_corso}")
     # migrazione: chi aveva le schede pronte senza percorso le perde, tiene le sue
     pg.evaluate("localStorage.setItem('gym.v1', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('gym.v1')), { mig23: 0, profile: Object.assign(S.profile, { path: false }), templates: [{ id: 'a', kind: 'scheda', name: 'Full body A', preset: 'fullA', days: [1], items: [] }, { id: 'b', kind: 'scheda', name: 'Mia', days: [], items: [] }] })))")
     pg.reload(); pg.wait_for_timeout(700)
     mig = pg.evaluate("S.templates.map(t => t.name)")
     pg.evaluate("UI.schede = 'schede'; go('schede')"); pg.wait_for_timeout(300); shot("21_schede_senza_percorso")
     b.close()
-print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att}, ensure_ascii=False, indent=1))
+print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso}, ensure_ascii=False, indent=1))

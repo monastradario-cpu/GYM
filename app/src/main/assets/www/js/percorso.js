@@ -197,15 +197,22 @@ function slopePerDay(pts) {
   return pts.reduce((a, q) => a + (q.x - mx) * (q.y - my), 0) / den;
 }
 function weeksText(w) { if (!isFinite(w) || w <= 0) return ''; if (w > 104) return 'oltre 2 anni'; const d = new Date(Date.now() + w * 7 * 864e5); return 'circa ' + Math.ceil(w) + ' settimane (' + d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' }) + ')'; }
+/* obiettivo di peso in discesa? (dal peso di partenza; per i profili vecchi senza partenza: obiettivi e BMI) */
+function weightLossGoal(g) {
+  if (g.from) return g.kg < g.from;
+  return (S.profile.goals || []).includes('dimagrimento') || (bmiOf() >= 25 && !['atletico', 'magro'].includes(S.profile.body));
+}
 function goalStatus() {
   const G = S.profile.mgoals || {}, out = [];
   if (G.peso && G.peso.on && G.peso.kg) {
-    const w = curWeight(), d = G.peso.kg - w;
+    const w = curWeight(), d = G.peso.kg - w, loss = weightLossGoal(G.peso);
+    // raggiunto anche se lo superi (es. obiettivo 80 kg e ora pesi 79,5): conta la direzione dell'obiettivo
+    const reached = Math.abs(d) < 0.3 || (loss ? w <= G.peso.kg : w >= G.peso.kg);
     const recent = (S.weights || []).filter(x => x.d > Date.now() - 35 * 864e5).map(x => ({ x: x.d / 864e5, y: x.kg }));
     let s = slopePerDay(recent); const span = recent.length ? recent[recent.length - 1].x - recent[0].x : 0;
     if (s == null || span < 10) s = (d < 0 ? -1 : 1) * w * (typeof dietActive === 'function' && dietActive() && S.diet ? S.diet.rate : 0.25) / 100 / 7;
     const wk = s && Math.sign(s) === Math.sign(d) ? Math.abs(d / s) / 7 : Infinity;
-    out.push({ k: 'peso', t: 'Peso: ' + fmtKg(w) + ' → ' + fmtKg(G.peso.kg) + ' kg', pct: Math.abs(d) < 0.3 ? 1 : null, eta: Math.abs(d) < 0.3 ? 'Raggiunto!' : wk === Infinity ? 'Al ritmo attuale non ti stai avvicinando: controlla il piano alimentare.' : 'Previsione: ' + weeksText(wk) });
+    out.push({ k: 'peso', t: 'Peso: ' + fmtKg(w) + ' → ' + fmtKg(G.peso.kg) + ' kg', pct: reached ? 1 : null, eta: reached ? 'Raggiunto!' : wk === Infinity ? 'Al ritmo attuale non ti stai avvicinando: controlla il piano alimentare.' : 'Previsione: ' + weeksText(wk) });
   }
   if (G.forza && G.forza.on && EX[G.forza.ex]) {
     const tr = exerciseTrend(G.forza.ex), cur = tr.length ? tr[0].e1 : 0, tgt = num(G.forza.kg) || (cur ? Math.round(cur * 1.1 / 2.5) * 2.5 : 0);
@@ -555,7 +562,7 @@ function checkTraguardi() {
     if (g.eta !== 'Raggiunto!' && !(g.pct >= 1)) return;
     const x = G[g.k]; let next = '';
     if (g.k === 'peso') {
-      const w = curWeight(), bmi = bmiOf(), loss = x.from ? x.kg < x.from : (p.goals.includes('dimagrimento') || bmi >= 25);
+      const w = curWeight(), bmi = bmiOf(), loss = weightLossGoal(x);
       if (loss && bmi >= 25) { x.kg = Math.round(w * 0.97); next = 'Nuovo obiettivo di peso: ' + x.kg + ' kg.'; }
       else if (!loss && bmi < 23) { x.kg = Math.round(w + 2); next = 'Nuovo obiettivo di peso: ' + x.kg + ' kg.'; }
       else {
