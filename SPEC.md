@@ -182,3 +182,12 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 - Riscaldamento specifico di circa 5 minuti scelto sui muscoli della seduta, guidato a tempo.
 - Allarme dolori: stessa zona in 3 check-in di fila → consiglio di sentire medico/fisioterapista ed esercizi della zona tolti finché non passa.
 - Esercizio principale sostituito per un dolore: resta un multiarticolare (hip thrust, leg press…), mai un isolamento.
+
+## Idee da MuscleWiki (ottobre 2026) — js/livelli.js
+- Nessun contenuto copiato (le regole di MuscleWiki non lo permettono): solo idee, testi scritti da noi.
+- Libreria divisa in Semplice / Medio / Complesso, etichetta su ogni esercizio, dentro ogni muscolo prima i più semplici.
+- Progressioni passo passo (piegamenti, squat, trazioni, rematore a corpo libero, plank, affondi, ponte, dip, stacco, spinta sopra la testa):
+  si sale di gradino dopo 2 sedute con tutte le serie a 12 ripetizioni (60 s per quelli a tempo); si scende se la maggior parte delle serie resta sotto 5.
+  "Cambia nelle schede" sostituisce in tutte le schede e resta anche quando il percorso rigenera le schede.
+- Testi scritti a mano per gli esercizi usati nelle schede (68 riscritti, i restanti di mobilità e pause erano già scritti a mano).
+- Home più pulita: allenamento di oggi, al massimo 2 avvisi importanti, calorie, peso e acqua, settimana; il resto in "Altro per oggi".

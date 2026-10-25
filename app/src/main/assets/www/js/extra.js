@@ -298,9 +298,7 @@ ACT.ckGo = () => { _ckGo(); const before = (S.painAuto || []).length; painAlarmA
 /* ---------- in home ---------- */
 const _homeCards5 = homeTrainerCards2;
 homeTrainerCards2 = function (t, doneToday) {
-  return _homeCards5(t, doneToday) + ftestCard() + photoCard();
+  return _homeCards5(t, doneToday) + ((S.ftests || []).length ? ftestCard() : '') + photoCard();
 };
-/* subito sotto l'allenamento di oggi: le cose che contano adesso */
-function homeTopCards() { return painCard() + fatigueCard() + missedCard() + recapCard() + proteinNudge(); }
 UI.stack = [{ v: S.active ? 'workout' : 'home' }];
 render(true);

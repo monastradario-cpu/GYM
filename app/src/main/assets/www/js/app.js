@@ -149,22 +149,26 @@ VIEWS.home = () => {
       '<button class="btn ghost wide" data-act="quickStart" data-k="q_mob7">' + ic('run') + 'Mobilità guidata (7 min)</button>' +
       '<button class="btn big ghost" data-act="tab" data-v="schede">' + ic('list') + 'Scegli una scheda</button></div>';
   }
-  return header('GYM', { sub: fmtDateLong(now) }) + '<div class="pad">' + todayCard +
-    (typeof homeTopCards === 'function' ? homeTopCards() : '') +
-    cycleCard() +
-    breakCard() +
-    homeKcalCard() +
-    '<div class="grid2">' +
-      '<button class="tile" data-act="startEmpty">' + ic('plus') + '<b>Allenamento vuoto</b><small>Aggiungi gli esercizi mentre vai</small></button>' +
-      '<button class="tile accent" data-act="tab" data-v="coach">' + ic('coach') + '<b>Crea con il Coach</b><small>Scegli muscoli e attrezzi</small></button>' +
-    '</div>' +
+  // in alto solo l'allenamento di oggi e le 2 cose più importanti; il resto in "Altro per oggi"
+  const top = typeof homePriority === 'function' ? homePriority() : [];
+  const trainer = homeTrainerCards(t, doneToday);
+  const weekCard = '' +
     '<div class="card"><div class="card-h"><h3>Questa settimana</h3><span class="muted">' + ws.count + ' / ' + S.profile.days.length + ' allenamenti</span></div>' +
       '<div class="week">' + week.map(d => {
         const k = dayKey(d), planned = S.profile.days.includes(d.getDay()), done = trained.has(k), today = k === todayKey();
         return '<div class="wd ' + (done ? 'done ' : '') + (planned ? 'plan ' : '') + (today ? 'today' : '') + '"><small>' + WEEKDAYS[d.getDay()][0] + '</small><i>' + (done ? ic('check') : d.getDate()) + '</i></div>';
       }).join('') + '</div>' +
       '<div class="stats3"><div><b>' + fmtDur(ws.time) + '</b><small>tempo</small></div><div><b>' + (ws.vol >= 1000 ? fmtKg(Math.round(ws.vol / 100) / 10) + ' t' : Math.round(ws.vol) + ' kg') + '</b><small>volume</small></div><div><b>' + Math.round(ws.cardioMin) + '<small>/150</small> min</b><small>cardio (OMS)</small></div></div>' + weekVolumeNote() +
+    '</div>';
+  const more = top.slice(2).join('') + cycleCard() + breakCard() +
+    '<div class="grid2">' +
+      '<button class="tile" data-act="startEmpty">' + ic('plus') + '<b>Allenamento vuoto</b><small>Aggiungi gli esercizi mentre vai</small></button>' +
+      '<button class="tile accent" data-act="tab" data-v="coach">' + ic('coach') + '<b>Crea con il Coach</b><small>Scegli muscoli e attrezzi</small></button>' +
     '</div>' +
+    '<button class="btn ghost wide" data-act="cardio">' + ic('run') + 'Registra cardio</button>' + trainer;
+  return header('GYM', { sub: fmtDateLong(now) }) + '<div class="pad">' + todayCard +
+    top.slice(0, 2).join('') +
+    homeKcalCard() +
     '<div class="grid2">' +
       '<div class="card mini"><div class="mini-h">' + ic('scale') + 'Peso</div><b class="big-num">' + (w ? fmtKg(w.kg) + '<small> kg</small>' : '—') + '</b>' +
         (w && w0 ? '<small class="' + (w.kg <= w0.kg ? 'good' : 'muted') + '">' + (w.kg - w0.kg > 0 ? '+' : '') + fmtKg(Math.round((w.kg - w0.kg) * 10) / 10) + ' kg</small>' : '<small class="muted">' + (w ? fmtDate(w.d) : 'non registrato') + '</small>') +
@@ -173,8 +177,9 @@ VIEWS.home = () => {
         '<div class="progress water-bar"><i style="width:' + Math.min(100, 100 * water / wg) + '%"></i></div>' +
         '<div class="row water-row"><button class="btn sm ghost" data-act="water" data-d="-250">−</button><button class="btn sm" data-act="water" data-d="250">+250 ml</button><button class="btn sm ghost" data-act="water" data-d="500">+500 ml</button></div></div>' +
     '</div>' +
-    '<button class="btn ghost wide" data-act="cardio">' + ic('run') + 'Registra cardio</button>' +
-    homeTrainerCards(t, doneToday) +
+    weekCard +
+    '<button class="more-h" data-act="homeMore">' + (UI.homeMore ? 'Mostra meno' : 'Altro per oggi: percorso, pause attive, consigli') + ' <span>' + (UI.homeMore ? '▴' : '▾') + '</span></button>' +
+    (UI.homeMore ? '<div class="home-more">' + more + '</div>' : '') +
     '</div>';
 };
 

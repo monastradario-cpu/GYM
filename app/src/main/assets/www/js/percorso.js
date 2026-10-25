@@ -358,13 +358,12 @@ startWorkout = function (t) {
 };
 
 /* ---------- home: percorso, controllo di fase, obiettivi ---------- */
+function pathInviteCard() { return pathOn() ? '' : '<button class="card trainer" data-act="ppStart"><div class="eyebrow">' + ic('sparkle', 'inline') + 'Nuovo</div><p><b>Crea il tuo percorso su misura</b><br><small class="muted">Fisico, stile di vita, dolori e obiettivi: 12 settimane costruite per te.</small></p></button>'; }
+function checkpointCard() { const due = checkpointDue(); return due ? '<button class="card trainer" data-act="go" data-v="checkpoint"><div class="eyebrow">' + ic('chart', 'inline') + 'Controllo di fase</div><p><b>Fine fase ' + (due.ph - 1 || 3) + ': facciamo il punto</b><br><small class="muted">Peso, girovita e progressi: aggiorno il percorso.</small></p></button>' : ''; }
 const _homeCards = homeTrainerCards2;
 homeTrainerCards2 = function (t, doneToday) {
   let out = '';
-  if (!pathOn()) out += '<button class="card trainer" data-act="ppStart"><div class="eyebrow">' + ic('sparkle', 'inline') + 'Nuovo</div><p><b>Crea il tuo percorso su misura</b><br><small class="muted">Fisico, stile di vita, dolori e obiettivi: 12 settimane costruite per te.</small></p></button>';
-  else {
-    const due = checkpointDue();
-    if (due) out += '<button class="card trainer" data-act="go" data-v="checkpoint"><div class="eyebrow">' + ic('chart', 'inline') + 'Controllo di fase</div><p><b>Fine fase ' + (due.ph - 1 || 3) + ': facciamo il punto</b><br><small class="muted">Peso, girovita e progressi: aggiorno il percorso.</small></p></button>';
+  if (pathOn()) {
     const gs = goalStatus();
     if (gs.length) out += '<button class="card" data-act="go" data-v="goals"><div class="eyebrow">' + ic('chart', 'inline') + 'I tuoi traguardi</div>' + gs.slice(0, 3).map(g => '<div class="goal-l"><b>' + esc(g.t) + '</b>' + (g.pct != null ? '<div class="gbar"><i style="width:' + Math.round(g.pct * 100) + '%"></i></div>' : '') + '<small class="muted">' + esc(g.eta) + '</small></div>').join('') + '</button>';
   }

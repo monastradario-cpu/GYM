@@ -100,6 +100,19 @@ with sync_playwright() as p:
     pg.click("[data-act=wuEnd]"); pg.wait_for_timeout(200)
     res["riscaldamento_chiuso"] = pg.evaluate("!document.querySelector('.wu-card')")
     pg.evaluate("S.active = null; save(true)")
+    # libreria per difficoltà
+    pg.evaluate("UI.lib = { q: '', m: 'petto', eq: '' }; go('library')"); pg.wait_for_timeout(300)
+    pg.click("[data-act=libDiff][data-d='1']"); pg.wait_for_timeout(300); shot(pg, "12_libreria_semplice")
+    res["difficolta"] = pg.evaluate("[1, 2, 3].map(d => EXERCISES.filter(e => diffOf(e) === d).length)")
+    # progressione: piegamenti 3x12 per 2 volte -> gradino dopo
+    pg.evaluate("S.templates[0].items.push(prescribe('piegamenti', 'acc')); [2, 1].forEach(i => S.history.push({ id: 'p' + i, name: 'x', kind: 'scheda', start: Date.now() - i * 864e5 - 7200e3, end: Date.now() - i * 864e5, items: [{ ex: 'piegamenti', sets: [1, 2, 3].map(() => ({ kg: 0, reps: 12, done: true })) }], cardio: [] })); save(true); go('exercise', { id: 'piegamenti' })")
+    pg.wait_for_timeout(400); shot(pg, "13_progressione")
+    res["gradino"] = pg.evaluate("(stepStatus('piegamenti') || {}).to")
+    pg.evaluate("go('home')"); pg.wait_for_timeout(300); shot(pg, "14_home_pulita")
+    pg.click("[data-act=stepSwap]"); pg.wait_for_timeout(300)
+    res["dopo_cambio"] = pg.evaluate("S.templates[0].items.map(i => i.ex).filter(x => x.startsWith('piegamenti'))")
+    res["dopo_rigenera"] = pg.evaluate("regenPath(); S.templates.flatMap(t => t.items.map(i => i.ex)).filter(x => x.startsWith('piegamenti'))")
+    pg.click("[data-act=homeMore]"); pg.wait_for_timeout(300); shot(pg, "15_home_altro")
     pg.context.close()
 
     # 4. riepilogo: domenica 25/10 ore 19
