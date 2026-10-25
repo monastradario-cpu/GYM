@@ -308,10 +308,12 @@ def fisici():
             path = f"{OUT}/fisici/{k}_{sx}.webp"
             if os.path.exists(path) or STOP.is_set():
                 continue
+            # l'ombreggiatura dei muscoli faceva disegnare addominali scolpiti anche a normo e skinny fat
+            shading = "subtle muscle shading" if k == "atletico" else "soft smooth shading, no visible muscle definition, no six-pack"
             clothes = "plain dark grey athletic shorts" + (" and a plain dark grey sports top" if sx == "f" else "") + ", barefoot"
             prompt = (f"Front view, full body, centered. Medical anatomy illustration of an {who} with {desc}, standing upright in a "
                       f"neutral pose, arms relaxed at the sides, feet hip-width apart, calm neutral face. Light grey anatomical skin "
-                      f"with subtle muscle shading, {clothes}. Plain pure white background, whole body from the top of the head to the feet in frame with margin, a single person, no text.")
+                      f"with {shading}, {clothes}. Plain pure white background, whole body from the top of the head to the feet in frame with margin, a single person, no text.")
             for tent in range(3):
                 try:
                     salva_webp(cf_image(prompt, 0), path)

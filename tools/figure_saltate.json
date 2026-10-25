@@ -1,8 +1,8 @@
 {
 "jumping_jack": 2,
-"piegamenti_ginocchia": 1,
+"piegamenti_ginocchia": 2,
 "burpees": 1,
-"calf_corpo": 1,
+"calf_corpo": 2,
 "hip_thrust_man": 2,
 "sedia_muro": 2,
 "alzati_siediti": 2,
@@ -12,5 +12,10 @@
 "piegamenti_scrivania": 1,
 "halo_kettlebell": 1,
 "halo_estensione_sopra_testa": 1,
-"crunch_inverso_trx": 1
+"crunch_inverso_trx": 1,
+"retrazione_scapole": 2,
+"estensione_schiena": 2,
+"ginocchia_petto_fitball": 2,
+"piegamenti_trx": 2,
+"split_squat_trx": 2
 }
