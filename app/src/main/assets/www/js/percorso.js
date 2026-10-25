@@ -215,7 +215,11 @@ function goalStatus() {
     out.push({ k: 'peso', t: 'Peso: ' + fmtKg(w) + ' → ' + fmtKg(G.peso.kg) + ' kg', pct: reached ? 1 : null, eta: reached ? 'Raggiunto!' : wk === Infinity ? 'Al ritmo attuale non ti stai avvicinando: controlla il piano alimentare.' : 'Previsione: ' + weeksText(wk) });
   }
   if (G.forza && G.forza.on && EX[G.forza.ex]) {
-    const tr = exerciseTrend(G.forza.ex), cur = tr.length ? tr[0].e1 : 0, tgt = num(G.forza.kg) || (cur ? Math.round(cur * 1.1 / 2.5) * 2.5 : 0);
+    const tr = exerciseTrend(G.forza.ex), cur = tr.length ? tr[0].e1 : 0;
+    // obiettivo lasciato vuoto: +10% sul massimale delle prime sedute, fissato una volta sola
+    // (se si ricalcolasse ogni volta dall'ultimo massimale, l'obiettivo si allontanerebbe a ogni progresso e non verrebbe mai raggiunto)
+    let tgt = num(G.forza.kg);
+    if (!tgt && cur) { tgt = G.forza.kg = Math.round(cur * 1.1 / 2.5) * 2.5; save(); }
     let eta = cur ? '' : 'Dopo le prime sedute calcolo il punto di partenza.';
     if (cur && tgt) {
       const pts = tr.slice(0, 8).map(h => ({ x: h.date / 864e5, y: h.e1 })).reverse();
