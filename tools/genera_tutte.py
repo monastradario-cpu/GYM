@@ -311,8 +311,11 @@ def fisici():
             # l'ombreggiatura dei muscoli faceva disegnare addominali scolpiti anche a normo e skinny fat
             shading = "subtle muscle shading" if k == "atletico" else "soft smooth shading, no visible muscle definition, no six-pack"
             clothes = "plain dark grey athletic shorts" + (" and a plain dark grey sports top" if sx == "f" else "") + ", barefoot"
-            prompt = (f"Front view, full body, centered. Medical anatomy illustration of an {who} with {desc}, standing upright in a "
-                      f"neutral pose, arms relaxed at the sides, feet hip-width apart, calm neutral face. Light grey anatomical skin "
+            # "anatomy illustration" con pelle anatomica dava tavole muscolari scolpite (skinny fat uomo scartato 2 notti): stile neutro
+            stile = "Medical anatomy illustration" if k == "atletico" else "Clean neutral body-type illustration, not an anatomy chart,"
+            pelle = "Light grey anatomical skin" if k == "atletico" else "Natural light skin"
+            prompt = (f"Front view, full body, centered. {stile} of an {who} with {desc}, standing upright in a "
+                      f"neutral pose, arms relaxed at the sides, feet hip-width apart, calm neutral face. {pelle} "
                       f"with {shading}, {clothes}. Plain pure white background, whole body from the top of the head to the feet in frame with margin, a single person, no text.")
             for tent in range(3):
                 try:
@@ -325,6 +328,11 @@ def fisici():
                     if "4006" in msg or "daily free allocation" in msg:
                         STOP.set(); LOG["fermato"] = msg[:300]; return
                     time.sleep(15)
+
+
+def coppie():
+    """Esercizi con entrambe le figure (inizio e fine) già pronte."""
+    return sum(1 for s in SPEC if os.path.exists(f"{OUT}/{s['id']}-1.webp") and os.path.exists(f"{OUT}/{s['id']}-2.webp"))
 
 
 def main():
@@ -364,8 +372,8 @@ def main():
             if fatti % 30 == 0:
                 print(f"Immagini: {fatti}/{len(todo)} esercizi", flush=True)
                 with LOCK:
-                    git_commit(f"Figure: {len(os.listdir(OUT)) // 2} esercizi disegnati")
-    git_commit(f"Figure: {len(os.listdir(OUT)) // 2} esercizi disegnati")
+                    git_commit(f"Figure: {coppie()} esercizi disegnati")
+    git_commit(f"Figure: {coppie()} esercizi disegnati")
     for i in LOG.get("da_saltare", []):
         SALT[i] = SALT.get(i, 0) + 1
     json.dump(SALT, open(SALT_F, "w"), indent=0)
