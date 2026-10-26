@@ -105,6 +105,11 @@ with sync_playwright() as p:
     forza = pg.evaluate("(() => { const G = S.profile.mgoals, oldG = JSON.stringify(G.forza), oldH = S.history.slice(); G.forza = { on: true, ex: 'panca_piana_bil', kg: 0 }; const it = kg => ({ id: 'f' + kg, name: 'f', kind: 'scheda', start: Date.now() - (100 - kg) * 864e5, end: Date.now(), items: [{ ex: 'panca_piana_bil', sets: [{ kg, reps: 5, done: true }] }], cardio: [] }); S.history.push(it(60)); const a = goalStatus().find(x => x.k === 'forza'); S.history.push(it(70)); const b = goalStatus().find(x => x.k === 'forza'); const r = { prima: a && a.t, dopo: b && b.t, eta: b && b.eta, kg: G.forza.kg }; S.history = oldH; G.forza = JSON.parse(oldG); save(true); return r; })()")
     if not forza.get("eta") == "Raggiunto!":
         errors.append(f"obiettivo di forza: {forza}")
+    # fase Sviluppo: il testo della settimana deve dire +1 serie solo quando la serie in più c'è davvero (sonno scarso/stress alto)
+    sviluppo = pg.evaluate("(() => { const p = S.profile, o = [p.sleep, p.stress], r = []; for (const lr of [false, true]) { p.sleep = lr ? 'h1' : 'h3'; p.stress = lr ? 'alto' : 'basso'; buildPathCycle().w.slice(4, 7).forEach(x => r.push({ lr, add: x.add, piu: /\\+1 serie/.test(x.t) })); } [p.sleep, p.stress] = o; return r; })()")
+    for x in sviluppo:
+        if bool(x["add"]) != x["piu"]:
+            errors.append(f"testo fase Sviluppo incoerente con le serie: {x}")
     # migrazione: chi aveva le schede pronte senza percorso le perde, tiene le sue
     pg.evaluate("localStorage.setItem('gym.v1', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('gym.v1')), { mig23: 0, profile: Object.assign(S.profile, { path: false }), templates: [{ id: 'a', kind: 'scheda', name: 'Full body A', preset: 'fullA', days: [1], items: [] }, { id: 'b', kind: 'scheda', name: 'Mia', days: [], items: [] }] })))")
     pg.reload(); pg.wait_for_timeout(700)

@@ -139,9 +139,9 @@ function buildPathCycle() {
   w.push({ add: 0, rir: 2, t: 'Base · settimana 3: 2 ripetizioni di scorta, carichi in salita.' });
   w.push({ deload: true, t: 'Scarico di fine fase: metà delle serie, stessi carichi. Poi il controllo.' });
   // fase 2
-  w.push({ add: lr ? 0 : 1, rir: 2, t: 'Sviluppo · settimana 1: +1 serie sui principali e complementari.' });
-  w.push({ add: lr ? 0 : 1, rir: 1, t: 'Sviluppo · settimana 2: 1–2 ripetizioni di scorta.' });
-  w.push({ add: 1, rir: 1, t: 'Sviluppo · settimana 3: la più impegnativa della fase.' });
+  w.push({ add: lr ? 0 : 1, rir: 2, t: lr ? 'Sviluppo · settimana 1: stesse serie (con sonno scarso o stress alto il volume sale più tardi), carichi in salita.' : 'Sviluppo · settimana 1: +1 serie sui principali e complementari.' });
+  w.push({ add: lr ? 0 : 1, rir: 1, t: lr ? 'Sviluppo · settimana 2: stesse serie, 1–2 ripetizioni di scorta.' : 'Sviluppo · settimana 2: +1 serie, 1–2 ripetizioni di scorta.' });
+  w.push({ add: 1, rir: 1, t: lr ? 'Sviluppo · settimana 3: +1 serie sui principali e complementari, la più impegnativa della fase.' : 'Sviluppo · settimana 3: +1 serie, la più impegnativa della fase.' });
   w.push({ deload: true, t: 'Scarico di fine fase: metà delle serie. Poi il controllo.' });
   // fase 3
   if (strength) {
