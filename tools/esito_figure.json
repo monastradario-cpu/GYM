@@ -1,33 +1,8 @@
 {
- "ok": [
-  "halo_kettlebell"
- ],
- "errori": {
-  "piegamenti_scrivania": "figura 1 non riuscita",
-  "halo_estensione_sopra_testa": "figura 1 non riuscita",
-  "crunch_inverso_trx": "figura 1 non riuscita"
- },
+ "ok": [],
+ "errori": {},
  "fisici": [
-  "normo_m",
   "skinnyfat_m"
- ],
- "scartate": 10,
- "messaggi": [
-  "piegamenti_scrivania-1: posa non corretta secondo il controllo",
-  "halo_estensione_sopra_testa-1: posa non corretta secondo il controllo",
-  "piegamenti_scrivania-1: posa non corretta secondo il controllo",
-  "halo_estensione_sopra_testa-1: posa non corretta secondo il controllo",
-  "halo_kettlebell-1: posa non corretta secondo il controllo",
-  "crunch_inverso_trx-1: posa non corretta secondo il controllo",
-  "piegamenti_scrivania-1: posa non corretta secondo il controllo",
-  "halo_estensione_sopra_testa-1: posa non corretta secondo il controllo",
-  "crunch_inverso_trx-1: posa non corretta secondo il controllo",
-  "crunch_inverso_trx-1: posa non corretta secondo il controllo"
- ],
- "da_saltare": [
-  "piegamenti_scrivania",
-  "halo_estensione_sopra_testa",
-  "crunch_inverso_trx"
  ],
  "totale_con_figure": "9/718"
 }
