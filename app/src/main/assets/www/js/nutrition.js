@@ -1,6 +1,16 @@
 /* GYM — alimentazione e consigli del personal trainer */
 'use strict';
 
+/* peso di riferimento per proteine e grassi: con BMI sopra 25 (e fisico non atletico) i grammi per kg
+   si calcolano sul peso corretto = peso a BMI 25 + 40% dell'eccesso, perché il grasso in più non richiede
+   proteine; sul peso intero, a 120 kg uscivano oltre 260 g di proteine e i carboidrati finivano a zero */
+function refWeight(w, p) {
+  const h = num(p.height) / 100;
+  if (!w || !h || p.body === 'atletico') return w;
+  const w25 = 25 * h * h;
+  return w > w25 ? Math.round((w25 + 0.4 * (w - w25)) * 10) / 10 : w;
+}
+
 /* fabbisogno stimato (Mifflin-St Jeor) */
 function nutritionTargets() {
   const p = S.profile, w = S.weights.length ? S.weights[S.weights.length - 1].kg : 0;
@@ -12,7 +22,8 @@ function nutritionTargets() {
   const protK = Math.max(...goals.map(g => GOALS[g].protein));
   const out = { w, ready: !!(w && p.height && p.age && p.sex), goals, kcalAdj, protK, pal: act };
   if (w) {
-    out.protein = Math.round(w * protK);
+    out.ref = refWeight(w, p);
+    out.protein = Math.round(out.ref * protK);
     out.water = Math.round(w * 35 / 100) / 10; // litri
     out.waterTrain = 0.5;
   }
@@ -21,7 +32,7 @@ function nutritionTargets() {
     out.bmr = Math.round(bmr);
     out.tdee = Math.round(bmr * act);
     out.kcal = Math.round((out.tdee + kcalAdj) / 10) * 10;
-    out.fat = Math.round(w * 0.9);
+    out.fat = Math.round(out.ref * 0.9);
     out.carbs = Math.max(0, Math.round((out.kcal - out.protein * 4 - out.fat * 9) / 4));
   }
   return typeof applyDietPlan === 'function' ? applyDietPlan(out, p) : out;

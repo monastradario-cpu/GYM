@@ -54,7 +54,8 @@ function applyDietPlan(out, p) {
   if (!dietActive() || !out.w) return out;
   const D = dietState();
   const bf = typeof lastBF === 'function' ? lastBF() : null;
-  out.protein = bf ? Math.max(Math.round(out.w * 1.8), Math.round(out.w * (1 - bf.bf / 100) * 2.5)) : Math.round(out.w * 2.2); // 2,3–3,1 g/kg di massa magra
+  const ref = out.ref || out.w; // peso corretto se il BMI è sopra 25 (vedi refWeight)
+  out.protein = bf ? Math.max(Math.round(ref * 1.8), Math.round(out.w * (1 - bf.bf / 100) * 2.5)) : Math.round(ref * 2.2); // 2,3–3,1 g/kg di massa magra
   out.diet = D;
   out.kgWeek = Math.round(out.w * D.rate / 100 * 100) / 100;
   if (out.ready) {
@@ -64,8 +65,8 @@ function applyDietPlan(out, p) {
     out.kcal = Math.max(out.bmr, Math.round((out.tdee - deficit) / 10) * 10);
     out.floor = out.kcal === out.bmr;
     const style = DIETS[D.style] || DIETS.mediterranea;
-    if (style.carbs) { out.carbs = style.carbs; out.fat = Math.max(Math.round(out.w * 0.6), Math.round((out.kcal - out.protein * 4 - out.carbs * 4) / 9)); }
-    else { out.fat = Math.max(Math.round(out.w * 0.6), Math.round(out.kcal * style.fatPct / 9)); out.carbs = Math.max(0, Math.round((out.kcal - out.protein * 4 - out.fat * 9) / 4)); }
+    if (style.carbs) { out.carbs = style.carbs; out.fat = Math.max(Math.round(ref * 0.6), Math.round((out.kcal - out.protein * 4 - out.carbs * 4) / 9)); }
+    else { out.fat = Math.max(Math.round(ref * 0.6), Math.round(out.kcal * style.fatPct / 9)); out.carbs = Math.max(0, Math.round((out.kcal - out.protein * 4 - out.fat * 9) / 4)); }
     out.kcalAdj = -deficit;
   }
   return out;
