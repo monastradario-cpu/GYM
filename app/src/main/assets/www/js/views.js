@@ -18,6 +18,8 @@ function coachPool(seed) {
     // niente esercizi che caricano le zone doloranti indicate nel percorso
     const pain = p.pain || [];
     if (pain.length && typeof painHit === 'function') { const safe = pool.filter(e => !pain.some(z => painHit(e, z))); if (safe.length) pool = safe; }
+    // con BMI alto (percorso) niente salti
+    if (typeof pathOn === 'function' && pathOn() && heavyBody()) { const safe = pool.filter(e => !JUMPS.test(e.n)); if (safe.length) pool = safe; }
     pool = pool.map(e => ({ e, r: rnd() + (e.core ? 0.7 : 0) + (e.comp ? 0.6 : 0) + (goalsOf().includes('forza') && e.comp ? 0.5 : 0) + (p.level === 'principiante' && e.eq === 'macchinari' ? 0.4 : 0) })).sort((a, b) => b.r - a.r).map(x => x.e);
     // movimenti diversi prima, poi il resto
     const seen = new Set(), first = [], rest = [];
@@ -75,7 +77,10 @@ function coachGenerate(seed) {
   const timeAvail = Math.max(15, T - 8 - 4);
   let nSt = Math.max(5, Math.min(10, Math.round(T / 7)));
   const st = pool.slice(0, nSt).map(i => { const e = EX[i.ex]; return e.type === 'time' ? { ex: i.ex, secs: 40, reps: 0 } : { ex: i.ex, reps: i.role === 'acc' || i.role === 'core' ? 15 : 12, secs: 0 }; });
-  const cardioSt = coachEquip().includes('corpo') ? (lvl === 'principiante' ? 'jumping_jack' : 'mountain_climber') : coachEquip().includes('manubri') ? 'swing_man' : null;
+  // stazione cardio: con il percorso deve andare bene per te (niente salti con dolori alle ginocchia o BMI alto, niente appoggio sulle mani con dolori ai polsi)
+  const cardioOk = id => EX[id] && !(typeof pathOn === 'function' && pathOn() && !okFor(id));
+  const cardioList = coachEquip().includes('corpo') ? (lvl === 'principiante' ? ['jumping_jack', 'step_up_ginocchio_alto', 'mountain_climber'] : ['mountain_climber', 'jumping_jack', 'step_up_ginocchio_alto']) : [];
+  const cardioSt = cardioList.concat(coachEquip().includes('manubri') ? ['swing_man'] : []).find(cardioOk) || null;
   if (cardioSt && goals.some(g => g === 'dimagrimento' || g === 'tonificazione' || g === 'benessere')) st.splice(Math.min(3, st.length), 0, { ex: cardioSt, secs: 40, reps: 0 });
   const work = 45, restEx = lvl === 'principiante' ? 20 : 15, restRound = 90;
   const perRound = st.length * (work + restEx);

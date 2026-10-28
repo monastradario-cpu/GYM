@@ -25,7 +25,7 @@ const HOME_EQ = ['corpo', 'manubri', 'elastici', 'kettlebell'];
 const needsBar = e => e.pat === 'tirata_vert' || /sbarra|trx|anelli|fune|rematore inverso|parallele|glute-ham|nordic/i.test(e.n);
 const homeEq = () => ['corpo'].concat((S.profile.homeEq || HOME_EQ).filter(x => x !== 'corpo'));
 const PAIN_ZONES = { schiena: 'Schiena / lombari', spalle: 'Spalle', ginocchia: 'Ginocchia', polsi: 'Polsi', gomiti: 'Gomiti', anche: 'Anche', collo: 'Collo' };
-const JUMPS = /salt|jump|burpee|skip|balz|jack|plio|sprint|box jump|scatt/i;
+const JUMPS = /salt|jump|burpee|skip|balz|jack(?!knife)|plio|sprint|box jump|scatt/i; // jackknife è un esercizio per l'addome, non un salto
 
 /* esercizi da evitare per zona dolorante (schema di movimento + nome) */
 function painHit(e, z) {
@@ -33,7 +33,7 @@ function painHit(e, z) {
   if (z === 'schiena') return ['stacco', 'hinge', 'olimpico', 'swing'].includes(p) || /good morning|iperestension/i.test(n) || (e.eq === 'bilanciere' && (p === 'squat' || p === 'tirata_orizz'));
   if (z === 'spalle') return ['spinta_vert', 'spinta_vert_giu', 'olimpico', 'pullover'].includes(p) || /dietro la nuca|tirat\w* al mento|ghigliottina|dip/i.test(n);
   if (z === 'ginocchia') return ['affondo', 'estensione_ginocchio'].includes(p) || /sissy|pistol|una gamba|bulgar|leg extension/i.test(n) || JUMPS.test(n);
-  if (z === 'polsi') return p === 'polso' || /piegament|push-up|front squat|plank su mani/i.test(n);
+  if (z === 'polsi') return p === 'polso' || /piegament|push-up|front squat|plank su mani|mountain climber|burpee/i.test(n);
   if (z === 'gomiti') return /french|skull|dietro la testa|dip/i.test(n);
   if (z === 'anche') return ['abduzione', 'affondo', 'olimpico'].includes(p) || /sumo/i.test(n);
   if (z === 'collo') return ['collo', 'scrollata'].includes(p) || /dietro la nuca/i.test(n);

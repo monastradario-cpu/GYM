@@ -2,6 +2,7 @@
 Uso: python tools/test_percorso.py <cartella_screenshot>"""
 import http.server
 import json
+import re
 import os
 import socketserver
 import sys
@@ -25,6 +26,7 @@ class H(http.server.SimpleHTTPRequestHandler):
 srv = socketserver.TCPServer(("127.0.0.1", 0), H)
 threading.Thread(target=srv.serve_forever, daemon=True).start()
 errors = []
+JUMP = re.compile(r"jumping_jack|burpee|skip|squat_jump|salt")
 with sync_playwright() as p:
     b = p.chromium.launch()
     pg = b.new_page(viewport={"width": 412, "height": 915}, device_scale_factor=2)
@@ -114,10 +116,14 @@ with sync_playwright() as p:
     macro = pg.evaluate("(() => { const p = S.profile, o = [p.sex, p.height, p.age, p.body, p.goals], W = S.weights.slice(); Object.assign(p, { sex: 'f', height: 165, age: 40, body: 'obeso', goals: ['dimagrimento'] }); S.weights.push({ d: Date.now(), kg: 120 }); const n = nutritionTargets(); p.body = 'atletico'; S.weights[S.weights.length - 1].kg = 90; const a = nutritionTargets(); [p.sex, p.height, p.age, p.body, p.goals] = o; S.weights = W; return { prot: n.protein, fat: n.fat, carbs: n.carbs, kcal: n.kcal, protAtl: a.protein }; })()")
     if not (150 <= macro["prot"] <= 210 and macro["carbs"] >= 80 and macro["protAtl"] == round(90 * 2.2)):
         errors.append(f"macro con BMI alto: {macro}")
+    # trainer (circuito per dimagrire): la stazione cardio deve rispettare il percorso (niente jumping jack con dolori alle ginocchia o BMI alto)
+    cardio = pg.evaluate("(() => { const p = S.profile, o = JSON.stringify({ pain: p.pain, level: p.level, goals: p.goals, body: p.body }), oc = UI.coach, r = {}; Object.assign(p, { level: 'principiante', goals: ['dimagrimento'], body: 'normo' }); for (const [k, pain, body] of [['libero', [], 'normo'], ['ginocchia', ['ginocchia'], 'normo'], ['obeso', [], 'obeso'], ['ginocchia_polsi', ['ginocchia', 'polsi'], 'normo']]) { p.pain = pain; p.body = body; UI.coach = { muscles: ['quadricipiti', 'petto'], eq: ['corpo'], dur: 40, result: null }; coachGenerate(7); r[k] = UI.coach.result.options[2].items.map(i => i.ex); } Object.assign(p, JSON.parse(o)); UI.coach = oc; return r; })()")
+    if "jumping_jack" not in cardio["libero"] or any("jumping_jack" in cardio[k] or any(JUMP.search(x) for x in cardio[k]) for k in ("ginocchia", "obeso")) or "mountain_climber" in cardio["ginocchia_polsi"]:
+        errors.append(f"stazione cardio del trainer: {cardio}")
     # migrazione: chi aveva le schede pronte senza percorso le perde, tiene le sue
     pg.evaluate("localStorage.setItem('gym.v1', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('gym.v1')), { mig23: 0, profile: Object.assign(S.profile, { path: false }), templates: [{ id: 'a', kind: 'scheda', name: 'Full body A', preset: 'fullA', days: [1], items: [] }, { id: 'b', kind: 'scheda', name: 'Mia', days: [], items: [] }] })))")
     pg.reload(); pg.wait_for_timeout(700)
     mig = pg.evaluate("S.templates.map(t => t.name)")
     pg.evaluate("UI.schede = 'schede'; go('schede')"); pg.wait_for_timeout(300); shot("21_schede_senza_percorso")
     b.close()
-print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso, "forza": forza, "macro": macro}, ensure_ascii=False, indent=1))
+print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso, "forza": forza, "macro": macro, "cardio_trainer": cardio}, ensure_ascii=False, indent=1))
