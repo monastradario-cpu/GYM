@@ -149,9 +149,11 @@ function buildPathCycle() {
     w.push({ sets: 4, reps: 4, pct: 0.80, rir: 2, t: 'Intensificazione · 4×4 all\'80%.' });
     w.push({ sets: 3, reps: 3, pct: 0.85, rir: 2, t: 'Intensificazione · 3×3 all\'85%, tecnica perfetta.' });
   } else {
-    w.push({ add: 1, rir: 1, t: 'Intensificazione · settimana 1: carichi più alti, 1 ripetizione di scorta.' });
-    w.push({ add: 1, rir: isOlder() ? 1 : 0, t: 'Intensificazione · settimana 2: l\'ultima serie fino quasi al cedimento.' });
-    w.push({ add: 0, rir: 1, t: 'Intensificazione · settimana 3: mantieni i carichi migliori.' });
+    // il testo dice +1 serie solo dove la serie in più c'è davvero, e "cedimento" solo con RIR 0 (dopo i 50 anni resta 1 di scorta)
+    const old = isOlder();
+    w.push({ add: 1, rir: 1, t: 'Intensificazione · settimana 1: +1 serie sui principali e complementari, carichi più alti, 1 ripetizione di scorta.' });
+    w.push({ add: 1, rir: old ? 1 : 0, t: old ? 'Intensificazione · settimana 2: +1 serie, l\'ultima fino quasi al cedimento (1 ripetizione di scorta).' : 'Intensificazione · settimana 2: +1 serie, l\'ultima fino al cedimento tecnico: ti fermi quando la tecnica cede.' });
+    w.push({ add: 0, rir: 1, t: 'Intensificazione · settimana 3: torni alle serie normali e mantieni i carichi migliori.' });
   }
   w.push({ deload: true, t: 'Scarico finale e controllo dei 3 mesi: si riparte con un nuovo percorso.' });
   return { n: 'Il tuo percorso', d: '12 settimane in 3 fasi: Base, Sviluppo, Intensificazione. Ogni 4 settimane un controllo.', w };

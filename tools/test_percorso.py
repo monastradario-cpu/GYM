@@ -112,6 +112,11 @@ with sync_playwright() as p:
     for x in sviluppo:
         if bool(x["add"]) != x["piu"]:
             errors.append(f"testo fase Sviluppo incoerente con le serie: {x}")
+    # fase Intensificazione (senza obiettivo forza): +1 serie e "cedimento" nel testo coerenti con serie e RIR, anche dopo i 50 anni
+    intens = pg.evaluate("(() => { const p = S.profile, o = [p.age, p.goals], r = []; p.goals = ['massa']; for (const age of [30, 60]) { p.age = age; buildPathCycle().w.slice(8, 11).forEach(x => r.push({ age, add: x.add, rir: x.rir, piu: /\\+1 serie/.test(x.t), ced: /cedimento tecnico/.test(x.t) })); } [p.age, p.goals] = o; return r; })()")
+    for x in intens:
+        if bool(x["add"]) != x["piu"] or (x["rir"] == 0) != x["ced"]:
+            errors.append(f"testo fase Intensificazione incoerente: {x}")
     # proteine e grassi con BMI alto: calcolati sul peso corretto, i carboidrati non devono finire a zero
     macro = pg.evaluate("(() => { const p = S.profile, o = [p.sex, p.height, p.age, p.body, p.goals], W = S.weights.slice(); Object.assign(p, { sex: 'f', height: 165, age: 40, body: 'obeso', goals: ['dimagrimento'] }); S.weights.push({ d: Date.now(), kg: 120 }); const n = nutritionTargets(); p.body = 'atletico'; S.weights[S.weights.length - 1].kg = 90; const a = nutritionTargets(); [p.sex, p.height, p.age, p.body, p.goals] = o; S.weights = W; return { prot: n.protein, fat: n.fat, carbs: n.carbs, kcal: n.kcal, protAtl: a.protein }; })()")
     if not (150 <= macro["prot"] <= 210 and macro["carbs"] >= 80 and macro["protAtl"] == round(90 * 2.2)):
