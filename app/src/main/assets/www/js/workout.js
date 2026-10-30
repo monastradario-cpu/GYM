@@ -12,9 +12,12 @@ function newItem(src, kind) {
   const cy = kind !== 'circuito' && typeof cycleInfo === 'function' ? cycleInfo() : { on: false };
   if (cy.on && !cy.deload && (it.role === 'main' || it.role === 'sec')) {
     const mx = cy.pct && it.role === 'main' && e.type !== 'time' ? maxOf(src.ex) : null;
-    if (mx) { const step = stepFor(src.ex), kg = Math.round(mx.kg * cy.pct / step) * step; n = cy.sets; it.rmin = it.rmax = cy.reps; tg = Array.from({ length: n }, () => ({ kg, reps: cy.reps })); }
+    // giornata no dal check-in (src.light): 5% in meno sul carico a percentuale
+    if (mx) { const step = stepFor(src.ex), kg = Math.round(mx.kg * (cy.pct - (src.light ? 0.05 : 0)) / step) * step; n = cy.sets; it.rmin = it.rmax = cy.reps; tg = Array.from({ length: n }, () => ({ kg, reps: cy.reps })); }
     else n += cy.setsAdd;
   }
+  // check-in con poco sonno o poca energia: una serie in meno (mai sotto 2), dopo le serie aggiunte dal ciclo
+  if (src.less && kind !== 'circuito') n = Math.max(Math.min(2, n), n - src.less);
   if (deloadActive() && last) tg = last.sets.map(s => ({ kg: num(s.kg), reps: it.rmin })); // scarico: stesso carico, meno serie, lontano dal cedimento
   for (let i = 0; i < n; i++) {
     const ls = last && (last.sets[i] || last.sets[last.sets.length - 1]);

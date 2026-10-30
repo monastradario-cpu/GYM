@@ -352,9 +352,11 @@ startWorkout = function (t) {
   const low = (ck.sleep === 0 ? 1 : 0) + (ck.energy === 0 ? 1 : 0);
   S.checkins = (S.checkins || []).concat([{ d: Date.now(), sleep: ck.sleep, energy: ck.energy, pain: ck.pain }]).slice(-120);
   // dolori di oggi: sostituisci gli esercizi della zona; giornata no: una serie in meno, lontano dal cedimento
-  const t2 = Object.assign({}, t, { items: t.items.map(it => { const id = ck.pain.length ? adaptEx(it.ex, ck.pain) : it.ex; return Object.assign({}, it, { ex: id, sets: low ? Math.max(Math.min(2, it.sets || 3), (it.sets || 3) - (low >= 2 || it.role !== 'main' ? 1 : 0)) : it.sets }); }) });
+  // la serie in meno si toglie in newItem, dopo le serie del ciclo: così vale anche nelle settimane a percentuale (5×5, 4×4, 3×3),
+  // dove prima il ciclo rimetteva tutte le serie e lo stesso carico anche in una giornata no
+  const t2 = Object.assign({}, t, { items: t.items.map(it => { const id = ck.pain.length ? adaptEx(it.ex, ck.pain) : it.ex; return Object.assign({}, it, { ex: id, less: low && (low >= 2 || it.role !== 'main') ? 1 : 0, light: low >= 2 }); }) });
   _startWorkout(t2);
-  if (low >= 2) setTimeout(() => toast('Seduta leggera: una serie in meno e 3–4 ripetizioni di scorta. Va bene così.'), 400);
+  if (low >= 2) setTimeout(() => toast('Seduta leggera: una serie in meno e 3–4 ripetizioni di scorta' + (cycleInfo().pct ? ', carico al 5% in meno' : '') + '. Va bene così.'), 400);
   else if (low) setTimeout(() => toast('Oggi recuperi un po\' meno: una serie in meno sui complementari.'), 400);
   if (ck.pain.length) setTimeout(() => toast('Esercizi della zona dolorante sostituiti con alternative.'), 2600);
 };
