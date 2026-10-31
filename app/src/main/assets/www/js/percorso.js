@@ -354,9 +354,13 @@ startWorkout = function (t) {
   // dolori di oggi: sostituisci gli esercizi della zona; giornata no: una serie in meno, lontano dal cedimento
   // la serie in meno si toglie in newItem, dopo le serie del ciclo: così vale anche nelle settimane a percentuale (5×5, 4×4, 3×3),
   // dove prima il ciclo rimetteva tutte le serie e lo stesso carico anche in una giornata no
-  const t2 = Object.assign({}, t, { items: t.items.map(it => { const id = ck.pain.length ? adaptEx(it.ex, ck.pain) : it.ex; return Object.assign({}, it, { ex: id, less: low && (low >= 2 || it.role !== 'main') ? 1 : 0, light: low >= 2 }); }) });
+  // seduta a casa scelta dal check-in ("Oggi sono a casa"): le sostituzioni per i dolori restano tra gli attrezzi di casa
+  const adapt = id => ck.home ? asHome(() => adaptEx(id, ck.pain)) : adaptEx(id, ck.pain);
+  const t2 = Object.assign({}, t, { items: t.items.map(it => { const id = ck.pain.length ? adapt(it.ex) : it.ex; return Object.assign({}, it, { ex: id, less: low && (low >= 2 || it.role !== 'main') ? 1 : 0, light: low >= 2 }); }) });
   _startWorkout(t2);
-  if (low >= 2) setTimeout(() => toast('Seduta leggera: una serie in meno e 3–4 ripetizioni di scorta' + (cycleInfo().pct ? ', carico al 5% in meno' : '') + '. Va bene così.'), 400);
+  // nei circuiti a tempo (funzionale, mobilità, routine rapide) le serie non cambiano: niente avviso di serie in meno
+  if ((t.kind || 'scheda') !== 'scheda') { if (low) setTimeout(() => toast('Oggi recuperi un po\' meno: vai con calma, senza forzare.'), 400); }
+  else if (low >= 2) setTimeout(() => toast('Seduta leggera: una serie in meno e 3–4 ripetizioni di scorta' + (cycleInfo().pct ? ', carico al 5% in meno' : '') + '. Va bene così.'), 400);
   else if (low) setTimeout(() => toast('Oggi recuperi un po\' meno: una serie in meno sui complementari.'), 400);
   if (ck.pain.length) setTimeout(() => toast('Esercizi della zona dolorante sostituiti con alternative.'), 2600);
 };
@@ -626,6 +630,12 @@ function asHome(fn) {
   try { return fn(); } finally { p.place = old; }
 }
 /* stessa scheda di oggi con esercizi fattibili a casa: stesso muscolo e, se possibile, stesso movimento */
+/* esegue fn come se avessi anche i dolori segnalati oggi nel check-in */
+function withPain(zones, fn) {
+  if (!zones || !zones.length) return fn();
+  const p = S.profile, old = p.pain; p.pain = (old || []).concat(zones.filter(z => !(old || []).includes(z)));
+  try { return fn(); } finally { p.pain = old; }
+}
 function homeVersion(t) {
   return asHome(() => {
     const used = new Set(), items = [];
@@ -668,14 +678,15 @@ function homeSheet() {
     '<div class="field"><span>Cosa hai a casa (il corpo libero c\'è sempre)</span><div class="chips wrap">' +
       Object.keys(HOME_EQ_N).map(k => chip(HOME_EQ_N[k], eq.includes(k), 'homeEq', 'data-k="' + k + '"')).join('') + '</div></div>' +
     opts.map((o, i) => {
-      const tpl = o.quick ? null : o.mk(), min = o.quick ? quickMinutes(o.quick) : templateMinutes(tpl);
+      const tpl = o.quick ? null : withPain(UI.ckHome && UI.ckHome.pain, o.mk), min = o.quick ? quickMinutes(o.quick) : templateMinutes(tpl);
       const prev = tpl ? '<div class="ex-preview">' + tpl.items.slice(0, 5).map(x => '<span>' + exLine(x.ex) + '</span>').join('') + (tpl.items.length > 5 ? '<span>+' + (tpl.items.length - 5) + '</span>' : '') + '</div>' : '';
       return '<div class="card tpl"><h3>' + esc(o.n) + '</h3><div class="muted small">circa ' + min + ' min</div><p class="small muted">' + esc(o.d) + '</p>' + prev +
         '<button class="btn' + (i ? ' ghost' : '') + '" data-act="homeGo" data-k="' + o.k + '">' + ic('play') + 'Inizia</button></div>';
     }).join('');
 }
 Object.assign(ACT, {
-  homeOpen: d => { UI.homeT = S.templates.find(x => x.id === d.id) || todayTemplate() || null; openSheet(homeSheet); },
+  // il check-in fatto prima di "Oggi sono a casa" resta valido (dolori, sonno, energia); aperto dalla home non c'è
+  homeOpen: d => { if (!d.ck) UI.ckHome = null; UI.homeT = S.templates.find(x => x.id === d.id) || todayTemplate() || null; openSheet(homeSheet); },
   homeEq: d => {
     const p = S.profile, cur = homeEq().filter(x => x !== 'corpo');
     p.homeEq = cur.includes(d.k) ? cur.filter(x => x !== d.k) : cur.concat([d.k]); save();
@@ -684,8 +695,12 @@ Object.assign(ACT, {
   homeGo: d => {
     const o = homeOptions(UI.homeT).find(x => x.k === d.k); if (!o) return;
     closeSheet();
-    if (o.quick) { startWorkout(makeQuick(o.quick)); return; }
-    UI.ck = null; _startWorkout(o.mk());
+    const ck = UI.ckHome; UI.ckHome = null;
+    const tpl = o.quick ? makeQuick(o.quick) : withPain(ck && ck.pain, o.mk);
+    if (!ck) { if (o.quick) startWorkout(tpl); else { UI.ck = null; _startWorkout(tpl); } return; }
+    // prima i dolori di oggi si perdevano: la scheda a casa rimetteva gli esercizi della zona e il check-in non veniva salvato
+    UI.ck = Object.assign({}, ck, { t: tpl, ready: true, home: true }); startWorkout(tpl);
+    if (typeof painAlarmApply === 'function') { const before = (S.painAuto || []).length; painAlarmApply(); if ((S.painAuto || []).length > before) setTimeout(() => toast('Stesso dolore per 3 volte: senti un medico o un fisioterapista. Esercizi della zona tolti.'), 3200); }
   }
 });
 /* anche dal check-in: "oggi sono a casa" */
@@ -694,7 +709,7 @@ checkinSheet = function () {
   const t = UI.ck && UI.ck.t;
   return _checkinSheet() + ((S.profile.place || 'palestra') !== 'casa' && t && t.kind === 'scheda' ? '<button class="btn ghost wide" data-act="ckHome">' + ic('home') + 'Oggi sono a casa</button>' : '');
 };
-ACT.ckHome = () => { const t = UI.ck && UI.ck.t; UI.ck = null; closeSheet(); setTimeout(() => ACT.homeOpen({ id: t && t.id }), 250); };
+ACT.ckHome = () => { const c = UI.ck || {}, t = c.t; UI.ckHome = { sleep: c.sleep, energy: c.energy, pain: (c.pain || []).slice() }; UI.ck = null; closeSheet(); setTimeout(() => ACT.homeOpen({ id: t && t.id, ck: 1 }), 250); };
 
 /* aggiornamento dalla versione con le schede pronte: via quelle generiche, restano quelle create da te */
 if (!S.mig23) {

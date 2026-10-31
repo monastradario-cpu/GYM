@@ -93,6 +93,16 @@ with sync_playwright() as p:
     pg.click("[data-act=homeGo][data-k=scheda]"); pg.wait_for_timeout(500); shot("19e_scheda_casa")
     casa_att = pg.evaluate("S.active ? S.active.items.map(i => i.ex) : null")
     pg.evaluate("S.active = null; S.profile.homeEq = null; save(true)")
+    # check-in con dolore alle ginocchia e poi "Oggi sono a casa": la scheda a casa tiene conto del dolore e il check-in viene salvato
+    pg.evaluate("S.checkins = []; startWorkout(todayTemplate())"); pg.wait_for_timeout(400)
+    pg.evaluate("UI.ck.pain = ['ginocchia']; UI.ck.sleep = 0; $('#sheet-body').innerHTML = checkinSheet()"); pg.wait_for_timeout(200)
+    pg.click("[data-act=ckHome]"); pg.wait_for_timeout(700); shot("19f_casa_dopo_checkin")
+    casa_dolore_anteprima = pg.evaluate("homeOptions(UI.homeT)[0].mk ? withPain(UI.ckHome.pain, homeOptions(UI.homeT)[0].mk).items.filter(i => painHit(EX[i.ex], 'ginocchia')).map(i => i.ex) : null")
+    pg.click("[data-act=homeGo][data-k=scheda]"); pg.wait_for_timeout(500)
+    casa_dolore = pg.evaluate("({ attivo: S.active ? S.active.items.map(i => i.ex) : null, ginocchia: S.active ? S.active.items.filter(i => painHit(EX[i.ex], 'ginocchia')).map(i => i.ex) : null, fuori_casa: S.active ? S.active.items.filter(i => !['corpo', 'manubri', 'elastici', 'kettlebell'].includes(EX[i.ex].eq)).map(i => i.ex) : null, checkin: (S.checkins || []).slice(-1)[0] || null, dolori_profilo: S.profile.pain })")
+    if not casa_dolore["attivo"] or casa_dolore["ginocchia"] or casa_dolore_anteprima or casa_dolore["fuori_casa"] or not casa_dolore["checkin"] or casa_dolore["checkin"]["pain"] != ["ginocchia"] or "ginocchia" in (casa_dolore["dolori_profilo"] or []):
+        errors.append(f"check-in e poi a casa: {casa_dolore} anteprima {casa_dolore_anteprima}")
+    pg.evaluate("S.active = null; S.checkins = []; save(true)")
     # traguardo: costanza raggiunta -> nuovo traguardo e schede aggiornate
     prima = pg.evaluate("S.templates.filter(t => t.preset && t.kind === 'scheda').map(t => t.items.map(i => i.ex + ':' + i.sets).join(','))")
     pg.evaluate("S.profile.mgoals.costanza = { on: true, perWeek: 1, weeks: 1 }; S.path.start = Date.now() - 3 * 864e5; S.history.push({ id: 'x', name: 'x', kind: 'scheda', start: Date.now() - 864e5, end: Date.now() - 864e5 + 36e5, items: [], cardio: [] }); save(true); go('home')")
@@ -135,4 +145,4 @@ with sync_playwright() as p:
     mig = pg.evaluate("S.templates.map(t => t.name)")
     pg.evaluate("UI.schede = 'schede'; go('schede')"); pg.wait_for_timeout(300); shot("21_schede_senza_percorso")
     b.close()
-print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso, "forza": forza, "macro": macro, "cardio_trainer": cardio, "giornata_no": giornata_no}, ensure_ascii=False, indent=1))
+print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso, "forza": forza, "macro": macro, "cardio_trainer": cardio, "giornata_no": giornata_no, "casa_dopo_checkin": casa_dolore}, ensure_ascii=False, indent=1))
