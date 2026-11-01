@@ -295,7 +295,7 @@ VIEWS.settings = () => {
       bodyDataFields() +
       '<div class="field"><span>Livello</span><div class="chips">' + Object.keys(LEVELS).map(k => chip(LEVELS[k].n, p.level === k, 'setLevel', 'data-k="' + k + '"')).join('') + '</div></div>' +
       '<div class="field"><span>Giorni di allenamento</span>' + daysChips(p.days, 'setDay') + '</div>' +
-      field('Acqua al giorno (litri)', numIn(p.waterL ? fmtKg(p.waterL) : '', 'data-in="waterL"', fmtKg(waterGoalL())), 'Consigliati per te: ' + fmtKg(waterAuto()) + ' L (35 ml per kg, +0,5 L nei giorni di allenamento)') +
+      field('Acqua al giorno (litri)', numIn(p.waterL ? fmtKg(p.waterL) : '', 'data-in="waterL"', fmtKg(waterGoalL())), 'Consigliati per te: ' + fmtKg(waterAuto()) + ' L (35 ml per kg, sul peso corretto se il BMI è alto, max 4 L; +0,5 L nei giorni di allenamento)') +
       '<button class="btn ghost wide" data-act="regen">' + ic('swap') + 'Rigenera le schede con questo profilo</button>' +
     '</div>' +
     '<h3 class="sec">Allenamento</h3><div class="card">' +

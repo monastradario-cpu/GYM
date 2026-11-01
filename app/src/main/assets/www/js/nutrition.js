@@ -24,7 +24,8 @@ function nutritionTargets() {
   if (w) {
     out.ref = refWeight(w, p);
     out.protein = Math.round(out.ref * protK);
-    out.water = Math.round(w * 35 / 100) / 10; // litri
+    // acqua: 35 ml per kg sul peso corretto (il grasso in più contiene poca acqua), al massimo 4 litri
+    out.water = Math.min(4, Math.round(out.ref * 35 / 100) / 10); // litri
     out.waterTrain = 0.5;
   }
   if (out.ready) {
