@@ -234,16 +234,22 @@ function goalStatus() {
   if (G.vita && G.vita.on) {
     const M = (S.measures || []).filter(m => m.vita), last = M[M.length - 1];
     let eta = 'Misura il girovita (Progressi → Misure) per seguire l\'obiettivo.';
+    let pct = null;
     if (last) {
-      const pts = M.filter(m => m.d > Date.now() - 60 * 864e5).map(m => ({ x: m.d / 864e5, y: m.vita })), s = slopePerDay(pts), d = G.vita.cm - last.vita;
-      eta = d >= 0 ? 'Raggiunto!' : s && s < 0 ? 'Previsione: ' + weeksText(d / s / 7) : 'Servono almeno due misure a distanza di qualche settimana per la previsione.';
+      // andamento degli ultimi 60 giorni; se lì ci sono meno di 2 misure, le ultime 4 (prima chi misurava ogni 2-3 mesi non aveva mai la previsione)
+      let rec = M.filter(m => m.d > Date.now() - 60 * 864e5); if (rec.length < 2) rec = M.slice(-4);
+      const pts = rec.map(m => ({ x: m.d / 864e5, y: m.vita })), s = slopePerDay(pts), d = G.vita.cm - last.vita;
+      eta = d >= 0 ? 'Raggiunto!' : s && s < 0 ? 'Previsione: ' + weeksText(d / s / 7) : M.length < 2 ? 'Servono almeno due misure a distanza di qualche settimana per la previsione.' : 'Il girovita non sta scendendo: controlla il piano alimentare e i passi.';
+      // barra: dalla prima misura al traguardo
+      const first = M[0].vita;
+      pct = d >= 0 ? 1 : first > G.vita.cm ? Math.max(0, Math.min(1, (first - last.vita) / (first - G.vita.cm))) : null;
     }
-    out.push({ k: 'vita', t: 'Girovita: ' + (last ? last.vita + ' → ' : 'sotto i ') + G.vita.cm + ' cm', pct: null, eta });
+    out.push({ k: 'vita', t: 'Girovita: ' + (last ? last.vita + ' → ' : 'sotto i ') + G.vita.cm + ' cm', pct, eta });
   }
   if (G.costanza && G.costanza.on) {
     const start = (S.path && S.path.start) || Date.now(), wks = Math.max(1, Math.ceil((Date.now() - start) / (7 * 864e5)));
     let ok = 0; for (let i = 0; i < wks; i++) { const a = start + i * 7 * 864e5, b = a + 7 * 864e5; if (S.history.filter(h => h.start >= a && h.start < b).length >= G.costanza.perWeek) ok++; }
-    out.push({ k: 'costanza', t: 'Costanza: ' + G.costanza.perWeek + ' allenamenti a settimana per ' + G.costanza.weeks + ' settimane', pct: Math.min(1, ok / G.costanza.weeks), eta: ok + ' settimane centrate su ' + G.costanza.weeks + '.' });
+    out.push({ k: 'costanza', t: 'Costanza: ' + G.costanza.perWeek + ' allenamenti a settimana per ' + G.costanza.weeks + ' settimane', pct: Math.min(1, ok / G.costanza.weeks), eta: ok >= G.costanza.weeks ? 'Raggiunto! ' + ok + ' settimane centrate.' : ok + ' settimane centrate su ' + G.costanza.weeks + '.' });
   }
   return out;
 }
