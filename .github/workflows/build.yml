@@ -36,18 +36,18 @@ jobs:
         run: gradle assembleRelease --no-daemon --stacktrace
 
       - name: Rinomina APK
-        run: cp app/build/outputs/apk/release/app-release.apk GYM-1.0.${{ github.run_number }}.apk
+        run: cp app/build/outputs/apk/release/app-release.apk Coach-1.0.${{ github.run_number }}.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: GYM-1.0.${{ github.run_number }}
-          path: GYM-1.0.${{ github.run_number }}.apk
+          name: Coach-1.0.${{ github.run_number }}
+          path: Coach-1.0.${{ github.run_number }}.apk
 
       - name: Pubblica Release (usata dall'aggiornamento in-app)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: GYM 1.0.${{ github.run_number }}
+          name: Coach 1.0.${{ github.run_number }}
           body: ${{ github.event.head_commit.message }}
-          files: GYM-1.0.${{ github.run_number }}.apk
+          files: Coach-1.0.${{ github.run_number }}.apk
           make_latest: true

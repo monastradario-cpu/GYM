@@ -61,7 +61,10 @@ const HEVY_PKG = 'com.hevy';
 async function hvReq(method, path, body) {
   const H = hvState();
   const r = await aiFetch('https://api.hevyapp.com' + path, { method, headers: { 'api-key': H.key, 'accept': 'application/json', 'content-type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
-  const j = await r.json();
+  // alcune risposte di Hevy non sono JSON (per esempio la creazione di un esercizio rende solo l'id)
+  let j;
+  if (typeof r.text === 'function') { const t = await r.text(); try { j = JSON.parse(t || '{}'); } catch (e) { j = { error: { message: t } }; } }
+  else j = await r.json();
   if (r.status === 401 || r.status === 403) throw new Error('Hevy rifiuta la chiave: controllala nelle impostazioni (serve Hevy Pro).');
   if (r.status === 429) throw new Error('Troppe richieste a Hevy: riprova tra un minuto.');
   if (!r.ok) throw new Error('Hevy ha risposto con un errore (' + r.status + ')' + (j && (j.error || j.message) ? ': ' + String(j.error || j.message).slice(0, 160) : ''));
@@ -75,15 +78,42 @@ async function hvTemplateId(exId) {
   const e = EX[canon(exId)]; if (!e) return null;
   if (e.hv) return e.hv;
   const H = hvState(); if (H.custom[e.id]) return H.custom[e.id];
+  // c'è già in Hevy (creato prima, anche da un tentativo non andato a buon fine)? Allora uso quello: niente doppioni
+  const found = (await hvCustomList()).find(x => x.title.trim().toLowerCase() === e.n.trim().toLowerCase());
+  if (found) { H.custom[e.id] = String(found.id); save(); return H.custom[e.id]; }
   const mob = e.pat === 'mobilita' || e.pat === 'ufficio';
-  const r = await hvReq('POST', '/v1/exercise_templates', { exercise: {
+  let r;
+  try { r = await hvReq('POST', '/v1/exercise_templates', { exercise: {
     title: e.n, exercise_type: e.type === 'time' ? 'duration' : e.eq === 'corpo' ? 'reps_only' : 'weight_reps',
     equipment_category: HV_EQ[e.eq] || 'other', muscle_group: mob ? 'other' : (HV_MG[e.m] || 'other'),
-    other_muscles: mob ? [] : (e.s || []).map(m => HV_MG[m]).filter((m, i, a) => m && m !== HV_MG[e.m] && a.indexOf(m) === i) } });
-  const id = r && (r.id != null ? r.id : r.exercise_template && r.exercise_template.id);
-  if (id == null) throw new Error('Hevy non ha creato l\'esercizio ' + e.n);
+    other_muscles: mob ? [] : (e.s || []).map(m => HV_MG[m]).filter((m, i, a) => m && m !== HV_MG[e.m] && a.indexOf(m) === i) } }); }
+  catch (err) { hvSkip(e, err.message); return null; }
+  // la risposta può essere {id}, {exercise_template: {id}}, solo l'id (numero o testo)
+  const raw = r && r.error && typeof r.error.message === 'string' ? r.error.message.trim().replace(/^"|"$/g, '') : '';
+  let id = typeof r === 'number' || typeof r === 'string' ? r : r && (r.id != null ? r.id : r.exercise_template_id != null ? r.exercise_template_id : r.exercise_template && r.exercise_template.id);
+  if (id == null && /^[\w-]{4,64}$/.test(raw)) id = raw;
+  if (id == null) { _hvCustom = null; const f2 = (await hvCustomList()).find(x => x.title.trim().toLowerCase() === e.n.trim().toLowerCase()); if (f2) id = f2.id; }
+  if (id == null) { hvSkip(e, 'risposta di Hevy senza id'); return null; }
   H.custom[e.id] = String(id); save();
   return H.custom[e.id];
+}
+/* esercizi personalizzati già presenti nel tuo Hevy (letti una volta per sessione) */
+let _hvCustom = null;
+async function hvCustomList() {
+  if (_hvCustom) return _hvCustom;
+  const out = [];
+  for (let p = 1; p <= 20; p++) {
+    const r = await hvReq('GET', '/v1/exercise_templates?page=' + p + '&pageSize=100');
+    (r.exercise_templates || []).forEach(x => { if (x.is_custom) out.push({ id: x.id, title: x.title || '' }); });
+    if (!r.page_count || p >= r.page_count) break;
+  }
+  return (_hvCustom = out);
+}
+/* esercizio che Hevy non ha accettato: la routine si crea lo stesso, senza di lui, e lo dico */
+function hvSkip(e, why) {
+  const H = hvState(); H.skipped = H.skipped || {};
+  if (!H.skipped[e.id]) toast('Hevy non ha accettato "' + e.n + '": per ora lo salto (' + String(why || '').slice(0, 80) + ')');
+  H.skipped[e.id] = { d: Date.now(), why: String(why || '').slice(0, 200) }; save();
 }
 /* esercizio di Coach da un esercizio di Hevy (anche personalizzato) */
 function exFromHv(h, title) {
@@ -120,6 +150,7 @@ async function hvRoutineBody(t) {
   for (const src of items) {
     const e = EX[src.ex]; if (!e) continue;
     const tid = await hvTemplateId(src.ex);
+    if (!tid) continue;
     if (circ) {
       // circuito: ogni stazione ha una serie per giro, tutte nella stessa superserie (Hevy le alterna)
       const timed = e.type === 'time' || src.secs;
@@ -425,7 +456,11 @@ Object.assign(ACT, {
       const r = await hvSync();
       UI.hvBusy = false; toast('Hevy collegato' + (r && r.nuovi.length ? ': ' + r.nuovi.length + ' allenamenti importati' : ''));
       const t = UI.hvAfter; UI.hvAfter = null; go('home', null, true); if (t) hvLaunch(t);
-    } catch (e) { H.key = ''; UI.hvBusy = false; save(); render(); toast(e.message || 'Collegamento non riuscito'); }
+    } catch (e) {
+      // chiave sbagliata: la tolgo; altri errori: resto collegato e si riprova con "Aggiorna adesso"
+      if (/rifiuta la chiave/.test(e.message || '')) H.key = '';
+      UI.hvBusy = false; save(); render(); toast(e.message || 'Collegamento non riuscito');
+    }
   },
   hvSyncNow: () => hvSyncUI(true),
   hvOff: () => ask('Scollegare Hevy? Le routine restano in Hevy, lo storico in Coach.', 'Scollega', () => { S.hevy.key = ''; save(true); render(); }, true)

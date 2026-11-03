@@ -44,10 +44,13 @@ class HevyMock:
             self.folders.append(f)
             out = {"routine_folder": f}
             st = 201
+        elif path.startswith("/v1/exercise_templates") and m == "GET":
+            out = {"page": 1, "page_count": 1, "exercise_templates": [dict(v, is_custom=True) for v in self.custom.values()]}
         elif path == "/v1/exercise_templates" and m == "POST":
             cid = f"C{len(self.custom) + 1:04d}"
-            self.custom[cid] = body["exercise"]
-            out = {"id": cid}
+            self.custom[cid] = dict(body["exercise"], id=cid)
+            # come l'API vera: risponde solo con l'id, non in JSON
+            return route.fulfill(status=200, body=cid, content_type="text/plain")
         elif path == "/v1/routines" and m == "POST":
             r = dict(body["routine"], id=self._id(), updated_at=iso(), created_at=iso())
             self.routines[r["id"]] = r

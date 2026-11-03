@@ -104,6 +104,9 @@ with sync_playwright() as p:
         errors.append(f"mobilità in Hevy: deve essere una superserie a tempo {rm['exercises'][:2]}")
     if not hv.custom:
         errors.append("mobilità: gli allungamenti senza equivalente vanno creati in Hevy come esercizi personalizzati")
+    tit = [v["title"] for v in hv.custom.values()]
+    if len(tit) != len(set(tit)) or any(x["exercise_template_id"] not in hv.custom and len(x["exercise_template_id"]) < 8 for x in rm["exercises"]):
+        errors.append(f"esercizi personalizzati doppi o id sbagliati: {tit}")
     # fatta in Hevy: torna in Coach come seduta di mobilità
     hv.add_workout(rm["id"], rm["title"], [{"exercise_template_id": x["exercise_template_id"], "title": "x", "notes": "", "sets": [{"index": i, "type": "normal", "duration_seconds": st["duration_seconds"]} for i, st in enumerate(x["sets"])]} for x in rm["exercises"]], ago_h=3, dur_min=20)
     pg.evaluate("hvSync()"); pg.wait_for_timeout(1500)
