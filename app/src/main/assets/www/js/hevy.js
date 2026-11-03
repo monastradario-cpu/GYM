@@ -114,7 +114,8 @@ function hvSoon() { if (!hvOn()) return; clearTimeout(_hvSoonT); _hvSoonT = setT
 const _syncRemHv = syncReminders;
 syncReminders = function () { _syncRemHv(); hvSoon(); };
 async function hvRoutineBody(t) {
-  const H = hvState(), circ = t.kind === 'circuito', exs = [], plan = [];
+  const H = hvState(), circ = t.kind === 'circuito', exs = [], plan = [], ssMap = {};
+  const hvSuperset = k => { if (!(k in ssMap)) ssMap[k] = Object.keys(ssMap).length; return ssMap[k]; };
   const items = t.items.map(i => Object.assign({}, i, { ex: canon(i.ex) }));
   for (const src of items) {
     const e = EX[src.ex]; if (!e) continue;
@@ -149,8 +150,6 @@ async function hvRoutineBody(t) {
   const notes = [t.focus, t.note, typeof cycleInfo === 'function' && cycleInfo().on ? cycleLine() : ''].filter(Boolean).join(' · ').slice(0, 900);
   return { body: { title: hvTitle(t), notes, exercises: exs }, plan };
 }
-const _ssMap = {};
-function hvSuperset(k) { if (!(k in _ssMap)) _ssMap[k] = Object.keys(_ssMap).length; return _ssMap[k]; }
 /* "2–3" ripetizioni di scorta -> RPE 7–8 (RPE = 10 − RIR) */
 function rpeOf(rir) { const p = String(rir).split(/[–-]/).map(Number); return p.length > 1 ? (10 - p[1]) + '–' + (10 - p[0]) : String(10 - p[0]); }
 function cycleLine() { try { const c = cycleInfo(); return c.deload ? 'Settimana di scarico' : 'Settimana ' + c.w + (c.len ? ' di ' + c.len : ''); } catch (e) { return ''; } }

@@ -220,7 +220,8 @@ function libList() {
 /* scheda di un esercizio: come si fa lo vedi in Hevy (video); qui muscoli, i tuoi dati e il consiglio del trainer */
 VIEWS.exercise = p => {
   const e = EX[canon(p.id)]; if (!e) return VIEWS.home();
-  const presc = prescribe(e.id), r = records(e.id), hist = exerciseHistory(e.id);
+  const inTpl = S.templates.map(t => t.items.find(i => canon(i.ex) === e.id)).find(Boolean);
+  const presc = inTpl && !inTpl.secs && inTpl.rmin ? inTpl : prescribe(e.id), r = records(e.id), hist = exerciseHistory(e.id);
   const pts = hist.slice().reverse().map(h => ({ x: h.date, y: Math.max(...h.sets.map(x => e1rm(num(x.kg), num(x.reps)))) })).filter(x => x.y > 0);
   const pg = e.type === 'time' ? null : progression(e.id, presc.rmin, presc.rmax);
   return header(esc(e.n), { back: true, sub: muscleName(e.m) + ' · ' + (EQUIP[e.eq] || '') }) + '<div class="pad">' +

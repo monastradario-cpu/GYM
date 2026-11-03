@@ -33,7 +33,8 @@ function evaluateWorkout(h) {
     if (p && !p.secs) doneSets += Math.min(ws.length, p.sets);
     const prev = prevSessions(it.ex, h.start), e1 = bestE1(ws), pe1 = prev[0] ? bestE1(prev[0].sets) : 0;
     const best = Math.max(0, ...prev.map(s => bestE1(s.sets)));
-    const r = { ex: it.ex, sets: ws.map(s => timed ? s.reps + ' s' : (s.kg ? fmtKg(s.kg) + '×' : '') + s.reps + (s.rpe ? ' @' + fmtKg(s.rpe) : '')).join('  '), kind: 'first', txt: '' };
+    const ti = (S.templates.find(t => t.id === h.tplId) || { items: [] }).items.find(x => canon(x.ex) === canon(it.ex)) || prescribe(it.ex);
+    const r = { ex: it.ex, rmin: p ? p.rmin : ti.rmin, rmax: p ? p.rmax : ti.rmax, sets: ws.map(s => timed ? s.reps + ' s' : (s.kg ? fmtKg(s.kg) + '×' : '') + s.reps + (s.rpe ? ' @' + fmtKg(s.rpe) : '')).join('  '), kind: 'first', txt: '' };
     // prestazione
     let perf = null;
     if (timed) {
@@ -121,8 +122,8 @@ VIEWS.valutazione = p => {
     (v.good.length ? '<div class="card"><h3>' + ic('check', 'inline') + 'Bene</h3><ul class="tips">' + v.good.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>' : '') +
     (v.fix.length ? '<div class="card"><h3>' + ic('coach', 'inline') + 'Da migliorare</h3><ul class="tips">' + v.fix.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>' : '') +
     '<div class="card"><h3>Esercizio per esercizio</h3>' + v.items.map(r => {
-      const k = VAL_KIND[r.kind] || VAL_KIND.first, it = h.items.find(i => i.ex === r.ex), e = EX[r.ex] || {};
-      const nx = latest && e.type !== 'time' && typeof progression === 'function' ? progression(r.ex, (it && it.rmin) || undefined, undefined) : null;
+      const k = VAL_KIND[r.kind] || VAL_KIND.first, e = EX[r.ex] || {};
+      const nx = latest && e.type !== 'time' && typeof progression === 'function' ? progression(r.ex, r.rmin, r.rmax) : null;
       return '<div class="list-item flat"><div><b>' + (r.pr ? '🏆 ' : '') + exLine(r.ex) + ' <span class="' + k[1] + '">' + k[0] + '</span></b><small>' + esc(r.sets) + '</small><small class="' + k[1] + '">' + esc(r.txt) + '</small>' +
         (nx && nx.text ? '<small><b>Prossima volta:</b> ' + esc(nx.text) + '</small>' : '') + '</div></div>';
     }).join('') + '</div>' +
