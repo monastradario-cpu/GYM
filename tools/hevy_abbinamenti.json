@@ -1,0 +1,3592 @@
+{
+"abductor": {
+"hevy": "F4B4C6EE",
+"tipo": "uguale",
+"titolo": "Hip Abduction (Machine)"
+},
+"adductor_machine": {
+"hevy": "8BEBFED6",
+"tipo": "uguale",
+"titolo": "Hip Adduction (Machine)"
+},
+"adduzione_dell_anca_cavo": {
+"hevy": "22578A94",
+"tipo": "uguale",
+"titolo": "Hip Adduction (Cable)"
+},
+"adduzioni_dell_anca_elastico": {
+"hevy": "22578A94",
+"tipo": "simile",
+"titolo": "Hip Adduction (Cable)"
+},
+"affondi_bilanciere": {
+"hevy": "6E6EE645",
+"tipo": "uguale",
+"titolo": "Lunge (Barbell)"
+},
+"affondi_camminati_bilanciere": {
+"hevy": "A733CC5B",
+"tipo": "simile",
+"titolo": "Walking Lunge (Dumbbell)"
+},
+"affondi_camminati_corpo_libero": {
+"hevy": "32HKJ34K",
+"tipo": "uguale",
+"titolo": "Walking Lunge"
+},
+"affondi_corpo": {
+"hevy": "5E1A7777",
+"tipo": "uguale",
+"titolo": "Lunge"
+},
+"affondi_indietro_manubri": {
+"hevy": "FFDA283B",
+"tipo": "uguale",
+"titolo": "Reverse Lunge (Dumbbell)"
+},
+"affondi_man": {
+"hevy": "B537D09F",
+"tipo": "uguale",
+"titolo": "Lunge (Dumbbell)"
+},
+"affondi_saltati": {
+"hevy": "5CC07A1F",
+"tipo": "uguale",
+"titolo": "Jumping Lunge"
+},
+"affondo_indietro_rialzo": {
+"hevy": "818BA121",
+"tipo": "simile",
+"titolo": "Reverse Lunge (Barbell)"
+},
+"affondo_laterale_bilanciere": {
+"hevy": "F2A37357",
+"tipo": "simile",
+"titolo": "Lateral Lunge"
+},
+"affondo_passaggio_kettlebell": {
+"hevy": "B537D09F",
+"tipo": "simile",
+"titolo": "Lunge (Dumbbell)"
+},
+"allunga_collo": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"allunga_femorali": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"allunga_flessori": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"allungamento_laterale": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"alzata_frontale_bilanciere_fin_sopra_tes": {
+"hevy": "BD86EFD5",
+"tipo": "simile",
+"titolo": "Front Raise (Barbell)"
+},
+"alzata_frontale_manubrio": {
+"hevy": "8293E554",
+"tipo": "simile",
+"titolo": "Front Raise (Dumbbell)"
+},
+"alzata_frontale_pullover": {
+"hevy": "67280085",
+"tipo": "simile",
+"titolo": "Pullover (Dumbbell)"
+},
+"alzata_laterale_braccio": {
+"hevy": "422B08F1",
+"tipo": "simile",
+"titolo": "Lateral Raise (Dumbbell)"
+},
+"alzata_laterale_cavo_basso": {
+"hevy": "BE289E45",
+"tipo": "uguale",
+"titolo": "Lateral Raise (Cable)"
+},
+"alzata_laterale_panca_inclinata": {
+"hevy": "422B08F1",
+"tipo": "simile",
+"titolo": "Lateral Raise (Dumbbell)"
+},
+"alzata_laterale_sdraiato_fianco": {
+"hevy": "422B08F1",
+"tipo": "simile",
+"titolo": "Lateral Raise (Dumbbell)"
+},
+"alzata_posteriore_sdraiato_fianco": {
+"hevy": "E5988A0A",
+"tipo": "simile",
+"titolo": "Rear Delt Reverse Fly (Dumbbell)"
+},
+"alzate_alternate_per_deltoidi": {
+"hevy": "422B08F1",
+"tipo": "simile",
+"titolo": "Lateral Raise (Dumbbell)"
+},
+"alzate_braccia_tese_panca_inclinata": {
+"hevy": "BD86EFD5",
+"tipo": "simile",
+"titolo": "Front Raise (Barbell)"
+},
+"alzate_frontali": {
+"hevy": "8293E554",
+"tipo": "uguale",
+"titolo": "Front Raise (Dumbbell)"
+},
+"alzate_frontali_cavo": {
+"hevy": "DBB91A3C",
+"tipo": "uguale",
+"titolo": "Front Raise (Cable)"
+},
+"alzate_frontali_disco": {
+"hevy": "DBF9273A",
+"tipo": "uguale",
+"titolo": "Plate Front Raise"
+},
+"alzate_frontali_due_manubri": {
+"hevy": "8293E554",
+"tipo": "uguale",
+"titolo": "Front Raise (Dumbbell)"
+},
+"alzate_frontali_fin_sopra_testa": {
+"hevy": "8293E554",
+"tipo": "simile",
+"titolo": "Front Raise (Dumbbell)"
+},
+"alzate_frontali_panca_inclinata": {
+"hevy": "8293E554",
+"tipo": "simile",
+"titolo": "Front Raise (Dumbbell)"
+},
+"alzate_laterali": {
+"hevy": "422B08F1",
+"tipo": "uguale",
+"titolo": "Lateral Raise (Dumbbell)"
+},
+"alzate_laterali_elastico": {
+"hevy": "DF200976",
+"tipo": "uguale",
+"titolo": "Lateral Raise (Band)"
+},
+"alzate_laterali_frontali": {
+"hevy": "422B08F1",
+"tipo": "simile",
+"titolo": "Lateral Raise (Dumbbell)"
+},
+"alzate_laterali_parziali_veloci": {
+"hevy": "422B08F1",
+"tipo": "simile",
+"titolo": "Lateral Raise (Dumbbell)"
+},
+"alzate_laterali_sedute_cavo": {
+"hevy": "BE289E45",
+"tipo": "simile",
+"titolo": "Lateral Raise (Cable)"
+},
+"alzate_laterali_seduto": {
+"hevy": "9372FFAA",
+"tipo": "uguale",
+"titolo": "Seated Lateral Raise (Dumbbell)"
+},
+"alzate_posteriori": {
+"hevy": "E5988A0A",
+"tipo": "uguale",
+"titolo": "Rear Delt Reverse Fly (Dumbbell)"
+},
+"alzate_posteriori_cavi": {
+"hevy": "C315DC2A",
+"tipo": "uguale",
+"titolo": "Rear Delt Reverse Fly (Cable)"
+},
+"alzate_posteriori_cavo_basso": {
+"hevy": "9264ADA1",
+"tipo": "simile",
+"titolo": "Reverse Fly Single Arm (Cable)"
+},
+"alzate_posteriori_elastico": {
+"hevy": "E8D86EE8",
+"tipo": "simile",
+"titolo": "Band Pullaparts"
+},
+"alzate_posteriori_fronte_appoggiata": {
+"hevy": "E5988A0A",
+"tipo": "uguale",
+"titolo": "Rear Delt Reverse Fly (Dumbbell)"
+},
+"alzate_posteriori_pancia_giu_panca": {
+"hevy": "B582299E",
+"tipo": "uguale",
+"titolo": "Chest Supported Reverse Fly (Dumbbell)"
+},
+"alzate_posteriori_rotazione_esterna": {
+"hevy": "E5988A0A",
+"tipo": "simile",
+"titolo": "Rear Delt Reverse Fly (Dumbbell)"
+},
+"alzate_posteriori_sdraiato": {
+"hevy": "B582299E",
+"tipo": "uguale",
+"titolo": "Chest Supported Reverse Fly (Dumbbell)"
+},
+"alzate_posteriori_seduto": {
+"hevy": "E5988A0A",
+"tipo": "simile",
+"titolo": "Rear Delt Reverse Fly (Dumbbell)"
+},
+"alzate_y": {
+"hevy": "F21D5693",
+"tipo": "simile",
+"titolo": "Chest Supported Y Raise (Dumbbell)"
+},
+"alzate_y_manubri": {
+"hevy": "F21D5693",
+"tipo": "simile",
+"titolo": "Chest Supported Y Raise (Dumbbell)"
+},
+"alzati_siediti": {
+"hevy": "9694DA61",
+"tipo": "simile",
+"titolo": "Squat (Bodyweight)"
+},
+"aperture_elastico": {
+"hevy": "E8D86EE8",
+"tipo": "uguale",
+"titolo": "Band Pullaparts"
+},
+"apri_petto": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"arnold_press": {
+"hevy": "A69FF221",
+"tipo": "uguale",
+"titolo": "Arnold Press (Dumbbell)"
+},
+"arnold_press_kettlebell": {
+"hevy": "A69FF221",
+"tipo": "simile",
+"titolo": "Arnold Press (Dumbbell)"
+},
+"arrampicata_fune": {
+"hevy": "1B2B1E7C",
+"tipo": "simile",
+"titolo": "Pull Up"
+},
+"balzi_laterali": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"balzo_rapido": {
+"hevy": "56092DD1",
+"tipo": "simile",
+"titolo": "Box Jump"
+},
+"bent_press_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "simile",
+"titolo": "Kettlebell Shoulder Press"
+},
+"bicicletta_terra": {
+"hevy": "A41C7261",
+"tipo": "uguale",
+"titolo": "Bicycle Crunch"
+},
+"board_press": {
+"hevy": "79D0BB3A",
+"tipo": "simile",
+"titolo": "Bench Press (Barbell)"
+},
+"body_up": {
+"hevy": "31436F5D",
+"tipo": "simile",
+"titolo": "Plank Pushup"
+},
+"bottoms_up": {
+"hevy": "7952B5CD",
+"tipo": "simile",
+"titolo": "Reverse Crunch"
+},
+"box_jump_frontale": {
+"hevy": "56092DD1",
+"tipo": "uguale",
+"titolo": "Box Jump"
+},
+"box_jump_laterale": {
+"hevy": "07EBC4DC",
+"tipo": "uguale",
+"titolo": "Lateral Box Jump"
+},
+"box_jump_ripetuti": {
+"hevy": "56092DD1",
+"tipo": "uguale",
+"titolo": "Box Jump"
+},
+"box_jump_seduto": {
+"hevy": "56092DD1",
+"tipo": "simile",
+"titolo": "Box Jump"
+},
+"box_squat": {
+"hevy": "38FC1AB9",
+"tipo": "uguale",
+"titolo": "Box Squat (Barbell)"
+},
+"box_squat_catene": {
+"hevy": "38FC1AB9",
+"tipo": "simile",
+"titolo": "Box Squat (Barbell)"
+},
+"box_squat_elastici": {
+"hevy": "38FC1AB9",
+"tipo": "simile",
+"titolo": "Box Squat (Barbell)"
+},
+"box_squat_elastici_inversi": {
+"hevy": "38FC1AB9",
+"tipo": "simile",
+"titolo": "Box Squat (Barbell)"
+},
+"box_squat_veloce": {
+"hevy": "38FC1AB9",
+"tipo": "uguale",
+"titolo": "Box Squat (Barbell)"
+},
+"bozzolo": {
+"hevy": "32B0B590",
+"tipo": "simile",
+"titolo": "Jackknife Sit Up"
+},
+"bradford_press": {
+"hevy": "7B8D84E8",
+"tipo": "simile",
+"titolo": "Overhead Press (Barbell)"
+},
+"bradford_press_piedi": {
+"hevy": "073032BB",
+"tipo": "simile",
+"titolo": "Standing Military Press (Barbell)"
+},
+"bulgarian_man": {
+"hevy": "B5D3A742",
+"tipo": "uguale",
+"titolo": "Bulgarian Split Squat (Dumbbell)"
+},
+"burpees": {
+"hevy": "BB792A36",
+"tipo": "uguale",
+"titolo": "Burpee"
+},
+"butt_up": {
+"hevy": "C6C9B8A0",
+"tipo": "simile",
+"titolo": "Plank"
+},
+"calciata_glutei_gamba": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"calf_bil": {
+"hevy": "E53CCBE5",
+"tipo": "uguale",
+"titolo": "Standing Calf Raise (Barbell)"
+},
+"calf_corpo": {
+"hevy": "06745E58",
+"tipo": "uguale",
+"titolo": "Standing Calf Raise"
+},
+"calf_elastico": {
+"hevy": "06745E58",
+"tipo": "simile",
+"titolo": "Standing Calf Raise"
+},
+"calf_leg_press": {
+"hevy": "91237BDD",
+"tipo": "uguale",
+"titolo": "Calf Press (Machine)"
+},
+"calf_man": {
+"hevy": "6DA40660",
+"tipo": "uguale",
+"titolo": "Standing Calf Raise (Dumbbell)"
+},
+"calf_manubrio": {
+"hevy": "238BA231",
+"tipo": "simile",
+"titolo": "Single Leg Standing Calf Raise"
+},
+"calf_piedi": {
+"hevy": "E05C2C38",
+"tipo": "uguale",
+"titolo": "Standing Calf Raise (Machine)"
+},
+"calf_piedi_dondolio": {
+"hevy": "E53CCBE5",
+"tipo": "simile",
+"titolo": "Standing Calf Raise (Barbell)"
+},
+"calf_press_macchina": {
+"hevy": "91237BDD",
+"tipo": "uguale",
+"titolo": "Calf Press (Machine)"
+},
+"calf_seduto": {
+"hevy": "062AB91A",
+"tipo": "uguale",
+"titolo": "Seated Calf Raise"
+},
+"calf_seduto_bilanciere": {
+"hevy": "062AB91A",
+"tipo": "simile",
+"titolo": "Seated Calf Raise"
+},
+"calf_seduto_gamba_manubrio": {
+"hevy": "062AB91A",
+"tipo": "simile",
+"titolo": "Seated Calf Raise"
+},
+"calf_smith_machine": {
+"hevy": "AA52E8D2",
+"tipo": "uguale",
+"titolo": "Standing Calf Raise (Smith)"
+},
+"cammina": {
+"hevy": "33EDD7DB",
+"tipo": "uguale",
+"titolo": "Walking"
+},
+"camminata_laterale_elastico": {
+"hevy": "EC02979E",
+"tipo": "simile",
+"titolo": "Lateral Band Walks"
+},
+"camminata_ragno": {
+"hevy": "C10A5AC9",
+"tipo": "simile",
+"titolo": "Spiderman"
+},
+"chest_press": {
+"hevy": "7EB3F7C3",
+"tipo": "uguale",
+"titolo": "Chest Press (Machine)"
+},
+"chest_press_cavi": {
+"hevy": "651F844C",
+"tipo": "simile",
+"titolo": "Cable Fly Crossovers"
+},
+"chest_press_declinata_leva": {
+"hevy": "FAF31231",
+"tipo": "uguale",
+"titolo": "Decline Bench Press (Machine)"
+},
+"chest_press_inclinata_cavi": {
+"hevy": "99C1F2AD",
+"tipo": "simile",
+"titolo": "Bench Press (Cable)"
+},
+"chest_press_inclinata_leva": {
+"hevy": "FBF92739",
+"tipo": "uguale",
+"titolo": "Incline Chest Press (Machine)"
+},
+"chest_press_leva": {
+"hevy": "7EB3F7C3",
+"tipo": "uguale",
+"titolo": "Chest Press (Machine)"
+},
+"chest_press_piedi_cavi": {
+"hevy": "99C1F2AD",
+"tipo": "simile",
+"titolo": "Bench Press (Cable)"
+},
+"circonduzioni_braccia": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"collo_disco_pancia": {
+"hevy": "31B8DA0F",
+"tipo": "uguale",
+"titolo": "Lying Neck Curls (Weighted)"
+},
+"collo_disco_pancia_giu": {
+"hevy": "D6A73CF2",
+"tipo": "uguale",
+"titolo": "Lying Neck Extension (Weighted)"
+},
+"collo_imbracatura_seduto": {
+"hevy": "D6A73CF2",
+"tipo": "simile",
+"titolo": "Lying Neck Extension (Weighted)"
+},
+"colpi_mazza_pneumatico": {
+"hevy": "F51D9080",
+"tipo": "simile",
+"titolo": "Ball Slams"
+},
+"contrazione_isometrica_petto": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"corde": {
+"hevy": "084A67CA",
+"tipo": "uguale",
+"titolo": "Battle Ropes"
+},
+"croce_braccio_panca": {
+"hevy": "12017185",
+"tipo": "simile",
+"titolo": "Chest Fly (Dumbbell)"
+},
+"croce_cavo_braccio": {
+"hevy": "8372BBCC",
+"tipo": "uguale",
+"titolo": "Single Arm Cable Crossover"
+},
+"croce_ferro_cavi": {
+"hevy": "651F844C",
+"tipo": "simile",
+"titolo": "Cable Fly Crossovers"
+},
+"croce_ferro_manubri": {
+"hevy": "422B08F1",
+"tipo": "simile",
+"titolo": "Lateral Raise (Dumbbell)"
+},
+"croci_cavi": {
+"hevy": "651F844C",
+"tipo": "uguale",
+"titolo": "Cable Fly Crossovers"
+},
+"croci_cavi_dal_basso": {
+"hevy": "293483AD",
+"tipo": "uguale",
+"titolo": "Low Cable Fly Crossovers"
+},
+"croci_cavi_panca_inclinata": {
+"hevy": "293483AD",
+"tipo": "simile",
+"titolo": "Low Cable Fly Crossovers"
+},
+"croci_cavi_panca_piana": {
+"hevy": "651F844C",
+"tipo": "simile",
+"titolo": "Cable Fly Crossovers"
+},
+"croci_corpo_libero_bilanciere_ez": {
+"hevy": "720B0D70",
+"tipo": "simile",
+"titolo": "Chest Fly (Suspension)"
+},
+"croci_elastico": {
+"hevy": "DDB7C19F",
+"tipo": "uguale",
+"titolo": "Chest Fly (Band)"
+},
+"croci_inclinate_rotazione": {
+"hevy": "D3E2AB55",
+"tipo": "simile",
+"titolo": "Incline Chest Fly (Dumbbell)"
+},
+"croci_man": {
+"hevy": "12017185",
+"tipo": "uguale",
+"titolo": "Chest Fly (Dumbbell)"
+},
+"croci_panca_declinata": {
+"hevy": "A351AED7",
+"tipo": "uguale",
+"titolo": "Decline Chest Fly (Dumbbell)"
+},
+"croci_panca_inclinata": {
+"hevy": "D3E2AB55",
+"tipo": "uguale",
+"titolo": "Incline Chest Fly (Dumbbell)"
+},
+"crunch": {
+"hevy": "DCF3B31B",
+"tipo": "uguale",
+"titolo": "Crunch"
+},
+"crunch_braccia_sopra_testa": {
+"hevy": "DCF3B31B",
+"tipo": "simile",
+"titolo": "Crunch"
+},
+"crunch_cavi": {
+"hevy": "23A48484",
+"tipo": "uguale",
+"titolo": "Cable Crunch"
+},
+"crunch_cavo_bosu_flessioni_laterali": {
+"hevy": "23A48484",
+"tipo": "simile",
+"titolo": "Cable Crunch"
+},
+"crunch_cavo_ginocchio_torsione": {
+"hevy": "23A48484",
+"tipo": "simile",
+"titolo": "Cable Crunch"
+},
+"crunch_corda": {
+"hevy": "23A48484",
+"tipo": "uguale",
+"titolo": "Cable Crunch"
+},
+"crunch_fitball": {
+"hevy": "DCF3B31B",
+"tipo": "simile",
+"titolo": "Crunch"
+},
+"crunch_gambe_fitball": {
+"hevy": "DCF3B31B",
+"tipo": "simile",
+"titolo": "Crunch"
+},
+"crunch_incrociato": {
+"hevy": "A01BE509",
+"tipo": "simile",
+"titolo": "Elbow to Knee"
+},
+"crunch_inverso": {
+"hevy": "7952B5CD",
+"tipo": "uguale",
+"titolo": "Reverse Crunch"
+},
+"crunch_inverso_cavo": {
+"hevy": "7952B5CD",
+"tipo": "simile",
+"titolo": "Reverse Crunch"
+},
+"crunch_inverso_panca_declinata": {
+"hevy": "7952B5CD",
+"tipo": "simile",
+"titolo": "Reverse Crunch"
+},
+"crunch_inverso_trx": {
+"hevy": "D410F649",
+"tipo": "simile",
+"titolo": "Jack Knife (Suspension)"
+},
+"crunch_macchina": {
+"hevy": "EB43ADD4",
+"tipo": "uguale",
+"titolo": "Crunch (Machine)"
+},
+"crunch_obliqui": {
+"hevy": "DBE341AA",
+"tipo": "uguale",
+"titolo": "Oblique Crunch"
+},
+"crunch_obliqui_terra": {
+"hevy": "DBE341AA",
+"tipo": "uguale",
+"titolo": "Oblique Crunch"
+},
+"crunch_obliquo_panca_declinata": {
+"hevy": "DBE341AA",
+"tipo": "simile",
+"titolo": "Oblique Crunch"
+},
+"crunch_palla_medica": {
+"hevy": "D928C232",
+"tipo": "uguale",
+"titolo": "Crunch (Weighted)"
+},
+"crunch_panca_declinata": {
+"hevy": "BC10A922",
+"tipo": "uguale",
+"titolo": "Decline Crunch"
+},
+"crunch_piedi_corda": {
+"hevy": "23A48484",
+"tipo": "simile",
+"titolo": "Cable Crunch"
+},
+"crunch_raccolto": {
+"hevy": "DCF3B31B",
+"tipo": "simile",
+"titolo": "Crunch"
+},
+"crunch_seduto_cavo": {
+"hevy": "23A48484",
+"tipo": "simile",
+"titolo": "Cable Crunch"
+},
+"cuban_press": {
+"hevy": "797F0782",
+"tipo": "simile",
+"titolo": "Upright Row (Dumbbell)"
+},
+"curl_alternato_manubri": {
+"hevy": "37FCC2BB",
+"tipo": "uguale",
+"titolo": "Bicep Curl (Dumbbell)"
+},
+"curl_alternato_panca_inclinata": {
+"hevy": "8BAB2735",
+"tipo": "uguale",
+"titolo": "Seated Incline Curl (Dumbbell)"
+},
+"curl_bil": {
+"hevy": "A5AC6449",
+"tipo": "uguale",
+"titolo": "Bicep Curl (Barbell)"
+},
+"curl_bilanciere_ez": {
+"hevy": "01A35BF9",
+"tipo": "uguale",
+"titolo": "EZ Bar Biceps Curl"
+},
+"curl_bilanciere_ez_presa_stretta": {
+"hevy": "01A35BF9",
+"tipo": "uguale",
+"titolo": "EZ Bar Biceps Curl"
+},
+"curl_bilanciere_panca_inclinata": {
+"hevy": "2348AB72",
+"tipo": "uguale",
+"titolo": "Spider Curl (Barbell)"
+},
+"curl_bilanciere_presa_larga": {
+"hevy": "A5AC6449",
+"tipo": "simile",
+"titolo": "Bicep Curl (Barbell)"
+},
+"curl_bilanciere_presa_stretta": {
+"hevy": "A5AC6449",
+"tipo": "simile",
+"titolo": "Bicep Curl (Barbell)"
+},
+"curl_braccio_sopra_panca_inclinata": {
+"hevy": "FAB6EB2F",
+"tipo": "simile",
+"titolo": "Preacher Curl (Dumbbell)"
+},
+"curl_cavi": {
+"hevy": "ADA8623C",
+"tipo": "uguale",
+"titolo": "Bicep Curl (Cable)"
+},
+"curl_cavi_alti": {
+"hevy": "ADA8623C",
+"tipo": "simile",
+"titolo": "Bicep Curl (Cable)"
+},
+"curl_cavi_alti_2": {
+"hevy": "582ADA23",
+"tipo": "uguale",
+"titolo": "Overhead Curl (Cable)"
+},
+"curl_cavo_braccio": {
+"hevy": "B33B526E",
+"tipo": "uguale",
+"titolo": "Single Arm Curl (Cable)"
+},
+"curl_cavo_sdraiato": {
+"hevy": "ADA8623C",
+"tipo": "simile",
+"titolo": "Bicep Curl (Cable)"
+},
+"curl_concentrato": {
+"hevy": "724CDE60",
+"tipo": "uguale",
+"titolo": "Concentration Curl"
+},
+"curl_concentrato_bilanciere": {
+"hevy": "A5AC6449",
+"tipo": "simile",
+"titolo": "Bicep Curl (Barbell)"
+},
+"curl_concentrato_piedi": {
+"hevy": "724CDE60",
+"tipo": "simile",
+"titolo": "Concentration Curl"
+},
+"curl_delle_dita_bilanciere": {
+"hevy": "95F2E076",
+"tipo": "simile",
+"titolo": "Seated Wrist Curl (Barbell)"
+},
+"curl_ez_presa_stretta_elastico": {
+"hevy": "01A35BF9",
+"tipo": "simile",
+"titolo": "EZ Bar Biceps Curl"
+},
+"curl_interno_panca_inclinata": {
+"hevy": "8BAB2735",
+"tipo": "simile",
+"titolo": "Seated Incline Curl (Dumbbell)"
+},
+"curl_interno_piedi": {
+"hevy": "37FCC2BB",
+"tipo": "simile",
+"titolo": "Bicep Curl (Dumbbell)"
+},
+"curl_interno_seduto": {
+"hevy": "37FCC2BB",
+"tipo": "simile",
+"titolo": "Bicep Curl (Dumbbell)"
+},
+"curl_inverso_bilanciere": {
+"hevy": "112FC6B7",
+"tipo": "uguale",
+"titolo": "Reverse Curl (Barbell)"
+},
+"curl_inverso_cavo": {
+"hevy": "9F48F858",
+"tipo": "uguale",
+"titolo": "Reverse Curl (Cable)"
+},
+"curl_inverso_disco": {
+"hevy": "9283ABD5",
+"tipo": "simile",
+"titolo": "Plate Curl"
+},
+"curl_inverso_manubri": {
+"hevy": "B567DD46",
+"tipo": "uguale",
+"titolo": "Reverse Curl (Dumbbell)"
+},
+"curl_inverso_panca_scott_ez": {
+"hevy": "112FC6B7",
+"tipo": "simile",
+"titolo": "Reverse Curl (Barbell)"
+},
+"curl_macchina": {
+"hevy": "1E9A6B8E",
+"tipo": "uguale",
+"titolo": "Preacher Curl (Machine)"
+},
+"curl_man": {
+"hevy": "37FCC2BB",
+"tipo": "uguale",
+"titolo": "Bicep Curl (Dumbbell)"
+},
+"curl_martello": {
+"hevy": "7E3BC8B6",
+"tipo": "uguale",
+"titolo": "Hammer Curl (Dumbbell)"
+},
+"curl_martello_alternato": {
+"hevy": "7E3BC8B6",
+"tipo": "uguale",
+"titolo": "Hammer Curl (Dumbbell)"
+},
+"curl_martello_cavo_corda": {
+"hevy": "36E8F14E",
+"tipo": "uguale",
+"titolo": "Hammer Curl (Cable)"
+},
+"curl_martello_incrociato": {
+"hevy": "32C4D4A2",
+"tipo": "uguale",
+"titolo": "Cross Body Hammer Curl"
+},
+"curl_martello_panca_inclinata": {
+"hevy": "C01F58D1",
+"tipo": "uguale",
+"titolo": "Seated Incline Hammer Curl (Dumbbell)"
+},
+"curl_martello_panca_scott": {
+"hevy": "FAB6EB2F",
+"tipo": "simile",
+"titolo": "Preacher Curl (Dumbbell)"
+},
+"curl_panca_inclinata": {
+"hevy": "8BAB2735",
+"tipo": "uguale",
+"titolo": "Seated Incline Curl (Dumbbell)"
+},
+"curl_panca_inclinata_polsi_flessi": {
+"hevy": "8BAB2735",
+"tipo": "simile",
+"titolo": "Seated Incline Curl (Dumbbell)"
+},
+"curl_panca_scott_bilanciere": {
+"hevy": "4F942934",
+"tipo": "uguale",
+"titolo": "Preacher Curl (Barbell)"
+},
+"curl_panca_scott_cavo": {
+"hevy": "1E9A6B8E",
+"tipo": "simile",
+"titolo": "Preacher Curl (Machine)"
+},
+"curl_panca_scott_manubri": {
+"hevy": "FAB6EB2F",
+"tipo": "uguale",
+"titolo": "Preacher Curl (Dumbbell)"
+},
+"curl_pancia_giu_panca_inclinata": {
+"hevy": "90427D4A",
+"tipo": "uguale",
+"titolo": "Spider Curl (Dumbbell)"
+},
+"curl_polsi_cavo": {
+"hevy": "1006DF48",
+"tipo": "simile",
+"titolo": "Seated Palms Up Wrist Curl"
+},
+"curl_scott": {
+"hevy": "1E9A6B8E",
+"tipo": "uguale",
+"titolo": "Preacher Curl (Machine)"
+},
+"curl_scott_braccio_manubrio": {
+"hevy": "FAB6EB2F",
+"tipo": "uguale",
+"titolo": "Preacher Curl (Dumbbell)"
+},
+"curl_sdraiato_cavo_alto": {
+"hevy": "ADA8623C",
+"tipo": "simile",
+"titolo": "Bicep Curl (Cable)"
+},
+"curl_sdraiato_manubri": {
+"hevy": "8BAB2735",
+"tipo": "simile",
+"titolo": "Seated Incline Curl (Dumbbell)"
+},
+"curl_sdraiato_panca_alta": {
+"hevy": "2348AB72",
+"tipo": "uguale",
+"titolo": "Spider Curl (Barbell)"
+},
+"curl_seduto_manubri": {
+"hevy": "37FCC2BB",
+"tipo": "simile",
+"titolo": "Bicep Curl (Dumbbell)"
+},
+"curl_zottman": {
+"hevy": "123EE239",
+"tipo": "uguale",
+"titolo": "Zottman Curl (Dumbbell)"
+},
+"curl_zottman_panca_scott": {
+"hevy": "123EE239",
+"tipo": "simile",
+"titolo": "Zottman Curl (Dumbbell)"
+},
+"dead_bug": {
+"hevy": "D8911FC4",
+"tipo": "uguale",
+"titolo": "Dead Bug"
+},
+"depth_jump": {
+"hevy": "56092DD1",
+"tipo": "simile",
+"titolo": "Box Jump"
+},
+"depth_jump_avanti": {
+"hevy": "56092DD1",
+"tipo": "simile",
+"titolo": "Box Jump"
+},
+"dip": {
+"hevy": "28BB4A95",
+"tipo": "uguale",
+"titolo": "Triceps Dip"
+},
+"dip_agli_anelli": {
+"hevy": "51A0EDAA",
+"tipo": "uguale",
+"titolo": "Ring Dips"
+},
+"dip_machine": {
+"hevy": "5122E7D9",
+"tipo": "uguale",
+"titolo": "Seated Dip Machine"
+},
+"dip_panca": {
+"hevy": "CD6DC8E5",
+"tipo": "uguale",
+"titolo": "Bench Dip"
+},
+"dip_panca_peso": {
+"hevy": "CD6DC8E5",
+"tipo": "simile",
+"titolo": "Bench Dip"
+},
+"dip_parallele": {
+"hevy": "28BB4A95",
+"tipo": "uguale",
+"titolo": "Triceps Dip"
+},
+"dip_parallele_per_petto": {
+"hevy": "6FCD7755",
+"tipo": "uguale",
+"titolo": "Chest Dip"
+},
+"dip_sedia": {
+"hevy": "CD6DC8E5",
+"tipo": "uguale",
+"titolo": "Bench Dip"
+},
+"donkey_calf": {
+"hevy": "E05C2C38",
+"tipo": "simile",
+"titolo": "Standing Calf Raise (Machine)"
+},
+"drag_curl": {
+"hevy": "D950429E",
+"tipo": "uguale",
+"titolo": "Drag Curl"
+},
+"drop_push": {
+"hevy": "10D76E8F",
+"tipo": "simile",
+"titolo": "Clap Push Ups"
+},
+"estensione_dell_anca_elastico": {
+"hevy": "ACB2751D",
+"tipo": "simile",
+"titolo": "Standing Cable Glute Kickbacks"
+},
+"estensione_schiena": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"estensione_sopra_testa_braccio": {
+"hevy": "8347DFD1",
+"tipo": "uguale",
+"titolo": "Single Arm Tricep Extension (Dumbbell)"
+},
+"estensione_tricipite_cavo_basso_braccio": {
+"hevy": "B5EFBF9C",
+"tipo": "simile",
+"titolo": "Overhead Triceps Extension (Cable)"
+},
+"estensione_tricipite_cavo_braccio": {
+"hevy": "552AB030",
+"tipo": "uguale",
+"titolo": "Single Arm Triceps Pushdown (Cable)"
+},
+"estensione_tricipite_manubrio_braccio": {
+"hevy": "8347DFD1",
+"tipo": "uguale",
+"titolo": "Single Arm Tricep Extension (Dumbbell)"
+},
+"estensione_tricipite_prona_braccio": {
+"hevy": "68F8A292",
+"tipo": "simile",
+"titolo": "Skullcrusher (Dumbbell)"
+},
+"estensione_tricipite_supina_braccio": {
+"hevy": "68F8A292",
+"tipo": "simile",
+"titolo": "Skullcrusher (Dumbbell)"
+},
+"estensioni_man": {
+"hevy": "3765684D",
+"tipo": "uguale",
+"titolo": "Triceps Extension (Dumbbell)"
+},
+"estensioni_sopra_testa_bilanciere": {
+"hevy": "2F8D3067",
+"tipo": "uguale",
+"titolo": "Triceps Extension (Barbell)"
+},
+"estensioni_sopra_testa_cavo_corda": {
+"hevy": "B5EFBF9C",
+"tipo": "uguale",
+"titolo": "Overhead Triceps Extension (Cable)"
+},
+"estensioni_sopra_testa_kettlebell": {
+"hevy": "3765684D",
+"tipo": "simile",
+"titolo": "Triceps Extension (Dumbbell)"
+},
+"estensioni_tricipiti_asciugamano": {
+"hevy": "3765684D",
+"tipo": "simile",
+"titolo": "Triceps Extension (Dumbbell)"
+},
+"estensioni_tricipiti_catene": {
+"hevy": "2F8D3067",
+"tipo": "simile",
+"titolo": "Triceps Extension (Barbell)"
+},
+"estensioni_tricipiti_cavo_basso": {
+"hevy": "B5EFBF9C",
+"tipo": "uguale",
+"titolo": "Overhead Triceps Extension (Cable)"
+},
+"estensioni_tricipiti_cavo_ginocchio": {
+"hevy": "B5EFBF9C",
+"tipo": "simile",
+"titolo": "Overhead Triceps Extension (Cable)"
+},
+"estensioni_tricipiti_cavo_panca_inclinat": {
+"hevy": "21310F5F",
+"tipo": "simile",
+"titolo": "Triceps Extension (Cable)"
+},
+"estensioni_tricipiti_corpo_libero": {
+"hevy": "6182EE83",
+"tipo": "simile",
+"titolo": "Triceps Extension (Suspension)"
+},
+"estensioni_tricipiti_macchina": {
+"hevy": "3092FADD",
+"tipo": "uguale",
+"titolo": "Triceps Extension (Machine)"
+},
+"estensioni_tricipiti_manubri_presa_prona": {
+"hevy": "68F8A292",
+"tipo": "simile",
+"titolo": "Skullcrusher (Dumbbell)"
+},
+"estensioni_tricipiti_panca_declinata": {
+"hevy": "68F8A292",
+"tipo": "simile",
+"titolo": "Skullcrusher (Dumbbell)"
+},
+"estensioni_tricipiti_sedute_manubrio": {
+"hevy": "3765684D",
+"tipo": "uguale",
+"titolo": "Triceps Extension (Dumbbell)"
+},
+"estensioni_veloci_elastico": {
+"hevy": "B5EFBF9C",
+"tipo": "simile",
+"titolo": "Overhead Triceps Extension (Cable)"
+},
+"face_pull": {
+"hevy": "BE640BA0",
+"tipo": "uguale",
+"titolo": "Face Pull"
+},
+"fallout_trx": {
+"hevy": "99D5F10E",
+"tipo": "simile",
+"titolo": "Ab Wheel"
+},
+"flessione_dell_anca_elastico": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"flessioni_laterali_bilanciere": {
+"hevy": "026FD047",
+"tipo": "simile",
+"titolo": "Side Bend (Dumbbell)"
+},
+"flessioni_laterali_cavo_alto": {
+"hevy": "026FD047",
+"tipo": "simile",
+"titolo": "Side Bend (Dumbbell)"
+},
+"flessioni_laterali_fitball": {
+"hevy": "37F9EDA7",
+"tipo": "simile",
+"titolo": "Side Bend"
+},
+"flessioni_laterali_manubrio": {
+"hevy": "026FD047",
+"tipo": "uguale",
+"titolo": "Side Bend (Dumbbell)"
+},
+"floor_press_alternata_kettlebell": {
+"hevy": "756EE329",
+"tipo": "simile",
+"titolo": "Floor Press (Dumbbell)"
+},
+"floor_press_bilanciere": {
+"hevy": "D53F2886",
+"tipo": "uguale",
+"titolo": "Floor Press (Barbell)"
+},
+"floor_press_braccio": {
+"hevy": "D53F2886",
+"tipo": "simile",
+"titolo": "Floor Press (Barbell)"
+},
+"floor_press_braccio_kettlebell": {
+"hevy": "756EE329",
+"tipo": "simile",
+"titolo": "Floor Press (Dumbbell)"
+},
+"floor_press_braccio_kettlebell_2": {
+"hevy": "756EE329",
+"tipo": "simile",
+"titolo": "Floor Press (Dumbbell)"
+},
+"floor_press_catene": {
+"hevy": "D53F2886",
+"tipo": "simile",
+"titolo": "Floor Press (Barbell)"
+},
+"floor_press_gamba_sopra_kettlebell": {
+"hevy": "756EE329",
+"tipo": "simile",
+"titolo": "Floor Press (Dumbbell)"
+},
+"floor_press_manubri": {
+"hevy": "756EE329",
+"tipo": "uguale",
+"titolo": "Floor Press (Dumbbell)"
+},
+"french_press": {
+"hevy": "875F585F",
+"tipo": "uguale",
+"titolo": "Skullcrusher (Barbell)"
+},
+"french_press_bilanciere_ez": {
+"hevy": "875F585F",
+"tipo": "uguale",
+"titolo": "Skullcrusher (Barbell)"
+},
+"french_press_declinata_bilanciere_ez": {
+"hevy": "875F585F",
+"tipo": "simile",
+"titolo": "Skullcrusher (Barbell)"
+},
+"french_press_dietro_testa_presa_stretta": {
+"hevy": "875F585F",
+"tipo": "simile",
+"titolo": "Skullcrusher (Barbell)"
+},
+"french_press_elastico": {
+"hevy": "68F8A292",
+"tipo": "simile",
+"titolo": "Skullcrusher (Dumbbell)"
+},
+"french_press_ez": {
+"hevy": "875F585F",
+"tipo": "uguale",
+"titolo": "Skullcrusher (Barbell)"
+},
+"french_press_manubri": {
+"hevy": "68F8A292",
+"tipo": "uguale",
+"titolo": "Skullcrusher (Dumbbell)"
+},
+"french_press_mento_ez": {
+"hevy": "875F585F",
+"tipo": "uguale",
+"titolo": "Skullcrusher (Barbell)"
+},
+"french_press_panca_inclinata": {
+"hevy": "875F585F",
+"tipo": "simile",
+"titolo": "Skullcrusher (Barbell)"
+},
+"french_press_sdraiato_cavo": {
+"hevy": "21310F5F",
+"tipo": "simile",
+"titolo": "Triceps Extension (Cable)"
+},
+"front_squat": {
+"hevy": "5046D0A9",
+"tipo": "uguale",
+"titolo": "Front Squat"
+},
+"front_squat_due_kettlebell": {
+"hevy": "A127DA73",
+"tipo": "simile",
+"titolo": "Kettlebell Goblet Squat"
+},
+"front_squat_panca": {
+"hevy": "5046D0A9",
+"tipo": "simile",
+"titolo": "Front Squat"
+},
+"front_squat_presa_olimpica": {
+"hevy": "5046D0A9",
+"tipo": "uguale",
+"titolo": "Front Squat"
+},
+"gatto_mucca": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"ginocchia_petto_fitball": {
+"hevy": "D410F649",
+"tipo": "simile",
+"titolo": "Jack Knife (Suspension)"
+},
+"ginocchia_petto_panca": {
+"hevy": "BD5935CF",
+"tipo": "simile",
+"titolo": "Lying Knee Raise"
+},
+"ginocchia_petto_parallele": {
+"hevy": "98237BA2",
+"tipo": "uguale",
+"titolo": "Knee Raise Parallel Bars"
+},
+"ginocchia_petto_seduto_panca": {
+"hevy": "BD5935CF",
+"tipo": "simile",
+"titolo": "Lying Knee Raise"
+},
+"ginocchia_petto_terra": {
+"hevy": "BD5935CF",
+"tipo": "uguale",
+"titolo": "Lying Knee Raise"
+},
+"girata_affondo": {
+"hevy": "ABB00838",
+"tipo": "simile",
+"titolo": "Clean"
+},
+"girata_alternata_dalla_sospensione_kettl": {
+"hevy": "F99C211D",
+"tipo": "simile",
+"titolo": "Kettlebell Clean"
+},
+"girata_alternata_due_kettlebell": {
+"hevy": "F99C211D",
+"tipo": "simile",
+"titolo": "Kettlebell Clean"
+},
+"girata_bottoms_up_kettlebell": {
+"hevy": "F99C211D",
+"tipo": "simile",
+"titolo": "Kettlebell Clean"
+},
+"girata_braccio_kettlebell": {
+"hevy": "F99C211D",
+"tipo": "uguale",
+"titolo": "Kettlebell Clean"
+},
+"girata_dai_blocchi": {
+"hevy": "ABB00838",
+"tipo": "simile",
+"titolo": "Clean"
+},
+"girata_dalla_sospensione": {
+"hevy": "BD4E7E53",
+"tipo": "uguale",
+"titolo": "Hang Clean"
+},
+"girata_dalla_sospensione_kettlebell": {
+"hevy": "F99C211D",
+"tipo": "simile",
+"titolo": "Kettlebell Clean"
+},
+"girata_dalla_sospensione_sotto_ginocchia": {
+"hevy": "BD4E7E53",
+"tipo": "simile",
+"titolo": "Hang Clean"
+},
+"girata_kettlebell_due_mani": {
+"hevy": "6433CD93",
+"tipo": "simile",
+"titolo": "Kettlebell Shoulder Press"
+},
+"girata_mani_aperte_kettlebell": {
+"hevy": "F99C211D",
+"tipo": "simile",
+"titolo": "Kettlebell Clean"
+},
+"girata_mano_aperta_kettlebell": {
+"hevy": "F99C211D",
+"tipo": "simile",
+"titolo": "Kettlebell Clean"
+},
+"girata_manubri": {
+"hevy": "ABB00838",
+"tipo": "simile",
+"titolo": "Clean"
+},
+"girata_petto": {
+"hevy": "ABB00838",
+"tipo": "uguale",
+"titolo": "Clean"
+},
+"girata_potenza": {
+"hevy": "C628D768",
+"tipo": "uguale",
+"titolo": "Power Clean"
+},
+"girata_smith_machine": {
+"hevy": "BD4E7E53",
+"tipo": "simile",
+"titolo": "Hang Clean"
+},
+"girata_spinta": {
+"hevy": "D3095577",
+"tipo": "uguale",
+"titolo": "Clean and Press"
+},
+"girata_terra_kettlebell": {
+"hevy": "F99C211D",
+"tipo": "simile",
+"titolo": "Kettlebell Clean"
+},
+"giro_mondo_manubri": {
+"hevy": "D4A2FE7E",
+"tipo": "uguale",
+"titolo": "Around The World"
+},
+"glute_ham_raise": {
+"hevy": "68B83EE0",
+"tipo": "uguale",
+"titolo": "Glute Ham Raise"
+},
+"glute_ham_raise_terra": {
+"hevy": "108D7A14",
+"tipo": "uguale",
+"titolo": "Nordic Hamstrings Curls"
+},
+"glute_machine": {
+"hevy": "CBA02382",
+"tipo": "uguale",
+"titolo": "Glute Kickback (Machine)"
+},
+"goblet_squat": {
+"hevy": "3D0C7C75",
+"tipo": "uguale",
+"titolo": "Goblet Squat"
+},
+"gomito_ginocchio": {
+"hevy": "A01BE509",
+"tipo": "uguale",
+"titolo": "Elbow to Knee"
+},
+"good_morning": {
+"hevy": "4180C405",
+"tipo": "uguale",
+"titolo": "Good Morning (Barbell)"
+},
+"good_morning_bilanciere_appeso": {
+"hevy": "4180C405",
+"tipo": "simile",
+"titolo": "Good Morning (Barbell)"
+},
+"good_morning_dai_fermi": {
+"hevy": "4180C405",
+"tipo": "simile",
+"titolo": "Good Morning (Barbell)"
+},
+"good_morning_elastico": {
+"hevy": "4180C405",
+"tipo": "simile",
+"titolo": "Good Morning (Barbell)"
+},
+"good_morning_gambe_tese": {
+"hevy": "4180C405",
+"tipo": "simile",
+"titolo": "Good Morning (Barbell)"
+},
+"good_morning_seduto": {
+"hevy": "4180C405",
+"tipo": "simile",
+"titolo": "Good Morning (Barbell)"
+},
+"hack_squat": {
+"hevy": "1E42FD5F",
+"tipo": "uguale",
+"titolo": "Hack Squat (Machine)"
+},
+"hack_squat_bilanciere_dietro": {
+"hevy": "AC5A4C58",
+"tipo": "uguale",
+"titolo": "Hack Squat"
+},
+"hack_squat_piedi_stretti": {
+"hevy": "1E42FD5F",
+"tipo": "simile",
+"titolo": "Hack Squat (Machine)"
+},
+"halo_estensione_sopra_testa": {
+"hevy": "4288G454",
+"tipo": "simile",
+"titolo": "Kettlebell Halo"
+},
+"halo_kettlebell": {
+"hevy": "4288G454",
+"tipo": "uguale",
+"titolo": "Kettlebell Halo"
+},
+"hip_thrust_bil": {
+"hevy": "D57C2EC7",
+"tipo": "uguale",
+"titolo": "Hip Thrust (Barbell)"
+},
+"hip_thrust_man": {
+"hevy": "DA5430FC",
+"tipo": "uguale",
+"titolo": "Hip Thrust (Dumbbell)"
+},
+"iperestensioni": {
+"hevy": "4F5866F8",
+"tipo": "uguale",
+"titolo": "Back Extension (Hyperextension)"
+},
+"iperestensioni_fitball_peso": {
+"hevy": "091737FA",
+"tipo": "simile",
+"titolo": "Back Extension (Weighted Hyperextension)"
+},
+"iperestensioni_inverse": {
+"hevy": "7C0028C3",
+"tipo": "uguale",
+"titolo": "Reverse Hyperextension"
+},
+"iperestensioni_senza_panca": {
+"hevy": "4F5866F8",
+"tipo": "simile",
+"titolo": "Back Extension (Hyperextension)"
+},
+"isometria_collo_avanti_indietro": {
+"hevy": "22FEDCA4",
+"tipo": "simile",
+"titolo": "Lying Neck Curls"
+},
+"isometria_collo_laterale": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"jackknife_laterale": {
+"hevy": "DBE341AA",
+"tipo": "simile",
+"titolo": "Oblique Crunch"
+},
+"jefferson_squat": {
+"hevy": "6622E5A0",
+"tipo": "simile",
+"titolo": "Sumo Squat (Barbell)"
+},
+"jerk_balance": {
+"hevy": "E764B907",
+"tipo": "simile",
+"titolo": "Split Jerk"
+},
+"jerk_braccio_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "simile",
+"titolo": "Kettlebell Shoulder Press"
+},
+"jerk_dip": {
+"hevy": "542F3CD5",
+"tipo": "simile",
+"titolo": "Push Press"
+},
+"jerk_due_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "simile",
+"titolo": "Kettlebell Shoulder Press"
+},
+"jm_press": {
+"hevy": "74103F24",
+"tipo": "uguale",
+"titolo": "JM Press (Barbell)"
+},
+"judo_flip_cavo": {
+"hevy": "A2D838BD",
+"tipo": "simile",
+"titolo": "Cable Twist (Up to down)"
+},
+"jumping_jack": {
+"hevy": "991833C2",
+"tipo": "uguale",
+"titolo": "Jumping Jack"
+},
+"kickback": {
+"hevy": "6127A3AD",
+"tipo": "uguale",
+"titolo": "Triceps Kickback (Dumbbell)"
+},
+"kickback_due_braccia": {
+"hevy": "6127A3AD",
+"tipo": "uguale",
+"titolo": "Triceps Kickback (Dumbbell)"
+},
+"kickback_seduto_braccio": {
+"hevy": "6127A3AD",
+"tipo": "simile",
+"titolo": "Triceps Kickback (Dumbbell)"
+},
+"kickback_seduto_due_braccia": {
+"hevy": "6127A3AD",
+"tipo": "simile",
+"titolo": "Triceps Kickback (Dumbbell)"
+},
+"landmine_180": {
+"hevy": "923874CA",
+"tipo": "uguale",
+"titolo": "Landmine 180"
+},
+"landmine_jammer": {
+"hevy": "983274DD",
+"tipo": "simile",
+"titolo": "Landmine Squat and Press"
+},
+"landmine_jammer_braccio": {
+"hevy": "1837BA23",
+"tipo": "simile",
+"titolo": "Single Arm Landmine Press (Barbell)"
+},
+"lat_machine": {
+"hevy": "6A6C31A5",
+"tipo": "uguale",
+"titolo": "Lat Pulldown (Cable)"
+},
+"lat_machine_barra_v": {
+"hevy": "4E5257DE",
+"tipo": "uguale",
+"titolo": "Lat Pulldown - Close Grip (Cable)"
+},
+"lat_machine_braccio": {
+"hevy": "2EE45F81",
+"tipo": "uguale",
+"titolo": "Single Arm Lat Pulldown"
+},
+"lat_machine_dietro_nuca": {
+"hevy": "6A6C31A5",
+"tipo": "simile",
+"titolo": "Lat Pulldown (Cable)"
+},
+"lat_machine_escursione_completa": {
+"hevy": "6A6C31A5",
+"tipo": "uguale",
+"titolo": "Lat Pulldown (Cable)"
+},
+"lat_machine_presa_inversa": {
+"hevy": "046E25A2",
+"tipo": "uguale",
+"titolo": "Reverse Grip Lat Pulldown (Cable)"
+},
+"lat_machine_presa_larga": {
+"hevy": "6A6C31A5",
+"tipo": "uguale",
+"titolo": "Lat Pulldown (Cable)"
+},
+"lat_machine_presa_stretta": {
+"hevy": "4E5257DE",
+"tipo": "uguale",
+"titolo": "Lat Pulldown - Close Grip (Cable)"
+},
+"laterali_cavi": {
+"hevy": "BE289E45",
+"tipo": "uguale",
+"titolo": "Lateral Raise (Cable)"
+},
+"leg_curl": {
+"hevy": "B8127AD1",
+"tipo": "uguale",
+"titolo": "Lying Leg Curl (Machine)"
+},
+"leg_curl_fitball": {
+"hevy": "B8127AD1",
+"tipo": "simile",
+"titolo": "Lying Leg Curl (Machine)"
+},
+"leg_curl_piedi": {
+"hevy": "6120CAAB",
+"tipo": "uguale",
+"titolo": "Standing Leg Curls"
+},
+"leg_curl_seduto": {
+"hevy": "11A123F3",
+"tipo": "uguale",
+"titolo": "Seated Leg Curl (Machine)"
+},
+"leg_curl_seduto_elastico": {
+"hevy": "11A123F3",
+"tipo": "simile",
+"titolo": "Seated Leg Curl (Machine)"
+},
+"leg_extension": {
+"hevy": "75A4F6C4",
+"tipo": "uguale",
+"titolo": "Leg Extension (Machine)"
+},
+"leg_extension_gamba": {
+"hevy": "629AE73D",
+"tipo": "uguale",
+"titolo": "Single Leg Extensions"
+},
+"leg_press": {
+"hevy": "C7973E0E",
+"tipo": "uguale",
+"titolo": "Leg Press (Machine)"
+},
+"leg_press_piedi_stretti": {
+"hevy": "C7973E0E",
+"tipo": "simile",
+"titolo": "Leg Press (Machine)"
+},
+"leg_press_smith_machine": {
+"hevy": "C7973E0E",
+"tipo": "simile",
+"titolo": "Leg Press (Machine)"
+},
+"leg_raise": {
+"hevy": "09C9F635",
+"tipo": "uguale",
+"titolo": "Lying Leg Raise"
+},
+"lento_altalena_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "simile",
+"titolo": "Kettlebell Shoulder Press"
+},
+"lento_alternato_altalena_manubri": {
+"hevy": "878CD1D0",
+"tipo": "simile",
+"titolo": "Shoulder Press (Dumbbell)"
+},
+"lento_alternato_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "uguale",
+"titolo": "Kettlebell Shoulder Press"
+},
+"lento_alternato_piedi_manubri": {
+"hevy": "6AC96645",
+"tipo": "simile",
+"titolo": "Overhead Press (Dumbbell)"
+},
+"lento_avanti_cavi": {
+"hevy": "9237BAD1",
+"tipo": "simile",
+"titolo": "Seated Shoulder Press (Machine)"
+},
+"lento_avanti_elastico": {
+"hevy": "6AC96645",
+"tipo": "simile",
+"titolo": "Overhead Press (Dumbbell)"
+},
+"lento_avanti_seduto_bilanciere": {
+"hevy": "91AF29E0",
+"tipo": "uguale",
+"titolo": "Seated Overhead Press (Barbell)"
+},
+"lento_avanti_smith_machine": {
+"hevy": "B09A1304",
+"tipo": "uguale",
+"titolo": "Overhead Press (Smith Machine)"
+},
+"lento_braccio_presa_neutra": {
+"hevy": "6AC96645",
+"tipo": "simile",
+"titolo": "Overhead Press (Dumbbell)"
+},
+"lento_dietro_nuca_piedi": {
+"hevy": "073032BB",
+"tipo": "simile",
+"titolo": "Standing Military Press (Barbell)"
+},
+"lento_due_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "uguale",
+"titolo": "Kettlebell Shoulder Press"
+},
+"lento_laterale_braccio_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "simile",
+"titolo": "Kettlebell Shoulder Press"
+},
+"lento_man": {
+"hevy": "878CD1D0",
+"tipo": "uguale",
+"titolo": "Shoulder Press (Dumbbell)"
+},
+"lento_manubrio_braccio": {
+"hevy": "878CD1D0",
+"tipo": "simile",
+"titolo": "Shoulder Press (Dumbbell)"
+},
+"lento_panca_inclinata_pancia_giu": {
+"hevy": "91AF29E0",
+"tipo": "simile",
+"titolo": "Seated Overhead Press (Barbell)"
+},
+"lento_piedi_manubri": {
+"hevy": "6AC96645",
+"tipo": "uguale",
+"titolo": "Overhead Press (Dumbbell)"
+},
+"lento_piedi_presa_neutra": {
+"hevy": "6AC96645",
+"tipo": "simile",
+"titolo": "Overhead Press (Dumbbell)"
+},
+"lento_seduto_cavi": {
+"hevy": "9237BAD1",
+"tipo": "simile",
+"titolo": "Seated Shoulder Press (Machine)"
+},
+"lento_seduto_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "simile",
+"titolo": "Kettlebell Shoulder Press"
+},
+"lento_seduto_manubri": {
+"hevy": "9930DF71",
+"tipo": "uguale",
+"titolo": "Seated Overhead Press (Dumbbell)"
+},
+"london_bridge": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"military_bil": {
+"hevy": "073032BB",
+"tipo": "uguale",
+"titolo": "Standing Military Press (Barbell)"
+},
+"military_press_seduto": {
+"hevy": "91AF29E0",
+"tipo": "uguale",
+"titolo": "Seated Overhead Press (Barbell)"
+},
+"mountain_climber": {
+"hevy": "F49E31D6",
+"tipo": "uguale",
+"titolo": "Mountain Climber"
+},
+"muscle_snatch": {
+"hevy": "E22F9358",
+"tipo": "simile",
+"titolo": "Power Snatch"
+},
+"muscle_up": {
+"hevy": "9F9C164B",
+"tipo": "uguale",
+"titolo": "Muscle Up"
+},
+"muscle_up_slancio": {
+"hevy": "9F9C164B",
+"tipo": "simile",
+"titolo": "Muscle Up"
+},
+"nave_pirata_kettlebell": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"nordic_curl": {
+"hevy": "108D7A14",
+"tipo": "uguale",
+"titolo": "Nordic Hamstrings Curls"
+},
+"otis_up": {
+"hevy": "9237BA12",
+"tipo": "simile",
+"titolo": "Sit Up (Weighted)"
+},
+"otto_kettlebell": {
+"hevy": "55BA475A",
+"tipo": "simile",
+"titolo": "Kettlebell Around the World"
+},
+"pallof_press": {
+"hevy": "CC55119B",
+"tipo": "uguale",
+"titolo": "Cable Core Pallof Press"
+},
+"pallof_press_rotazione": {
+"hevy": "CC55119B",
+"tipo": "simile",
+"titolo": "Cable Core Pallof Press"
+},
+"panca_catene": {
+"hevy": "79D0BB3A",
+"tipo": "simile",
+"titolo": "Bench Press (Barbell)"
+},
+"panca_collo": {
+"hevy": "79D0BB3A",
+"tipo": "simile",
+"titolo": "Bench Press (Barbell)"
+},
+"panca_dai_fermi": {
+"hevy": "79D0BB3A",
+"tipo": "simile",
+"titolo": "Bench Press (Barbell)"
+},
+"panca_declinata_bilanciere": {
+"hevy": "DA0F0470",
+"tipo": "uguale",
+"titolo": "Decline Bench Press (Barbell)"
+},
+"panca_declinata_manubri": {
+"hevy": "18487FA7",
+"tipo": "uguale",
+"titolo": "Decline Bench Press (Dumbbell)"
+},
+"panca_declinata_presa_larga": {
+"hevy": "DA0F0470",
+"tipo": "simile",
+"titolo": "Decline Bench Press (Barbell)"
+},
+"panca_declinata_smith_machine": {
+"hevy": "FFC106CB",
+"tipo": "uguale",
+"titolo": "Decline Bench Press (Smith Machine)"
+},
+"panca_elastici_inversi": {
+"hevy": "79D0BB3A",
+"tipo": "simile",
+"titolo": "Bench Press (Barbell)"
+},
+"panca_ghigliottina": {
+"hevy": "79D0BB3A",
+"tipo": "simile",
+"titolo": "Bench Press (Barbell)"
+},
+"panca_inclinata_bil": {
+"hevy": "50DFDFAB",
+"tipo": "uguale",
+"titolo": "Incline Bench Press (Barbell)"
+},
+"panca_inclinata_man": {
+"hevy": "07B38369",
+"tipo": "uguale",
+"titolo": "Incline Bench Press (Dumbbell)"
+},
+"panca_inclinata_manubri_palmi_dentro": {
+"hevy": "07B38369",
+"tipo": "simile",
+"titolo": "Incline Bench Press (Dumbbell)"
+},
+"panca_inclinata_manubri_presa_neutra": {
+"hevy": "07B38369",
+"tipo": "simile",
+"titolo": "Incline Bench Press (Dumbbell)"
+},
+"panca_inclinata_smith_machine": {
+"hevy": "3A6FA3D1",
+"tipo": "uguale",
+"titolo": "Incline Bench Press (Smith Machine)"
+},
+"panca_macchina": {
+"hevy": "7EB3F7C3",
+"tipo": "uguale",
+"titolo": "Chest Press (Machine)"
+},
+"panca_manubri_presa_neutra": {
+"hevy": "3601968B",
+"tipo": "simile",
+"titolo": "Bench Press (Dumbbell)"
+},
+"panca_manubri_presa_stretta": {
+"hevy": "F72FA239",
+"tipo": "simile",
+"titolo": "Dumbbell Squeeze Press"
+},
+"panca_manubrio_braccio": {
+"hevy": "3601968B",
+"tipo": "simile",
+"titolo": "Bench Press (Dumbbell)"
+},
+"panca_piana_bil": {
+"hevy": "79D0BB3A",
+"tipo": "uguale",
+"titolo": "Bench Press (Barbell)"
+},
+"panca_piana_catene": {
+"hevy": "79D0BB3A",
+"tipo": "simile",
+"titolo": "Bench Press (Barbell)"
+},
+"panca_piana_elastici": {
+"hevy": "79D0BB3A",
+"tipo": "simile",
+"titolo": "Bench Press (Barbell)"
+},
+"panca_piana_man": {
+"hevy": "3601968B",
+"tipo": "uguale",
+"titolo": "Bench Press (Dumbbell)"
+},
+"panca_piana_presa_larga": {
+"hevy": "E644F828",
+"tipo": "uguale",
+"titolo": "Bench Press - Wide Grip (Barbell)"
+},
+"panca_piana_smith_machine": {
+"hevy": "0FBF7195",
+"tipo": "uguale",
+"titolo": "Bench Press (Smith Machine)"
+},
+"panca_piana_stile_powerlifting": {
+"hevy": "79D0BB3A",
+"tipo": "uguale",
+"titolo": "Bench Press (Barbell)"
+},
+"panca_presa_inversa_per_tricipiti": {
+"hevy": "35B51B87",
+"tipo": "simile",
+"titolo": "Bench Press - Close Grip (Barbell)"
+},
+"panca_presa_stretta_bilanciere_ez": {
+"hevy": "35B51B87",
+"tipo": "simile",
+"titolo": "Bench Press - Close Grip (Barbell)"
+},
+"panca_stretta": {
+"hevy": "35B51B87",
+"tipo": "uguale",
+"titolo": "Bench Press - Close Grip (Barbell)"
+},
+"panca_stretta_declinata_french_press": {
+"hevy": "875F585F",
+"tipo": "simile",
+"titolo": "Skullcrusher (Barbell)"
+},
+"panca_stretta_smith_machine": {
+"hevy": "35B51B87",
+"tipo": "simile",
+"titolo": "Bench Press - Close Grip (Barbell)"
+},
+"para_press_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "simile",
+"titolo": "Kettlebell Shoulder Press"
+},
+"passaggio_tra_gambe_kettlebell": {
+"hevy": "55BA475A",
+"tipo": "simile",
+"titolo": "Kettlebell Around the World"
+},
+"passi_laterali_box": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"pec_deck": {
+"hevy": "9DCE2D64",
+"tipo": "uguale",
+"titolo": "Butterfly (Pec Deck)"
+},
+"pec_deck_inverso": {
+"hevy": "D8281C62",
+"tipo": "uguale",
+"titolo": "Rear Delt Reverse Fly (Machine)"
+},
+"piegamenti": {
+"hevy": "392887AA",
+"tipo": "uguale",
+"titolo": "Push Up"
+},
+"piegamenti_declinati": {
+"hevy": "C43825EA",
+"tipo": "uguale",
+"titolo": "Decline Push Up"
+},
+"piegamenti_ginocchia": {
+"hevy": "B74A95BB",
+"tipo": "uguale",
+"titolo": "Kneeling Push Up"
+},
+"piegamenti_inclinati": {
+"hevy": "39C99849",
+"tipo": "uguale",
+"titolo": "Incline Push Ups"
+},
+"piegamenti_inclinati_pliometrici": {
+"hevy": "39C99849",
+"tipo": "simile",
+"titolo": "Incline Push Ups"
+},
+"piegamenti_inclinati_presa_inversa": {
+"hevy": "39C99849",
+"tipo": "simile",
+"titolo": "Incline Push Ups"
+},
+"piegamenti_inclinati_presa_larga": {
+"hevy": "39C99849",
+"tipo": "simile",
+"titolo": "Incline Push Ups"
+},
+"piegamenti_inclinati_presa_media": {
+"hevy": "39C99849",
+"tipo": "uguale",
+"titolo": "Incline Push Ups"
+},
+"piegamenti_inclinati_presa_stretta": {
+"hevy": "39C99849",
+"tipo": "simile",
+"titolo": "Incline Push Ups"
+},
+"piegamenti_orologio": {
+"hevy": "392887AA",
+"tipo": "simile",
+"titolo": "Push Up"
+},
+"piegamenti_piedi_fitball": {
+"hevy": "C43825EA",
+"tipo": "simile",
+"titolo": "Decline Push Up"
+},
+"piegamenti_piedi_rialzati": {
+"hevy": "C43825EA",
+"tipo": "uguale",
+"titolo": "Decline Push Up"
+},
+"piegamenti_pliometrici": {
+"hevy": "10D76E8F",
+"tipo": "simile",
+"titolo": "Clap Push Ups"
+},
+"piegamenti_pliometrici_sui_kettlebell": {
+"hevy": "10D76E8F",
+"tipo": "simile",
+"titolo": "Clap Push Ups"
+},
+"piegamenti_presa_larga": {
+"hevy": "392887AA",
+"tipo": "simile",
+"titolo": "Push Up"
+},
+"piegamenti_presa_stretta": {
+"hevy": "947DAC23",
+"tipo": "uguale",
+"titolo": "Push Up - Close Grip"
+},
+"piegamenti_scrivania": {
+"hevy": "39C99849",
+"tipo": "uguale",
+"titolo": "Incline Push Ups"
+},
+"piegamenti_stretti_larghi_alternati": {
+"hevy": "392887AA",
+"tipo": "simile",
+"titolo": "Push Up"
+},
+"piegamenti_stretti_manubrio": {
+"hevy": "947DAC23",
+"tipo": "simile",
+"titolo": "Push Up - Close Grip"
+},
+"piegamenti_trx": {
+"hevy": "AEA56BDC",
+"tipo": "simile",
+"titolo": "Ring Push Up"
+},
+"piegamenti_verticale": {
+"hevy": "90B04F96",
+"tipo": "uguale",
+"titolo": "Handstand Push Up"
+},
+"piegamento_braccio": {
+"hevy": "B140095E",
+"tipo": "uguale",
+"titolo": "One Arm Push Up"
+},
+"piegamento_plank_laterale": {
+"hevy": "392887AA",
+"tipo": "simile",
+"titolo": "Push Up"
+},
+"pike_sbarra": {
+"hevy": "B94E35E1",
+"tipo": "simile",
+"titolo": "Toes to Bar"
+},
+"pistol_squat_kettlebell": {
+"hevy": "3FF6A22E",
+"tipo": "simile",
+"titolo": "Pistol Squat"
+},
+"pistol_squat_smith_machine": {
+"hevy": "3FF6A22E",
+"tipo": "simile",
+"titolo": "Pistol Squat"
+},
+"plank": {
+"hevy": "C6C9B8A0",
+"tipo": "uguale",
+"titolo": "Plank"
+},
+"plank_laterale": {
+"hevy": "E3EDA509",
+"tipo": "uguale",
+"titolo": "Side Plank"
+},
+"ponte_glutei": {
+"hevy": "CDA23948",
+"tipo": "uguale",
+"titolo": "Glute Bridge"
+},
+"ponte_glutei_bilanciere": {
+"hevy": "49C922A1",
+"tipo": "uguale",
+"titolo": "Glute Bridge (Barbell)"
+},
+"ponte_glutei_elastico": {
+"hevy": "CDA23948",
+"tipo": "simile",
+"titolo": "Glute Bridge"
+},
+"ponte_glutei_fitball": {
+"hevy": "CDA23948",
+"tipo": "simile",
+"titolo": "Glute Bridge"
+},
+"ponte_glutei_gamba": {
+"hevy": "CBC0D834",
+"tipo": "uguale",
+"titolo": "Single Leg Glute Bridge"
+},
+"posizione_bambino": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"power_clean_dai_blocchi": {
+"hevy": "C628D768",
+"tipo": "simile",
+"titolo": "Power Clean"
+},
+"power_jerk": {
+"hevy": "E764B907",
+"tipo": "simile",
+"titolo": "Split Jerk"
+},
+"power_snatch_dai_blocchi": {
+"hevy": "E22F9358",
+"tipo": "simile",
+"titolo": "Power Snatch"
+},
+"presa_pinza_dischi": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"pronazione_polso_manubrio": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"pull_through_cavo": {
+"hevy": "8C331CD8",
+"tipo": "uguale",
+"titolo": "Cable Pull Through"
+},
+"pull_through_elastico": {
+"hevy": "8C331CD8",
+"tipo": "simile",
+"titolo": "Cable Pull Through"
+},
+"pulldown_braccia_tese": {
+"hevy": "D2387AB1",
+"tipo": "uguale",
+"titolo": "Straight Arm Lat Pulldown (Cable)"
+},
+"pulldown_braccia_tese_corda": {
+"hevy": "9273BA17",
+"tipo": "uguale",
+"titolo": "Rope Straight Arm Pulldown"
+},
+"pulley": {
+"hevy": "0393F233",
+"tipo": "uguale",
+"titolo": "Seated Cable Row - V Grip (Cable)"
+},
+"pulley_braccio": {
+"hevy": "D0C4A899",
+"tipo": "uguale",
+"titolo": "Single Arm Cable Row"
+},
+"pullover_bilanciere_braccia_piegate": {
+"hevy": "67280085",
+"tipo": "simile",
+"titolo": "Pullover (Dumbbell)"
+},
+"pullover_cavo_panca_inclinata": {
+"hevy": "D2387AB1",
+"tipo": "simile",
+"titolo": "Straight Arm Lat Pulldown (Cable)"
+},
+"pullover_declinato_presa_larga": {
+"hevy": "67280085",
+"tipo": "simile",
+"titolo": "Pullover (Dumbbell)"
+},
+"pullover_man": {
+"hevy": "67280085",
+"tipo": "uguale",
+"titolo": "Pullover (Dumbbell)"
+},
+"pullover_manubrio_braccia_piegate": {
+"hevy": "67280085",
+"tipo": "uguale",
+"titolo": "Pullover (Dumbbell)"
+},
+"push_down_barra_v": {
+"hevy": "93A552C6",
+"tipo": "simile",
+"titolo": "Triceps Pushdown"
+},
+"push_down_corda": {
+"hevy": "94B7239B",
+"tipo": "uguale",
+"titolo": "Triceps Rope Pushdown"
+},
+"push_down_presa_inversa": {
+"hevy": "8B5BED30",
+"tipo": "uguale",
+"titolo": "Reverse Grip Triceps Pushdown"
+},
+"push_press": {
+"hevy": "542F3CD5",
+"tipo": "uguale",
+"titolo": "Push Press"
+},
+"push_press_braccio_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "simile",
+"titolo": "Kettlebell Shoulder Press"
+},
+"push_press_dietro_nuca": {
+"hevy": "542F3CD5",
+"tipo": "simile",
+"titolo": "Push Press"
+},
+"push_press_due_kettlebell": {
+"hevy": "6433CD93",
+"tipo": "simile",
+"titolo": "Kettlebell Shoulder Press"
+},
+"pushdown": {
+"hevy": "93A552C6",
+"tipo": "uguale",
+"titolo": "Triceps Pushdown"
+},
+"raccolte_delle_gambe_seduto": {
+"hevy": "BD5935CF",
+"tipo": "simile",
+"titolo": "Lying Knee Raise"
+},
+"rack_pull": {
+"hevy": "FE389074",
+"tipo": "uguale",
+"titolo": "Rack Pull"
+},
+"rack_pull_elastici": {
+"hevy": "FE389074",
+"tipo": "simile",
+"titolo": "Rack Pull"
+},
+"rematore_alternato_kettlebell": {
+"hevy": "05487216",
+"tipo": "uguale",
+"titolo": "Gorilla Row (Kettlebell)"
+},
+"rematore_alto_corda_per_deltoidi_posteri": {
+"hevy": "BE640BA0",
+"tipo": "simile",
+"titolo": "Face Pull"
+},
+"rematore_alto_leva": {
+"hevy": "BC3492DA",
+"tipo": "uguale",
+"titolo": "Iso-Lateral High Row (Machine)"
+},
+"rematore_bil": {
+"hevy": "55E6546F",
+"tipo": "uguale",
+"titolo": "Bent Over Row (Barbell)"
+},
+"rematore_bilanciere_presa_inversa": {
+"hevy": "55E6546F",
+"tipo": "simile",
+"titolo": "Bent Over Row (Barbell)"
+},
+"rematore_braccio_bilanciere": {
+"hevy": "C732C341",
+"tipo": "uguale",
+"titolo": "Meadows Rows (Barbell)"
+},
+"rematore_braccio_kettlebell": {
+"hevy": "F1E57334",
+"tipo": "simile",
+"titolo": "Dumbbell Row"
+},
+"rematore_cavo_alto_braccio_ginocchio": {
+"hevy": "2EE45F81",
+"tipo": "simile",
+"titolo": "Single Arm Lat Pulldown"
+},
+"rematore_cavo_alto_ginocchio": {
+"hevy": "6A6C31A5",
+"tipo": "simile",
+"titolo": "Lat Pulldown (Cable)"
+},
+"rematore_cavo_braccio": {
+"hevy": "D0C4A899",
+"tipo": "simile",
+"titolo": "Single Arm Cable Row"
+},
+"rematore_cavo_rialzo": {
+"hevy": "F1D60854",
+"tipo": "simile",
+"titolo": "Seated Cable Row - Bar Grip"
+},
+"rematore_collo_cavo_basso": {
+"hevy": "BE640BA0",
+"tipo": "simile",
+"titolo": "Face Pull"
+},
+"rematore_due_kettlebell": {
+"hevy": "05487216",
+"tipo": "simile",
+"titolo": "Gorilla Row (Kettlebell)"
+},
+"rematore_due_manubri": {
+"hevy": "23E92538",
+"tipo": "uguale",
+"titolo": "Bent Over Row (Dumbbell)"
+},
+"rematore_due_manubri_presa_neutra": {
+"hevy": "23E92538",
+"tipo": "simile",
+"titolo": "Bent Over Row (Dumbbell)"
+},
+"rematore_inverso": {
+"hevy": "425805F4",
+"tipo": "uguale",
+"titolo": "Inverted Row"
+},
+"rematore_inverso_anelli_trx": {
+"hevy": "8A2E6481",
+"tipo": "uguale",
+"titolo": "Low Row (Suspension)"
+},
+"rematore_inverso_corpo_libero": {
+"hevy": "425805F4",
+"tipo": "uguale",
+"titolo": "Inverted Row"
+},
+"rematore_iso_laterale_leva": {
+"hevy": "AA1EB7D8",
+"tipo": "uguale",
+"titolo": "Iso-Lateral Row (Machine)"
+},
+"rematore_landmine_braccio": {
+"hevy": "D7D7FCCE",
+"tipo": "uguale",
+"titolo": "Landmine Row"
+},
+"rematore_man": {
+"hevy": "F1E57334",
+"tipo": "uguale",
+"titolo": "Dumbbell Row"
+},
+"rematore_manubri_panca_inclinata": {
+"hevy": "914F3A96",
+"tipo": "uguale",
+"titolo": "Chest Supported Incline Row (Dumbbell)"
+},
+"rematore_panca_bilanciere_curvo": {
+"hevy": "DF3BDB9C",
+"tipo": "simile",
+"titolo": "Seal Row (Barbell)"
+},
+"rematore_panca_bilanciere_dritto": {
+"hevy": "DF3BDB9C",
+"tipo": "simile",
+"titolo": "Seal Row (Barbell)"
+},
+"rematore_panca_inclinata_bilanciere": {
+"hevy": "DF3BDB9C",
+"tipo": "simile",
+"titolo": "Seal Row (Barbell)"
+},
+"rematore_petto_per_deltoidi_posteriori": {
+"hevy": "55E6546F",
+"tipo": "simile",
+"titolo": "Bent Over Row (Barbell)"
+},
+"rematore_smith_machine": {
+"hevy": "EB813C91",
+"tipo": "uguale",
+"titolo": "Bent Over Row (Smith Machine)"
+},
+"rematore_trx": {
+"hevy": "8A2E6481",
+"tipo": "uguale",
+"titolo": "Low Row (Suspension)"
+},
+"renegade_row": {
+"hevy": "1B89CA1B",
+"tipo": "simile",
+"titolo": "Renegade Row (Dumbbell)"
+},
+"retrazione_scapole": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"reverse_wrist_curl_bilanciere_panca": {
+"hevy": "9202CC23",
+"tipo": "uguale",
+"titolo": "Seated Wrist Extension (Barbell)"
+},
+"reverse_wrist_curl_braccio": {
+"hevy": "D8460FA6",
+"tipo": "simile",
+"titolo": "Reverse Wrist Curl (Dumbbell)"
+},
+"reverse_wrist_curl_manubri_panca": {
+"hevy": "D8460FA6",
+"tipo": "uguale",
+"titolo": "Reverse Wrist Curl (Dumbbell)"
+},
+"reverse_wrist_curl_seduto_bilanciere": {
+"hevy": "9202CC23",
+"tipo": "uguale",
+"titolo": "Seated Wrist Extension (Barbell)"
+},
+"reverse_wrist_curl_seduto_manubri": {
+"hevy": "D8460FA6",
+"tipo": "uguale",
+"titolo": "Reverse Wrist Curl (Dumbbell)"
+},
+"rollout_bilanciere_ginocchio": {
+"hevy": "99D5F10E",
+"tipo": "simile",
+"titolo": "Ab Wheel"
+},
+"rollout_bilanciere_panca": {
+"hevy": "99D5F10E",
+"tipo": "simile",
+"titolo": "Ab Wheel"
+},
+"rollout_bilanciere_piedi": {
+"hevy": "99D5F10E",
+"tipo": "simile",
+"titolo": "Ab Wheel"
+},
+"rotazione_esterna_cavo": {
+"hevy": "BE640BA0",
+"tipo": "simile",
+"titolo": "Face Pull"
+},
+"rotazione_esterna_elastico": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"rotazione_esterna_manubrio": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"rotazione_interna_elastico": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"rotazione_interna_spalla_cavo": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"rotazioni_disco": {
+"hevy": "2982AA23",
+"tipo": "simile",
+"titolo": "Russian Twist (Weighted)"
+},
+"rotazioni_polsi_bilanciere": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"row_machine": {
+"hevy": "1DF4A847",
+"tipo": "uguale",
+"titolo": "Seated Row (Machine)"
+},
+"rullo_per_polsi": {
+"hevy": "0E4523F4",
+"tipo": "uguale",
+"titolo": "Wrist Roller"
+},
+"ruota_per_addominali": {
+"hevy": "99D5F10E",
+"tipo": "uguale",
+"titolo": "Ab Wheel"
+},
+"russian_twist": {
+"hevy": "2982AA23",
+"tipo": "simile",
+"titolo": "Russian Twist (Weighted)"
+},
+"russian_twist_cavo": {
+"hevy": "92D858EA",
+"tipo": "simile",
+"titolo": "Cable Twist (Down to up)"
+},
+"russian_twist_corpo_libero": {
+"hevy": "BB83BDDE",
+"tipo": "uguale",
+"titolo": "Russian Twist (Bodyweight)"
+},
+"saltelli_gamba": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"saltelli_laterali_gamba": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"saltelli_laterali_sui_coni": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"saltelli_sugli_ostacoli": {
+"hevy": "56092DD1",
+"tipo": "simile",
+"titolo": "Box Jump"
+},
+"salti_calciata_glutei": {
+"hevy": "70D4EBBF",
+"tipo": "simile",
+"titolo": "Jump Squat"
+},
+"salti_falcata_gamba": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"salti_forbice": {
+"hevy": "5CC07A1F",
+"tipo": "uguale",
+"titolo": "Jumping Lunge"
+},
+"salti_ginocchia_petto": {
+"hevy": "70D4EBBF",
+"tipo": "simile",
+"titolo": "Jump Squat"
+},
+"salti_incrociati_box": {
+"hevy": "07EBC4DC",
+"tipo": "simile",
+"titolo": "Lateral Box Jump"
+},
+"salti_panca": {
+"hevy": "56092DD1",
+"tipo": "simile",
+"titolo": "Box Jump"
+},
+"salti_sugli_ostacoli": {
+"hevy": "56092DD1",
+"tipo": "simile",
+"titolo": "Box Jump"
+},
+"salto_laterale_fermo": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"salto_lungo_fermo": {
+"hevy": "207DC636",
+"tipo": "simile",
+"titolo": "Frog Jumps"
+},
+"salto_razzo": {
+"hevy": "70D4EBBF",
+"tipo": "simile",
+"titolo": "Jump Squat"
+},
+"salto_stella": {
+"hevy": "991833C2",
+"tipo": "simile",
+"titolo": "Jumping Jack"
+},
+"scivolamenti_per_femorali": {
+"hevy": "108D7A14",
+"tipo": "simile",
+"titolo": "Nordic Hamstrings Curls"
+},
+"scrollata_girata": {
+"hevy": "BA3DE542",
+"tipo": "simile",
+"titolo": "Jump Shrug"
+},
+"scrollata_strappo": {
+"hevy": "BA3DE542",
+"tipo": "simile",
+"titolo": "Jump Shrug"
+},
+"scrollate_bilanciere": {
+"hevy": "0B841777",
+"tipo": "uguale",
+"titolo": "Shrug (Barbell)"
+},
+"scrollate_bilanciere_dietro_schiena": {
+"hevy": "0B841777",
+"tipo": "simile",
+"titolo": "Shrug (Barbell)"
+},
+"scrollate_calf_machine": {
+"hevy": "19A38071",
+"tipo": "simile",
+"titolo": "Shrug (Machine)"
+},
+"scrollate_cavo": {
+"hevy": "FFABC123",
+"tipo": "uguale",
+"titolo": "Shrug (Cable)"
+},
+"scrollate_dietro_smith_machine": {
+"hevy": "742E5BD5",
+"tipo": "simile",
+"titolo": "Shrug (Smith Machine)"
+},
+"scrollate_macchina_leva": {
+"hevy": "19A38071",
+"tipo": "uguale",
+"titolo": "Shrug (Machine)"
+},
+"scrollate_manubri": {
+"hevy": "ABEC557F",
+"tipo": "uguale",
+"titolo": "Shrug (Dumbbell)"
+},
+"scrollate_per_dorso_medio": {
+"hevy": "914F3A96",
+"tipo": "simile",
+"titolo": "Chest Supported Incline Row (Dumbbell)"
+},
+"sedia_muro": {
+"hevy": "C8706C80",
+"tipo": "uguale",
+"titolo": "Wall Sit"
+},
+"sforbiciate": {
+"hevy": "2FA77B28",
+"tipo": "uguale",
+"titolo": "Flutter Kicks"
+},
+"shoulder_press_leva": {
+"hevy": "059E835D",
+"tipo": "uguale",
+"titolo": "Shoulder Press (Machine Plates)"
+},
+"shoulder_press_mac": {
+"hevy": "9237BAD1",
+"tipo": "uguale",
+"titolo": "Seated Shoulder Press (Machine)"
+},
+"sissy_squat_peso": {
+"hevy": "F5DEF1EB",
+"tipo": "uguale",
+"titolo": "Sissy Squat (Weighted)"
+},
+"sit_up": {
+"hevy": "022DF610",
+"tipo": "uguale",
+"titolo": "Sit Up"
+},
+"sit_up_coltello": {
+"hevy": "32B0B590",
+"tipo": "uguale",
+"titolo": "Jackknife Sit Up"
+},
+"sit_up_elastico": {
+"hevy": "9237BA12",
+"tipo": "simile",
+"titolo": "Sit Up (Weighted)"
+},
+"sit_up_janda": {
+"hevy": "022DF610",
+"tipo": "simile",
+"titolo": "Sit Up"
+},
+"sit_up_rana": {
+"hevy": "022DF610",
+"tipo": "simile",
+"titolo": "Sit Up"
+},
+"sit_up_spinta_bilanciere": {
+"hevy": "9237BA12",
+"tipo": "simile",
+"titolo": "Sit Up (Weighted)"
+},
+"sit_up_tre_quarti": {
+"hevy": "022DF610",
+"tipo": "simile",
+"titolo": "Sit Up"
+},
+"skip": {
+"hevy": "150E076B",
+"tipo": "uguale",
+"titolo": "High Knees"
+},
+"skip_box": {
+"hevy": "56092DD1",
+"tipo": "simile",
+"titolo": "Box Jump"
+},
+"skip_veloce": {
+"hevy": "C9CCB878",
+"tipo": "simile",
+"titolo": "High Knee Skips"
+},
+"slam_braccio_palla_medica": {
+"hevy": "F51D9080",
+"tipo": "simile",
+"titolo": "Ball Slams"
+},
+"slanci_dietro_quattro_zampe": {
+"hevy": "987234AB",
+"tipo": "uguale",
+"titolo": "Glute Kickback on Floor"
+},
+"slanci_gamba_piedi": {
+"hevy": "DC59D143",
+"tipo": "simile",
+"titolo": "Lateral Leg Raises"
+},
+"slancio": {
+"hevy": "9E09CEC3",
+"tipo": "uguale",
+"titolo": "Clean and Jerk"
+},
+"slancio_braccio_kettlebell": {
+"hevy": "F99C211D",
+"tipo": "simile",
+"titolo": "Kettlebell Clean"
+},
+"slitta_alzate_posteriori": {
+"hevy": "C315DC2A",
+"tipo": "simile",
+"titolo": "Rear Delt Reverse Fly (Cable)"
+},
+"slitta_camminata_indietro_braccia_alto": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"slitta_estensioni_tricipiti": {
+"hevy": "B5EFBF9C",
+"tipo": "simile",
+"titolo": "Overhead Triceps Extension (Cable)"
+},
+"slitta_rematore": {
+"hevy": "7D1BD41D",
+"tipo": "simile",
+"titolo": "Sled Pull"
+},
+"snatch_balance": {
+"hevy": "2CFED196",
+"tipo": "simile",
+"titolo": "Overhead Squat"
+},
+"snatch_balance_spinta": {
+"hevy": "2CFED196",
+"tipo": "simile",
+"titolo": "Overhead Squat"
+},
+"sollevamento_bacino_ginocchia_piegate": {
+"hevy": "7952B5CD",
+"tipo": "simile",
+"titolo": "Reverse Crunch"
+},
+"sollevamento_bacino_smith": {
+"hevy": "7952B5CD",
+"tipo": "simile",
+"titolo": "Reverse Crunch"
+},
+"sollevamento_diagonale_cavo": {
+"hevy": "92D858EA",
+"tipo": "uguale",
+"titolo": "Cable Twist (Down to up)"
+},
+"sollevamento_gambe_panca": {
+"hevy": "09C9F635",
+"tipo": "uguale",
+"titolo": "Lying Leg Raise"
+},
+"sollevamento_gambe_sbarra": {
+"hevy": "F8356514",
+"tipo": "uguale",
+"titolo": "Hanging Leg Raise"
+},
+"spell_caster_manubri": {
+"hevy": "2982AA23",
+"tipo": "simile",
+"titolo": "Russian Twist (Weighted)"
+},
+"spider_curl": {
+"hevy": "2348AB72",
+"tipo": "uguale",
+"titolo": "Spider Curl (Barbell)"
+},
+"spinta_delle_scapole_manubri_panca": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"spinta_delle_scapole_panca_inclinata": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"spinta_delle_scapole_smith_inclinata": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"spinta_gamba_dal_box": {
+"hevy": "128A2381",
+"tipo": "simile",
+"titolo": "Step Up"
+},
+"spinte_alternate_cavi_per_spalle": {
+"hevy": "878CD1D0",
+"tipo": "simile",
+"titolo": "Shoulder Press (Dumbbell)"
+},
+"split_jerk": {
+"hevy": "E764B907",
+"tipo": "uguale",
+"titolo": "Split Jerk"
+},
+"split_jerk_braccio_kettlebell": {
+"hevy": "E764B907",
+"tipo": "simile",
+"titolo": "Split Jerk"
+},
+"split_snatch_braccio_kettlebell": {
+"hevy": "89304423",
+"tipo": "simile",
+"titolo": "Kettlebell Snatch"
+},
+"split_squat_manubri": {
+"hevy": "20C1A3CB",
+"tipo": "uguale",
+"titolo": "Split Squat (Dumbbell)"
+},
+"split_squat_smith_machine": {
+"hevy": "20C1A3CB",
+"tipo": "simile",
+"titolo": "Split Squat (Dumbbell)"
+},
+"split_squat_trx": {
+"hevy": "B5D3A742",
+"tipo": "simile",
+"titolo": "Bulgarian Split Squat (Dumbbell)"
+},
+"sprint_sbarra": {
+"hevy": "08590920",
+"tipo": "simile",
+"titolo": "Hanging Knee Raise"
+},
+"squat_bil": {
+"hevy": "D04AC939",
+"tipo": "uguale",
+"titolo": "Squat (Barbell)"
+},
+"squat_catene": {
+"hevy": "D04AC939",
+"tipo": "simile",
+"titolo": "Squat (Barbell)"
+},
+"squat_cintura_zavorrata": {
+"hevy": "3D1CDC75",
+"tipo": "simile",
+"titolo": "Belt Squat (Machine)"
+},
+"squat_completo_bilanciere": {
+"hevy": "1283BBA6",
+"tipo": "uguale",
+"titolo": "Full Squat"
+},
+"squat_corpo": {
+"hevy": "9694DA61",
+"tipo": "uguale",
+"titolo": "Squat (Bodyweight)"
+},
+"squat_elastici": {
+"hevy": "D04AC939",
+"tipo": "simile",
+"titolo": "Squat (Barbell)"
+},
+"squat_elastici_inversi": {
+"hevy": "D04AC939",
+"tipo": "simile",
+"titolo": "Squat (Barbell)"
+},
+"squat_elastico": {
+"hevy": "F1258206",
+"tipo": "uguale",
+"titolo": "Squat (Band)"
+},
+"squat_frankenstein": {
+"hevy": "5046D0A9",
+"tipo": "simile",
+"titolo": "Front Squat"
+},
+"squat_gamba_bilanciere": {
+"hevy": "0F24286A",
+"tipo": "simile",
+"titolo": "Bulgarian Split Squat (Barbell)"
+},
+"squat_gamba_box_alto": {
+"hevy": "3FF6A22E",
+"tipo": "simile",
+"titolo": "Pistol Squat"
+},
+"squat_gambe_larghe": {
+"hevy": "6622E5A0",
+"tipo": "uguale",
+"titolo": "Sumo Squat (Barbell)"
+},
+"squat_ginocchio_bilanciere": {
+"hevy": "D04AC939",
+"tipo": "simile",
+"titolo": "Squat (Barbell)"
+},
+"squat_jerk": {
+"hevy": "E764B907",
+"tipo": "simile",
+"titolo": "Split Jerk"
+},
+"squat_jump": {
+"hevy": "70D4EBBF",
+"tipo": "uguale",
+"titolo": "Jump Squat"
+},
+"squat_jump_bilanciere": {
+"hevy": "70D4EBBF",
+"tipo": "simile",
+"titolo": "Jump Squat"
+},
+"squat_jump_ginocchio": {
+"hevy": "70D4EBBF",
+"tipo": "simile",
+"titolo": "Jump Squat"
+},
+"squat_kettlebell_sopra_testa": {
+"hevy": "2CFED196",
+"tipo": "simile",
+"titolo": "Overhead Squat"
+},
+"squat_manubri": {
+"hevy": "DCFF3E9F",
+"tipo": "uguale",
+"titolo": "Squat (Dumbbell)"
+},
+"squat_olimpico": {
+"hevy": "1283BBA6",
+"tipo": "uguale",
+"titolo": "Full Squat"
+},
+"squat_panca_bilanciere": {
+"hevy": "38FC1AB9",
+"tipo": "uguale",
+"titolo": "Box Squat (Barbell)"
+},
+"squat_panca_manubri": {
+"hevy": "DCFF3E9F",
+"tipo": "simile",
+"titolo": "Squat (Dumbbell)"
+},
+"squat_piedi_stretti": {
+"hevy": "D04AC939",
+"tipo": "simile",
+"titolo": "Squat (Barbell)"
+},
+"squat_sdraiato_macchina": {
+"hevy": "CC35A01F",
+"tipo": "simile",
+"titolo": "Squat (Machine)"
+},
+"squat_sedia": {
+"hevy": "CC35A01F",
+"tipo": "simile",
+"titolo": "Squat (Machine)"
+},
+"squat_smith_machine": {
+"hevy": "DDCC3821",
+"tipo": "uguale",
+"titolo": "Squat (Smith Machine)"
+},
+"squat_sopra_testa": {
+"hevy": "2CFED196",
+"tipo": "uguale",
+"titolo": "Overhead Squat"
+},
+"squat_spostamento_dischi": {
+"hevy": "D04AC939",
+"tipo": "simile",
+"titolo": "Squat (Barbell)"
+},
+"squat_sumo_manubrio": {
+"hevy": "05293BCA",
+"tipo": "uguale",
+"titolo": "Sumo Squat (Dumbbell)"
+},
+"squat_veloci": {
+"hevy": "D04AC939",
+"tipo": "uguale",
+"titolo": "Squat (Barbell)"
+},
+"stacco_bil": {
+"hevy": "C6272009",
+"tipo": "uguale",
+"titolo": "Deadlift (Barbell)"
+},
+"stacco_catene": {
+"hevy": "C6272009",
+"tipo": "simile",
+"titolo": "Deadlift (Barbell)"
+},
+"stacco_cavo": {
+"hevy": "8C331CD8",
+"tipo": "simile",
+"titolo": "Cable Pull Through"
+},
+"stacco_deficit": {
+"hevy": "C6272009",
+"tipo": "simile",
+"titolo": "Deadlift (Barbell)"
+},
+"stacco_elastici": {
+"hevy": "C6272009",
+"tipo": "simile",
+"titolo": "Deadlift (Barbell)"
+},
+"stacco_elastici_inversi": {
+"hevy": "C6272009",
+"tipo": "simile",
+"titolo": "Deadlift (Barbell)"
+},
+"stacco_gamba_kettlebell": {
+"hevy": "937292AB",
+"tipo": "simile",
+"titolo": "Single Leg Romanian Deadlift (Dumbbell)"
+},
+"stacco_gambe_tese_bilanciere": {
+"hevy": "2A48E443",
+"tipo": "uguale",
+"titolo": "Straight Leg Deadlift"
+},
+"stacco_gambe_tese_manubri": {
+"hevy": "72CFFAD5",
+"tipo": "simile",
+"titolo": "Romanian Deadlift (Dumbbell)"
+},
+"stacco_gambe_tese_piedi_larghi": {
+"hevy": "2A48E443",
+"tipo": "simile",
+"titolo": "Straight Leg Deadlift"
+},
+"stacco_gambe_tese_smith_machine": {
+"hevy": "0B9B92BA",
+"tipo": "simile",
+"titolo": "Romanian Deadlift (Smith Machine)"
+},
+"stacco_girata": {
+"hevy": "C6272009",
+"tipo": "simile",
+"titolo": "Deadlift (Barbell)"
+},
+"stacco_laterale_braccio": {
+"hevy": "C6272009",
+"tipo": "simile",
+"titolo": "Deadlift (Barbell)"
+},
+"stacco_macchina_leva": {
+"hevy": "20870ED5",
+"tipo": "simile",
+"titolo": "Deadlift (Smith Machine)"
+},
+"stacco_rumeno_bil": {
+"hevy": "2B4B7310",
+"tipo": "uguale",
+"titolo": "Romanian Deadlift (Barbell)"
+},
+"stacco_rumeno_deficit": {
+"hevy": "2B4B7310",
+"tipo": "simile",
+"titolo": "Romanian Deadlift (Barbell)"
+},
+"stacco_rumeno_man": {
+"hevy": "72CFFAD5",
+"tipo": "uguale",
+"titolo": "Romanian Deadlift (Dumbbell)"
+},
+"stacco_strappo": {
+"hevy": "C6272009",
+"tipo": "simile",
+"titolo": "Deadlift (Barbell)"
+},
+"stacco_sumo": {
+"hevy": "D20D7BBE",
+"tipo": "uguale",
+"titolo": "Sumo Deadlift"
+},
+"stacco_sumo_catene": {
+"hevy": "D20D7BBE",
+"tipo": "simile",
+"titolo": "Sumo Deadlift"
+},
+"stacco_sumo_elastici": {
+"hevy": "D20D7BBE",
+"tipo": "simile",
+"titolo": "Sumo Deadlift"
+},
+"stacco_sumo_elastici_inversi": {
+"hevy": "D20D7BBE",
+"tipo": "simile",
+"titolo": "Sumo Deadlift"
+},
+"stacco_trap_bar": {
+"hevy": "B923B230",
+"tipo": "uguale",
+"titolo": "Deadlift (Trap bar)"
+},
+"step_up": {
+"hevy": "BF6ECE89",
+"tipo": "uguale",
+"titolo": "Dumbbell Step Up"
+},
+"step_up_bilanciere": {
+"hevy": "128A2381",
+"tipo": "simile",
+"titolo": "Step Up"
+},
+"step_up_ginocchio_alto": {
+"hevy": "128A2381",
+"tipo": "simile",
+"titolo": "Step Up"
+},
+"strappo": {
+"hevy": "FB09C938",
+"tipo": "uguale",
+"titolo": "Snatch"
+},
+"strappo_affondo": {
+"hevy": "FB09C938",
+"tipo": "simile",
+"titolo": "Snatch"
+},
+"strappo_braccio_kettlebell": {
+"hevy": "89304423",
+"tipo": "uguale",
+"titolo": "Kettlebell Snatch"
+},
+"strappo_dai_blocchi": {
+"hevy": "FB09C938",
+"tipo": "simile",
+"titolo": "Snatch"
+},
+"strappo_dalla_sospensione": {
+"hevy": "F4E77594",
+"tipo": "uguale",
+"titolo": "Hang Snatch"
+},
+"strappo_dalla_sospensione_sotto_ginocchi": {
+"hevy": "F4E77594",
+"tipo": "simile",
+"titolo": "Hang Snatch"
+},
+"strappo_due_kettlebell": {
+"hevy": "89304423",
+"tipo": "simile",
+"titolo": "Kettlebell Snatch"
+},
+"strappo_potenza": {
+"hevy": "E22F9358",
+"tipo": "uguale",
+"titolo": "Power Snatch"
+},
+"stretta_disco_olimpico": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"superman": {
+"hevy": "218DA87C",
+"tipo": "uguale",
+"titolo": "Superman"
+},
+"supinazione_polso_manubrio": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"svend_press": {
+"hevy": "9373FSD1",
+"tipo": "uguale",
+"titolo": "Plate Squeeze (Svend Press)"
+},
+"swing_braccio_kettlebell": {
+"hevy": "F8A0FCCA",
+"tipo": "simile",
+"titolo": "Kettlebell Swing"
+},
+"swing_man": {
+"hevy": "F8A0FCCA",
+"tipo": "simile",
+"titolo": "Kettlebell Swing"
+},
+"swing_verticale_manubrio": {
+"hevy": "F8A0FCCA",
+"tipo": "simile",
+"titolo": "Kettlebell Swing"
+},
+"t_bar_row": {
+"hevy": "08A2974E",
+"tipo": "uguale",
+"titolo": "T Bar Row"
+},
+"t_bar_row_appoggio": {
+"hevy": "6A8D3193",
+"tipo": "uguale",
+"titolo": "Chest Supported T Bar Row"
+},
+"t_bar_row_bilanciere": {
+"hevy": "D7D7FCCE",
+"tipo": "uguale",
+"titolo": "Landmine Row"
+},
+"tate_press": {
+"hevy": "B31EB524",
+"tipo": "uguale",
+"titolo": "Wide-Elbow Triceps Press (Dumbbell)"
+},
+"tergicristallo_isometrico": {
+"hevy": "392887AA",
+"tipo": "simile",
+"titolo": "Push Up"
+},
+"thruster_kettlebell": {
+"hevy": "10313AFD",
+"tipo": "uguale",
+"titolo": "Thruster (Kettlebell)"
+},
+"tibiali_smith_machine": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"tirata_alta_sumo_kettlebell": {
+"hevy": "9B13BA4B",
+"tipo": "simile",
+"titolo": "Kettlebell High Pull"
+},
+"tirata_girata": {
+"hevy": "652FEA39",
+"tipo": "uguale",
+"titolo": "Clean Pull"
+},
+"tirata_mento_braccio_smith": {
+"hevy": "7AB9A362",
+"tipo": "simile",
+"titolo": "Upright Row (Barbell)"
+},
+"tirata_mento_cavo": {
+"hevy": "286C1D0B",
+"tipo": "uguale",
+"titolo": "Upright Row (Cable)"
+},
+"tirata_mento_elastico": {
+"hevy": "286C1D0B",
+"tipo": "simile",
+"titolo": "Upright Row (Cable)"
+},
+"tirata_mento_manubri": {
+"hevy": "797F0782",
+"tipo": "uguale",
+"titolo": "Upright Row (Dumbbell)"
+},
+"tirata_mento_manubrio_braccio": {
+"hevy": "797F0782",
+"tipo": "simile",
+"titolo": "Upright Row (Dumbbell)"
+},
+"tirata_mento_smith_machine": {
+"hevy": "7AB9A362",
+"tipo": "simile",
+"titolo": "Upright Row (Barbell)"
+},
+"tirata_strappo": {
+"hevy": "652FEA39",
+"tipo": "simile",
+"titolo": "Clean Pull"
+},
+"tirate_mento": {
+"hevy": "7AB9A362",
+"tipo": "uguale",
+"titolo": "Upright Row (Barbell)"
+},
+"tocchi_talloni_alternati": {
+"hevy": "567FB505",
+"tipo": "uguale",
+"titolo": "Heel Taps"
+},
+"torsione_seduta": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"torsioni_sedute_bilanciere": {
+"hevy": "FBB62888",
+"tipo": "simile",
+"titolo": "Torso Rotation"
+},
+"trazione_braccio": {
+"hevy": "29083183",
+"tipo": "simile",
+"titolo": "Chin Up"
+},
+"trazione_crunch": {
+"hevy": "08590920",
+"tipo": "simile",
+"titolo": "Hanging Knee Raise"
+},
+"trazioni": {
+"hevy": "1B2B1E7C",
+"tipo": "uguale",
+"titolo": "Pull Up"
+},
+"trazioni_assistite_elastico": {
+"hevy": "56808FD2",
+"tipo": "uguale",
+"titolo": "Pull Up (Band)"
+},
+"trazioni_barra_v": {
+"hevy": "1B2B1E7C",
+"tipo": "simile",
+"titolo": "Pull Up"
+},
+"trazioni_dietro_nuca_presa_larga": {
+"hevy": "7C50F118",
+"tipo": "simile",
+"titolo": "Wide Pull Up"
+},
+"trazioni_lat_machine_alternate": {
+"hevy": "1B2B1E7C",
+"tipo": "simile",
+"titolo": "Pull Up"
+},
+"trazioni_lato_lato": {
+"hevy": "1B2B1E7C",
+"tipo": "simile",
+"titolo": "Pull Up"
+},
+"trazioni_presa_inversa": {
+"hevy": "29083183",
+"tipo": "uguale",
+"titolo": "Chin Up"
+},
+"trazioni_presa_mista": {
+"hevy": "1B2B1E7C",
+"tipo": "simile",
+"titolo": "Pull Up"
+},
+"trazioni_scapolari": {
+"hevy": "C7AE420A",
+"tipo": "uguale",
+"titolo": "Scapular Pull Ups"
+},
+"trazioni_sterno": {
+"hevy": "EE2938D1",
+"tipo": "uguale",
+"titolo": "Sternum Pull up (Gironda)"
+},
+"trazioni_zavorrate": {
+"hevy": "729237D1",
+"tipo": "uguale",
+"titolo": "Pull Up (Weighted)"
+},
+"turkish_get_up": {
+"hevy": "5F8903BF",
+"tipo": "uguale",
+"titolo": "Kettlebell Turkish Get Up"
+},
+"turkish_get_up_2": {
+"hevy": "5F8903BF",
+"tipo": "uguale",
+"titolo": "Kettlebell Turkish Get Up"
+},
+"volante_disco": {
+"hevy": "DBF9273A",
+"tipo": "simile",
+"titolo": "Plate Front Raise"
+},
+"windmill_avanzato_kettlebell": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"windmill_due_kettlebell": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"windmill_kettlebell": {
+"hevy": null,
+"tipo": "nessuno",
+"titolo": null
+},
+"wood_chop_cavo": {
+"hevy": "A2D838BD",
+"tipo": "uguale",
+"titolo": "Cable Twist (Up to down)"
+},
+"wrist_curl_bilanciere_panca": {
+"hevy": "95F2E076",
+"tipo": "simile",
+"titolo": "Seated Wrist Curl (Barbell)"
+},
+"wrist_curl_braccio": {
+"hevy": "1006DF48",
+"tipo": "simile",
+"titolo": "Seated Palms Up Wrist Curl"
+},
+"wrist_curl_cavo_basso": {
+"hevy": "95F2E076",
+"tipo": "simile",
+"titolo": "Seated Wrist Curl (Barbell)"
+},
+"wrist_curl_dietro_schiena": {
+"hevy": "DDB29047",
+"tipo": "uguale",
+"titolo": "Behind the Back Wrist Curl (Barbell)"
+},
+"wrist_curl_manubri_panca": {
+"hevy": "1006DF48",
+"tipo": "simile",
+"titolo": "Seated Palms Up Wrist Curl"
+},
+"wrist_curl_seduto_bilanciere": {
+"hevy": "95F2E076",
+"tipo": "uguale",
+"titolo": "Seated Wrist Curl (Barbell)"
+},
+"wrist_curl_seduto_manubri": {
+"hevy": "1006DF48",
+"tipo": "uguale",
+"titolo": "Seated Palms Up Wrist Curl"
+},
+"zercher_squat": {
+"hevy": "40C6A9FC",
+"tipo": "uguale",
+"titolo": "Zercher Squat"
+}
+}
