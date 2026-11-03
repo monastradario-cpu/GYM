@@ -749,6 +749,42 @@
 "is_custom": false
 },
 {
+"id": "0e39d475-18e4-4d5b-9f5d-036eed983025",
+"title": "Circonduzioni delle braccia",
+"type": "duration",
+"primary_muscle_group": "other",
+"secondary_muscle_groups": [],
+"equipment": "none",
+"is_custom": true
+},
+{
+"id": "f9b3dee3-7c23-4ed8-9742-c79320b47350",
+"title": "Circonduzioni delle braccia",
+"type": "duration",
+"primary_muscle_group": "other",
+"secondary_muscle_groups": [],
+"equipment": "none",
+"is_custom": true
+},
+{
+"id": "60741116-7eea-428c-98df-c059402b082d",
+"title": "Circonduzioni delle braccia",
+"type": "duration",
+"primary_muscle_group": "other",
+"secondary_muscle_groups": [],
+"equipment": "none",
+"is_custom": true
+},
+{
+"id": "de61053c-2537-4fdd-b1f2-dcbb20305fb5",
+"title": "Circonduzioni delle braccia",
+"type": "duration",
+"primary_muscle_group": "other",
+"secondary_muscle_groups": [],
+"equipment": "none",
+"is_custom": true
+},
+{
 "id": "CC016611",
 "title": "Clamshell",
 "type": "reps_only",
