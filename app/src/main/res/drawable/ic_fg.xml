@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- manubrio bianco su fondo arancio -->
+<!-- Coach: "C" arancione con la spunta bianca su fondo scuro (zona sicura: cerchio di 66 al centro) -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
-    <path android:fillColor="#FFFFFF" android:pathData="M30,40h8v28h-8zM22,46h6v16h-6zM70,40h8v28h-8zM80,46h6v16h-6zM38,51h32v6h-32z" />
+    <path android:pathData="M72,39 A24,24 0 1,0 72,69"
+        android:strokeColor="#FF6B2C" android:strokeWidth="11" android:strokeLineCap="round" android:fillColor="#00000000" />
+    <path android:pathData="M46,55 L52,61 L64,48"
+        android:strokeColor="#FFFFFF" android:strokeWidth="6.5" android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000" />
 </vector>

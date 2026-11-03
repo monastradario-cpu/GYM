@@ -8,4 +8,5 @@
     </style>
     <color name="bg">#0D0F12</color>
     <color name="accent">#FF6B2C</color>
+    <color name="icon_bg">#14171C</color>
 </resources>
