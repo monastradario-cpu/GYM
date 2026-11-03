@@ -161,11 +161,11 @@ class AlarmReceiver : BroadcastReceiver() {
                 val c = ctxCfg(ctx)?.optJSONObject("workout")
                 val dow = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
                 val name = c?.optJSONObject("names")?.optString(dow.toString()).orEmpty()
-                Notify.show(ctx, Notify.ID_WORKOUT, Notify.CH_REM, "È ora di allenarsi 💪", if (name.isNotEmpty()) "Oggi: $name" else "Apri GYM e inizia l'allenamento di oggi")
+                Notify.show(ctx, Notify.ID_WORKOUT, Notify.CH_REM, "È ora di allenarsi 💪", if (name.isNotEmpty()) "Oggi: $name" else "Apri Coach: la seduta è pronta in Hevy")
                 Scheduler.schedule(ctx, type)
             }
             "water" -> {
-                Notify.show(ctx, Notify.ID_WATER, Notify.CH_REM, "È ora di bere 💧", "Mezzo bicchiere o un bicchiere (circa 250 ml): segnalo in GYM")
+                Notify.show(ctx, Notify.ID_WATER, Notify.CH_REM, "È ora di bere 💧", "Mezzo bicchiere o un bicchiere (circa 250 ml): segnalo in Coach")
                 Scheduler.schedule(ctx, type)
             }
             "breaks" -> {
@@ -173,11 +173,11 @@ class AlarmReceiver : BroadcastReceiver() {
                 Scheduler.schedule(ctx, type)
             }
             "summary" -> {
-                Notify.show(ctx, Notify.ID_SUMMARY, Notify.CH_REM, "La tua settimana 📊", "Allenamenti, muscoli e traguardi: apri GYM per il riepilogo")
+                Notify.show(ctx, Notify.ID_SUMMARY, Notify.CH_REM, "La tua settimana 📊", "Allenamenti, muscoli e traguardi: apri Coach per il riepilogo")
                 Scheduler.schedule(ctx, type)
             }
             "weigh" -> {
-                Notify.show(ctx, Notify.ID_WEIGH, Notify.CH_REM, "Pesata settimanale ⚖️", "Pesati e registra il peso in GYM")
+                Notify.show(ctx, Notify.ID_WEIGH, Notify.CH_REM, "Pesata settimanale ⚖️", "Pesati e registra il peso in Coach")
                 Scheduler.schedule(ctx, type)
             }
         }

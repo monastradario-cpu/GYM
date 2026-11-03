@@ -191,3 +191,15 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
   "Cambia nelle schede" sostituisce in tutte le schede e resta anche quando il percorso rigenera le schede.
 - Testi scritti a mano per gli esercizi usati nelle schede (68 riscritti, i restanti di mobilità e pause erano già scritti a mano).
 - Home più pulita: allenamento di oggi, al massimo 2 avvisi importanti, calorie, peso e acqua, settimana; il resto in "Altro per oggi".
+
+## Coach + Hevy (novembre 2026) — js/hevy.js, js/valutazione.js, js/salute.js
+- Nome dell'app: **Coach** (stesso identificativo: si installa sopra GYM senza perdere i dati).
+- Catalogo esercizi unico con Hevy (tools/hevy_catalogo.py → js/hevycat.js): 451 esercizi di Hevy con nome italiano; gli esercizi di GYM uguali o simili diventano quello di Hevy, quelli senza equivalente (allungamenti, mobilità, varianti da casa) vengono creati in Hevy come personalizzati alla prima volta che servono.
+- Da Coach a Hevy: ogni scheda (pesi, funzionale, mobilità, schede tue) è una routine nella cartella "Coach" con serie, intervallo di ripetizioni, recuperi, carichi e ripetizioni di oggi, serie di riscaldamento sui principali e nota del trainer (RIR/RPE, progressione). I circuiti sono una superserie a tempo. Check-in, "oggi a casa", versione breve e sedute dell'allenatore riscrivono la routine "Oggi".
+- Da Hevy a Coach: allenamenti (anche cancellati o modificati) dagli eventi di Hevy; lo storico di Coach è quello di Hevy (al primo collegamento quello vecchio viene sostituito). Cardio di Hevy → cardio di Coach.
+- Modifiche fatte in Hevy a una routine di Coach: adottate (esercizio cambiato = sostituzione permanente, aggiunte, tolte, serie/ripetizioni/recuperi), con avviso se vanno contro un dolore segnalato.
+- Valutazione di ogni seduta (voto 1–10 spiegato): completezza 35%, prestazione 35%, intensità (RPE o ripetizioni nel range) 20%, ripetizioni nel range 10%; record, cosa è andato bene, cosa migliorare, prossima volta (già scritta in Hevy). Andamento dei voti in Progressi → Valutazioni.
+- Tolti: allenamento in corso, timer, circuiti guidati, libreria con foto, figure e animazioni (app da 25 MB a meno di 1 MB). La scheda di un esercizio mostra muscoli, i tuoi dati e il nome in Hevy.
+- Health Connect (solo lettura): passi medi 7 giorni → livello di attività per le calorie; sonno → check-in precompilato; pesate della bilancia → peso.
+- Assistente AI: conosce percorso, schede, valutazioni, check-in, traguardi, alimentazione e dati di Health Connect.
+- Test: tools/test_percorso.py usa un finto server Hevy (tools/hevy_mock.py).

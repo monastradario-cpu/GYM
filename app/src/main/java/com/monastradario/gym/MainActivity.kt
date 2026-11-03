@@ -28,6 +28,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.webkit.WebViewAssetLoader
+import androidx.lifecycle.lifecycleScope
+import androidx.health.connect.client.PermissionController
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
@@ -85,6 +88,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val askPerm = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
+    /** Health Connect: richiesta dei permessi di lettura; poi la pagina rilegge i dati */
+    private val askHealth = registerForActivityResult(PermissionController.createRequestPermissionResultContract()) { granted ->
+        js("window.onHealth && window.onHealth(${JSONObject.quote(JSONObject().put("granted", org.json.JSONArray(granted.toList())).toString())})")
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -162,10 +170,12 @@ class MainActivity : AppCompatActivity() {
             web.onResume()
             webPaused = false
         }
+        // tornando da Hevy: la pagina scarica l'allenamento appena fatto e lo valuta
+        if (::web.isInitialized) js("window.onAppResume && window.onAppResume()")
     }
 
     /**
-     * Risparmio batteria: quando GYM va in sottofondo senza un allenamento in corso,
+     * Risparmio batteria: quando Coach va in sottofondo senza un allenamento in corso,
      * ferma timer e animazioni della pagina. Durante un allenamento li lascia attivi,
      * così i segnali di circuito e riscaldamento funzionano anche a schermo spento
      * (il fine recupero è già gestito dal sistema con una sveglia).
@@ -259,7 +269,7 @@ class MainActivity : AppCompatActivity() {
             main.post {
                 try {
                     val cm = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    cm.setPrimaryClip(android.content.ClipData.newPlainText("GYM", text))
+                    cm.setPrimaryClip(android.content.ClipData.newPlainText("Coach", text))
                 } catch (_: Exception) { }
             }
         }
@@ -278,6 +288,35 @@ class MainActivity : AppCompatActivity() {
             }
             latch.await(2, java.util.concurrent.TimeUnit.SECONDS)
             return out
+        }
+
+        /** apre un'altra app (Hevy); se non è installata, la sua pagina sul Play Store */
+        @JavascriptInterface fun openApp(pkg: String) {
+            main.post {
+                val i = packageManager.getLaunchIntentForPackage(pkg)
+                if (i != null) startActivity(i)
+                else openExternal("https://play.google.com/store/apps/details?id=$pkg")
+            }
+        }
+
+        /** Health Connect: "ok", "install" o "no" */
+        @JavascriptInterface fun hcStatus(): String = try { Health.status(this@MainActivity) } catch (e: Exception) { "no" }
+
+        @JavascriptInterface fun hcRequest() {
+            main.post {
+                when (Health.status(this@MainActivity)) {
+                    "ok" -> try { askHealth.launch(Health.PERMS) } catch (e: Exception) { js("toast('Health Connect non risponde')") }
+                    "install" -> openExternal("https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata")
+                    else -> js("toast('Health Connect non è disponibile su questo telefono')")
+                }
+            }
+        }
+
+        @JavascriptInterface fun hcRead(days: Int) {
+            lifecycleScope.launch {
+                val out = try { Health.read(this@MainActivity, days.coerceIn(1, 60)) } catch (e: Exception) { JSONObject().put("error", e.message ?: e.toString()) }
+                js("window.onHealthData && window.onHealthData(${JSONObject.quote(out.toString())})")
+            }
         }
 
         @JavascriptInterface fun openUrl(url: String) {
@@ -340,7 +379,7 @@ class MainActivity : AppCompatActivity() {
         @JavascriptInterface fun downloadUpdate(url: String) {
             if (Build.VERSION.SDK_INT >= 26 && !packageManager.canRequestPackageInstalls()) {
                 main.post {
-                    js("toast('Consenti a GYM di installare app, poi premi di nuovo Scarica')")
+                    js("toast('Consenti a Coach di installare app, poi premi di nuovo Scarica')")
                     js("UI.update.state='available';render()")
                     startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:$packageName")))
                 }

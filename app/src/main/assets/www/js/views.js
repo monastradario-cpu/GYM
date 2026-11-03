@@ -353,9 +353,9 @@ function histSheet(id) {
 /* =================== CHAT AI =================== */
 VIEWS.aichat = () => {
   const A = UI.ai;
-  const sugg = ['Come posso migliorare la panca piana?', 'Cosa mangio prima dell\'allenamento?', 'Analizza i miei ultimi allenamenti', 'Ho poco tempo: allenamento da 30 minuti?'];
+  const sugg = ['Perché la mia ultima seduta ha preso quel voto?', 'Sto andando verso il mio obiettivo?', 'Dove sono in stallo e cosa cambio?', 'Come sto con calorie e proteine?'];
   return header('Coach AI', { back: true, noGear: true, sub: (AI_PROVIDERS[S.settings.ai.provider] || {}).n }) + '<div class="pad chat">' +
-    (A.msgs.length ? '' : '<div class="card"><p>Ciao! Conosco il tuo profilo e i tuoi ultimi allenamenti. Chiedimi quello che vuoi.</p><div class="chips">' + sugg.map(s => '<button class="chip" data-act="aiSugg" data-t="' + esc(s) + '">' + esc(s) + '</button>').join('') + '</div></div>') +
+    (A.msgs.length ? '' : '<div class="card"><p>Ciao! Conosco il tuo percorso, le schede, le valutazioni delle sedute, i traguardi e l\'alimentazione. Chiedimi quello che vuoi.</p><div class="chips">' + sugg.map(s => '<button class="chip" data-act="aiSugg" data-t="' + esc(s) + '">' + esc(s) + '</button>').join('') + '</div></div>') +
     A.msgs.map(m => '<div class="msg ' + m.role + '">' + (m.role === 'assistant' ? aiFormat(m.text) : esc(m.text)) + '</div>').join('') +
     (A.busy ? '<div class="msg assistant typing"><i></i><i></i><i></i></div>' : '') +
     '</div><div class="chat-in"><textarea rows="1" placeholder="Scrivi una domanda…" data-in="aiText"></textarea><button class="btn" data-act="aiSend"' + (A.busy ? ' disabled' : '') + '>Invia</button></div>';

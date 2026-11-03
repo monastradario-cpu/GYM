@@ -279,7 +279,8 @@ function pickerList() {
 VIEWS.settings = () => {
   const st = S.settings, r = S.reminders, p = S.profile, ai = st.ai, prov = AI_PROVIDERS[ai.provider] || AI_PROVIDERS.gemini, u = UI.update;
   return header('Impostazioni', { back: true, noGear: true }) + '<div class="pad">' +
-    '<h3 class="sec">Hevy</h3><div class="card"><button class="list-item btnlike" data-act="hvSetup"><div><b>' + (hvOn() ? 'Collegato' : 'Collega Hevy') + '</b><small>' + (hvOn() ? 'Le schede sono nella cartella Coach di Hevy' : 'Ti alleni in Hevy, Coach prepara e valuta') + '</small></div>' + ic('back', 'flip') + '</button></div>' +
+    '<h3 class="sec">Hevy</h3><div class="card"><button class="list-item btnlike" data-act="hvSetup"><div><b>' + (hvOn() ? 'Collegato' : 'Collega Hevy') + '</b><small>' + (hvOn() ? 'Le schede sono nella cartella Coach di Hevy' : 'Ti alleni in Hevy, Coach prepara e valuta') + '</small></div>' + ic('back', 'flip') + '</button>' +
+      '<button class="list-item btnlike" data-act="hcSetup"><div><b>Health Connect</b><small>' + (typeof hcOn === 'function' && hcOn() ? 'Collegato: passi, sonno e peso' : 'Passi, sonno e peso da telefono, orologio o bilancia') + '</small></div>' + ic('back', 'flip') + '</button></div>' +
     '<h3 class="sec">Aggiornamenti</h3><div class="card">' +
       '<div class="list-item flat"><div><b>Versione installata</b><small>' + esc(Native.version()) + '</small></div></div>' +
       updateBox() + '</div>' +
