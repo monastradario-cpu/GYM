@@ -214,7 +214,11 @@ function goalStatus() {
     let s = slopePerDay(recent); const span = recent.length ? recent[recent.length - 1].x - recent[0].x : 0;
     if (s == null || span < 10) s = (d < 0 ? -1 : 1) * w * (typeof dietActive === 'function' && dietActive() && S.diet ? S.diet.rate : 0.25) / 100 / 7;
     const wk = s && Math.sign(s) === Math.sign(d) ? Math.abs(d / s) / 7 : Infinity;
-    out.push({ k: 'peso', t: 'Peso: ' + fmtKg(w) + ' → ' + fmtKg(G.peso.kg) + ' kg', pct: reached ? 1 : null, eta: reached ? 'Raggiunto!' : wk === Infinity ? 'Al ritmo attuale non ti stai avvicinando: controlla il piano alimentare.' : 'Previsione: ' + weeksText(wk) });
+    // barra: dal peso di partenza (o dalla prima pesata del percorso) al traguardo; sotto il 100% finché non è raggiunto
+    const W0 = S.weights || [], ps = (S.path && S.path.start) || 0, w0 = W0.find(x => x.d >= ps) || W0[0];
+    const from = num(G.peso.from) || (w0 ? w0.kg : 0), span0 = G.peso.kg - from;
+    const pct = reached ? 1 : from && Math.abs(span0) >= 0.5 && (loss ? span0 < 0 : span0 > 0) ? Math.max(0, Math.min(0.99, (w - from) / span0)) : null;
+    out.push({ k: 'peso', t: 'Peso: ' + fmtKg(w) + ' → ' + fmtKg(G.peso.kg) + ' kg', pct, eta: reached ? 'Raggiunto!' : wk === Infinity ? 'Al ritmo attuale non ti stai avvicinando: controlla il piano alimentare.' : 'Previsione: ' + weeksText(wk) });
   }
   if (G.forza && G.forza.on && EX[G.forza.ex]) {
     const tr = exerciseTrend(G.forza.ex), cur = tr.length ? tr[0].e1 : 0;
@@ -580,8 +584,8 @@ function checkTraguardi() {
     const x = G[g.k]; let next = '';
     if (g.k === 'peso') {
       const w = curWeight(), bmi = bmiOf(), loss = weightLossGoal(x);
-      if (loss && bmi >= 25) { x.kg = Math.round(w * 0.97); next = 'Nuovo obiettivo di peso: ' + x.kg + ' kg.'; }
-      else if (!loss && bmi < 23) { x.kg = Math.round(w + 2); next = 'Nuovo obiettivo di peso: ' + x.kg + ' kg.'; }
+      if (loss && bmi >= 25) { x.kg = Math.round(w * 0.97); x.from = w; next = 'Nuovo obiettivo di peso: ' + x.kg + ' kg.'; }
+      else if (!loss && bmi < 23) { x.kg = Math.round(w + 2); x.from = w; next = 'Nuovo obiettivo di peso: ' + x.kg + ' kg.'; }
       else {
         x.on = false; next = 'Peso raggiunto: ora lo manteniamo.';
         if (p.goals.includes('dimagrimento')) { p.goals = p.goals.filter(k => k !== 'dimagrimento'); if (!p.goals.includes('tonificazione')) p.goals.push('tonificazione'); if (S.diet) S.diet.on = false; next += ' Obiettivo cambiato in Tonificazione (stesse calorie del mantenimento).'; }

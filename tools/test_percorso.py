@@ -111,6 +111,10 @@ with sync_playwright() as p:
     # obiettivo di peso superato (es. 80 kg e ora 79,5): deve risultare raggiunto, non "non ti stai avvicinando"
     peso_superato = pg.evaluate("(() => { const g = S.profile.mgoals.peso, old = S.weights.slice(); g.on = true; g.from = 84; g.kg = 80; S.weights.push({ d: Date.now(), kg: 79.5 }); const r = goalStatus().find(x => x.k === 'peso'); S.weights = old; return r && r.eta; })()")
     peso_in_corso = pg.evaluate("(() => { const g = S.profile.mgoals.peso, old = S.weights.slice(); g.from = 84; g.kg = 80; S.weights.push({ d: Date.now(), kg: 82 }); const r = goalStatus().find(x => x.k === 'peso'); S.weights = old; return r && r.eta; })()")
+    # barra del peso: da 84 a 80 kg, ora 82 -> metà strada; peso salito -> 0; mai 100% se non raggiunto
+    peso_bar = pg.evaluate("(() => { const g = S.profile.mgoals.peso, old = S.weights.slice(), on = g.on; g.on = true; g.from = 84; g.kg = 80; const r = []; [82, 85, 80.4].forEach(kg => { S.weights = old.concat([{ d: Date.now(), kg }]); r.push(goalStatus().find(x => x.k === 'peso').pct); }); S.weights = old; g.on = on; return r; })()")
+    if not (peso_bar[0] is not None and abs(peso_bar[0] - 0.5) < 0.01 and peso_bar[1] == 0 and peso_bar[2] is not None and peso_bar[2] < 1):
+        errors.append(f"barra obiettivo di peso: {peso_bar}")
     if peso_superato != "Raggiunto!" or peso_in_corso == "Raggiunto!":
         errors.append(f"obiettivo di peso: superato={peso_superato} in corso={peso_in_corso}")
     # obiettivo di forza lasciato vuoto: si fissa a +10% e non si sposta quando il massimale cresce
@@ -153,4 +157,4 @@ with sync_playwright() as p:
     mig = pg.evaluate("S.templates.map(t => t.name)")
     pg.evaluate("UI.schede = 'schede'; go('schede')"); pg.wait_for_timeout(300); shot("21_schede_senza_percorso")
     b.close()
-print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso, "forza": forza, "macro": macro, "cardio_trainer": cardio, "giornata_no": giornata_no, "casa_dopo_checkin": casa_dolore, "vita": vita}, ensure_ascii=False, indent=1))
+print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso, "peso_bar": peso_bar, "forza": forza, "macro": macro, "cardio_trainer": cardio, "giornata_no": giornata_no, "casa_dopo_checkin": casa_dolore, "vita": vita}, ensure_ascii=False, indent=1))
