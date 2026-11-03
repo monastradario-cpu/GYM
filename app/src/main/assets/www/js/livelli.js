@@ -111,13 +111,13 @@ VIEWS.exercise = p => {
   const add = '<div class="ex-diff">' + diffBadge(e) + '<small class="muted">' + DIFF_D[diffOf(e)] + '</small></div>' + chainCard(e.id);
   return out.replace('<div class="seg ex-tabs">', add + '<div class="seg ex-tabs">');
 };
-const _sumView = VIEWS.summary;
-VIEWS.summary = p => {
+const _sumView = VIEWS.valutazione;
+VIEWS.valutazione = p => {
   const out = _sumView(p), h = S.history.find(x => x.id === p.id); if (!h) return out;
   const L = h.items.map(it => Object.assign({ from: it.ex }, stepStatus(it.ex) || {})).filter(s => s.k === 'up');
   if (!L.length) return out;
   const card = '<div class="card"><h3>' + ic('sparkle', 'inline') + 'Pronto a salire di gradino</h3>' + L.map(s => '<div class="list-item flat"><div><b>' + esc(EX[s.from].n) + ' → ' + esc(EX[s.to].n) + '</b><small>Hai fatto tutte le serie in alto per 2 volte di fila</small></div><button class="btn sm" data-act="stepSwap" data-f="' + s.from + '" data-t="' + s.to + '">Cambia</button></div>').join('') + '</div>';
-  return out.replace('<div class="card"><h3>Dettaglio</h3>', card + '<div class="card"><h3>Dettaglio</h3>');
+  return out.replace('<div class="card"><h3>Esercizio per esercizio</h3>', card + '<div class="card"><h3>Esercizio per esercizio</h3>');
 };
 
 Object.assign(ACT, {
@@ -221,7 +221,7 @@ Object.keys(HAND_TXT).forEach(id => { const e = EX[id], h = HAND_TXT[id]; if (!e
 /* ---------- home più pulita: in alto solo le 2 cose più importanti di oggi ---------- */
 function homePriority() {
   const L = [], add = h => { if (h) L.push(h); };
-  add(painCard()); add(fatigueCard()); add(pathInviteCard()); add(checkpointCard());
+  add(hevyCard()); add(lastValCard()); add(painCard()); add(fatigueCard()); add(pathInviteCard()); add(checkpointCard());
   add(missedCard()); add(stepCard()); add(recapCard());
   if (pathOn() && !(S.ftests || []).length) add(ftestCard());
   add(proteinNudge());

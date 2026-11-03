@@ -57,14 +57,14 @@ function offToProduct(p, code) {
     serving: sq > 0 && sq < 2000 ? sq : 100, servingLabel: p.serving_size || '', img: p.image_front_small_url || '', src: 'off' };
 }
 async function offByBarcode(code) {
-  const res = await aiFetch('https://world.openfoodfacts.org/api/v2/product/' + encodeURIComponent(code) + '.json?fields=code,product_name,product_name_it,generic_name_it,brands,nutriments,serving_size,serving_quantity,image_front_small_url', { method: 'GET', headers: { 'User-Agent': 'GYM-app/1.0 (uso personale)' } });
+  const res = await aiFetch('https://world.openfoodfacts.org/api/v2/product/' + encodeURIComponent(code) + '.json?fields=code,product_name,product_name_it,generic_name_it,brands,nutriments,serving_size,serving_quantity,image_front_small_url', { method: 'GET', headers: { 'User-Agent': 'Coach-app/1.0 (uso personale)' } });
   const d = await res.json();
   if (!res.ok || d.status === 0 || !d.product) return null;
   return offToProduct(d.product, code);
 }
 async function offSearch(q) {
   const url = 'https://it.openfoodfacts.org/cgi/search.pl?search_terms=' + encodeURIComponent(q) + '&search_simple=1&action=process&json=1&page_size=15&fields=code,product_name,product_name_it,brands,nutriments,serving_size,serving_quantity,image_front_small_url';
-  const res = await aiFetch(url, { method: 'GET', headers: { 'User-Agent': 'GYM-app/1.0 (uso personale)' } });
+  const res = await aiFetch(url, { method: 'GET', headers: { 'User-Agent': 'Coach-app/1.0 (uso personale)' } });
   const d = await res.json();
   return (d.products || []).map(p => offToProduct(p, p.code)).filter(Boolean);
 }

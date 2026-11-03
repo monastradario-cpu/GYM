@@ -278,7 +278,7 @@ VIEWS.onboarding = () => {
   const o = UI.ob, p = S.profile, r = S.reminders;
   const dots = '<div class="ob-dots">' + [...Array(PP_STEPS)].map((_, i) => '<i class="' + (i <= o.step ? 'on' : '') + '"></i>').join('') + '</div>';
   let body = '';
-  if (o.step === 0) body = '<div class="ob-hero">' + ic('dumbbell', 'xl') + '<h1>Benvenuto in GYM</h1><p>Il tuo personal trainer in tasca. Rispondi a qualche domanda: costruisco un percorso di 12 settimane su misura per te, basato sugli studi.</p></div>' + ppNav(o, null, 'Iniziamo');
+  if (o.step === 0) body = '<div class="ob-hero">' + ic('dumbbell', 'xl') + '<h1>Benvenuto in Coach</h1><p>Il tuo personal trainer in tasca. Rispondi a qualche domanda: costruisco un percorso di 12 settimane su misura per te, basato sugli studi.</p></div>' + ppNav(o, null, 'Iniziamo');
   if (o.step === 1) body = '<h2>Com\'è il tuo fisico oggi?</h2><div class="field"><span>Sesso</span><div class="seg">' + chip('Uomo', p.sex === 'm', 'setSex', 'data-k="m"') + chip('Donna', p.sex === 'f', 'setSex', 'data-k="f"') + '</div></div>' +
     '<p class="muted small">Tocca la figura più simile a te: serve al trainer per scegliere da dove partire.</p><div class="bt-grid">' +
     Object.keys(BODY_TYPES).map(k => '<button class="bt ' + (p.body === k ? 'on' : '') + '" data-act="ppBody" data-k="' + k + '">' + bodyTypeImg(k, p.sex) + '<b>' + BODY_TYPES[k].n + '</b><small>' + BODY_TYPES[k].d + '</small></button>').join('') + '</div>' + ppNav(o);

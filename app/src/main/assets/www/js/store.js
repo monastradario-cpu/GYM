@@ -394,13 +394,13 @@ function shrinkImage(file, max) {
 
 /* ---------- Backup ---------- */
 async function exportBackup(withPhotos) {
-  const data = { app: 'GYM', version: 1, date: new Date().toISOString(), state: S };
+  const data = { app: 'Coach', version: 1, date: new Date().toISOString(), state: S };
   if (withPhotos) data.photos = await Photos.all();
-  Native.saveFile('gym-backup-' + todayKey() + '.json', 'application/json', JSON.stringify(data));
+  Native.saveFile('coach-backup-' + todayKey() + '.json', 'application/json', JSON.stringify(data));
 }
 async function importBackup(text) {
   const data = JSON.parse(text);
-  if (!data || data.app !== 'GYM' || !data.state) throw new Error('File non valido');
+  if (!data || !['GYM', 'Coach'].includes(data.app) || !data.state) throw new Error('File non valido');
   S = migrate(deepMerge(defaultState(), data.state)); S.active = null; save(true);
   if (Array.isArray(data.photos)) { for (const p of data.photos) await Photos.put(p); }
 }

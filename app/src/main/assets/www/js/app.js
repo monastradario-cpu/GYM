@@ -1,4 +1,4 @@
-/* GYM — nucleo interfaccia: navigazione, icone, home, schede, impostazioni, primo avvio */
+/* Coach — nucleo interfaccia: navigazione, icone, home, schede, impostazioni, primo avvio */
 'use strict';
 
 const $ = s => document.querySelector(s);
@@ -6,7 +6,7 @@ const UI = {
   stack: [], sheetFn: null,
   coach: { muscles: [], eq: [], result: null },
   lib: { q: '', m: '', eq: '' },
-  prog: { tab: 'andamento', ex: null, metric: 'e1rm', month: null, week: null },
+  prog: { tab: 'valutazioni', ex: null, metric: 'e1rm', month: null, week: null },
   schede: 'schede',
   ob: { step: 0 },
   edit: null, pick: { q: '', m: '', eq: '', cb: null },
@@ -59,7 +59,7 @@ function applyTheme() {
 
 /* ---------- Navigazione ---------- */
 const VIEWS = {};
-const TABS = [['home', 'Home', 'home'], ['schede', 'Schede', 'list'], ['coach', 'Coach', 'coach'], ['food', 'Cibo', 'flame'], ['library', 'Esercizi', 'book'], ['progress', 'Progressi', 'chart']];
+const TABS = [['home', 'Home', 'home'], ['schede', 'Schede', 'list'], ['coach', 'Allenatore', 'coach'], ['food', 'Cibo', 'flame'], ['progress', 'Progressi', 'chart']];
 
 function go(v, p, replace) {
   if (replace || TABS.some(t => t[0] === v)) UI.stack = [{ v, p }];
@@ -82,14 +82,10 @@ function render(scrollTop) {
   const fn = VIEWS[c.v] || VIEWS.home;
   main.innerHTML = fn(c.p || {});
   main.scrollTop = scrollTop ? 0 : y;
-  const demo = document.getElementById('demo');
-  if (demo) Demo.mount(demo, demo.dataset.ex); else Demo.stop();
   const isWorkout = c.v === 'workout' || c.v === 'saveWo';
   $('#nav').hidden = isWorkout || c.v === 'aichat';
   $('#nav').innerHTML = TABS.map(t => '<button data-act="tab" data-v="' + t[0] + '" class="' + (navTab() === t[0] ? 'on' : '') + '">' + ic(t[2]) + '<span>' + t[1] + '</span></button>').join('');
-  $('#banner').hidden = !S.active || isWorkout;
-  if (S.active && !isWorkout) $('#banner').innerHTML = ic('timer') + '<span><b>' + esc(S.active.name) + '</b> in corso · <span data-clock="elapsed"></span></span><button class="btn sm" data-act="openWorkout">Riprendi</button>';
-  tick();
+  $('#banner').hidden = true;
 }
 function navTab() { for (let i = UI.stack.length - 1; i >= 0; i--) if (TABS.some(t => t[0] === UI.stack[i].v)) return UI.stack[i].v; return 'home'; }
 
@@ -142,8 +138,8 @@ VIEWS.home = () => {
     todayCard = '<div class="card hero"><div class="eyebrow">' + (doneToday ? 'Fatto oggi ' + ic('check', 'inline') : 'Allenamento di oggi') + '</div><h2>' + esc(t.name) + '</h2>' +
       '<div class="muted">' + t.items.length + (t.kind === 'circuito' ? ' stazioni · ' + t.rounds + ' giri' : ' esercizi') + ' · circa ' + templateMinutes(t) + ' min</div>' +
       '<div class="ex-preview">' + t.items.slice(0, 4).map(i => '<span>' + exLine(i.ex) + '</span>').join('') + (t.items.length > 4 ? '<span>+' + (t.items.length - 4) + '</span>' : '') + '</div>' +
-      '<button class="btn big" data-act="startTemplate" data-id="' + t.id + '">' + ic('play') + (S.active ? 'Riprendi allenamento' : 'Inizia') + '</button>' +
-      (!doneToday && !S.active && t.kind !== 'circuito' && (S.profile.place || 'palestra') !== 'casa' ? '<button class="btn ghost wide" data-act="homeOpen" data-id="' + t.id + '">' + ic('home') + 'Oggi niente palestra? Allenati a casa</button>' : '') + '</div>';
+      '<button class="btn big" data-act="startTemplate" data-id="' + t.id + '">' + ic('play') + (hvOn() ? 'Allenati con Hevy' : 'Collega Hevy e inizia') + '</button>' +
+      (!doneToday && t.kind !== 'circuito' && (S.profile.place || 'palestra') !== 'casa' ? '<button class="btn ghost wide" data-act="homeOpen" data-id="' + t.id + '">' + ic('home') + 'Oggi niente palestra? Allenati a casa</button>' : '') + '</div>';
   } else {
     todayCard = '<div class="card hero rest"><div class="eyebrow">Oggi</div><h2>Giorno di riposo</h2><div class="muted">Il muscolo cresce mentre recuperi. Oggi: camminata e qualche minuto di mobilità. Se vuoi allenarti lo stesso, scegli una scheda o un circuito.</div>' +
       '<button class="btn ghost wide" data-act="quickStart" data-k="q_mob7">' + ic('run') + 'Mobilità guidata (7 min)</button>' +
@@ -162,11 +158,11 @@ VIEWS.home = () => {
     '</div>';
   const more = top.slice(2).join('') + cycleCard() + breakCard() +
     '<div class="grid2">' +
-      '<button class="tile" data-act="startEmpty">' + ic('plus') + '<b>Allenamento vuoto</b><small>Aggiungi gli esercizi mentre vai</small></button>' +
+      '<button class="tile" data-act="hvOpen">' + ic('play') + '<b>Allenamento libero</b><small>Apri Hevy: Coach lo valuta lo stesso</small></button>' +
       '<button class="tile accent" data-act="tab" data-v="coach">' + ic('coach') + '<b>Crea con il Coach</b><small>Scegli muscoli e attrezzi</small></button>' +
     '</div>' +
-    '<button class="btn ghost wide" data-act="cardio">' + ic('run') + 'Registra cardio</button>' + trainer;
-  return header('GYM', { sub: fmtDateLong(now) }) + '<div class="pad">' + todayCard +
+    trainer;
+  return header('Coach', { sub: fmtDateLong(now) }) + '<div class="pad">' + todayCard +
     top.slice(0, 2).join('') +
     homeKcalCard() +
     '<div class="grid2">' +
@@ -186,7 +182,7 @@ VIEWS.home = () => {
 /* =================== SCHEDE =================== */
 function quickList() {
   return breakCard(true) + Object.keys(QUICK_ZONES).map(z => '<h3 class="sec">' + QUICK_ZONES[z].n + '</h3><p class="small muted">' + QUICK_ZONES[z].d + '</p>' +
-    QUICK_ROUTINES.filter(q => q.zone === z).map(q => '<div class="card tpl qk-tpl"><div class="card-h"><div><h3>' + esc(q.n) + '</h3><div class="muted small">' + q.st.length + ' esercizi' + (q.rounds > 1 ? ' · ' + q.rounds + ' giri' : '') + ' · ' + quickMinutes(q) + ' min · guida automatica</div></div></div>' +
+    QUICK_ROUTINES.filter(q => q.zone === z).map(q => '<div class="card tpl qk-tpl"><div class="card-h"><div><h3>' + esc(q.n) + '</h3><div class="muted small">' + q.st.length + ' esercizi' + (q.rounds > 1 ? ' · ' + q.rounds + ' giri' : '') + ' · ' + quickMinutes(q) + ' min · in Hevy</div></div></div>' +
       '<p class="small muted">' + esc(q.desc) + '</p>' +
       '<div class="ex-preview">' + q.st.map(x => '<span>' + esc((EX[x[0]] || {}).n || x[0]) + '</span>').join('') + '</div>' +
       '<button class="btn" data-act="quickStart" data-k="' + q.key + '">' + ic('play') + 'Inizia</button></div>').join('')).join('') +
@@ -220,7 +216,7 @@ VIEWS.schede = () => {
       (t.focus ? '<div class="eyebrow">' + esc(t.focus) + '</div>' : '') +
       (t.note ? '<p class="small muted">' + ic('coach', 'inline') + esc(t.note) + '</p>' : '') +
       '<div class="ex-preview">' + t.items.slice(0, 6).map(i => '<span>' + exLine(i.ex) + '</span>').join('') + (t.items.length > 6 ? '<span>+' + (t.items.length - 6) + '</span>' : '') + '</div>' +
-      '<button class="btn" data-act="startTemplate" data-id="' + t.id + '">' + ic('play') + 'Inizia</button></div>').join('')
+      '<button class="btn" data-act="startTemplate" data-id="' + t.id + '">' + ic('play') + 'Allenati con Hevy</button></div>').join('')
       : (path ? '<div class="empty">Nessuna scheda qui.</div>' : '')) +
     '<button class="tile wide-tile" data-act="newTemplate" data-k="' + (circ ? 'circuito' : 'scheda') + '">' + ic('plus') + '<b>' + (circ ? 'Nuovo circuito' : 'Nuova scheda') + '</b><small>Creata da te: resta anche quando aggiorno le altre</small></button>' +
     (path ? '<button class="btn ghost wide" data-act="regen">' + ic('swap') + 'Rigenera le schede del percorso</button>' : '') +
@@ -283,6 +279,7 @@ function pickerList() {
 VIEWS.settings = () => {
   const st = S.settings, r = S.reminders, p = S.profile, ai = st.ai, prov = AI_PROVIDERS[ai.provider] || AI_PROVIDERS.gemini, u = UI.update;
   return header('Impostazioni', { back: true, noGear: true }) + '<div class="pad">' +
+    '<h3 class="sec">Hevy</h3><div class="card"><button class="list-item btnlike" data-act="hvSetup"><div><b>' + (hvOn() ? 'Collegato' : 'Collega Hevy') + '</b><small>' + (hvOn() ? 'Le schede sono nella cartella Coach di Hevy' : 'Ti alleni in Hevy, Coach prepara e valuta') + '</small></div>' + ic('back', 'flip') + '</button></div>' +
     '<h3 class="sec">Aggiornamenti</h3><div class="card">' +
       '<div class="list-item flat"><div><b>Versione installata</b><small>' + esc(Native.version()) + '</small></div></div>' +
       updateBox() + '</div>' +
@@ -300,10 +297,7 @@ VIEWS.settings = () => {
     '</div>' +
     '<h3 class="sec">Allenamento</h3><div class="card">' +
       '<button class="list-item btnlike" data-act="go" data-v="cycle"><div><b>Programma a cicli</b><small>' + (cycleInfo().on ? 'Attivo · ' + cycleInfo().K.n + ' · settimana ' + cycleInfo().w : 'Spento') + '</small></div>' + ic('back', 'flip') + '</button>' +
-      '<div class="list-item flat"><div><b>Recupero automatico</b><small>Il timer parte quando segni la serie</small></div>' + toggle(st.autoRest, 'setFlag', 'data-k="autoRest"') + '</div>' +
-      '<div class="list-item flat"><div><b>Suono a fine recupero</b></div>' + toggle(st.sound, 'setFlag', 'data-k="sound"') + '</div>' +
       '<div class="list-item flat"><div><b>Esercizi a corpo libero</b><small>Piegamenti, plank, trazioni, burpees… nelle schede, nei circuiti e nel Coach</small></div>' + toggle(bodyweightOn(), 'toggleBW') + '</div>' +
-      '<div class="list-item flat"><div><b>Schermo sempre acceso</b><small>Durante l\'allenamento</small></div>' + toggle(st.keepScreen, 'setFlag', 'data-k="keepScreen"') + '</div>' +
     '</div>' +
     '<h3 class="sec">Promemoria</h3><div class="card">' +
       '<div class="list-item flat"><div><b>Giorni di allenamento</b><small>Nei giorni scelti nel profilo</small></div>' + toggle(r.workout.on, 'remOn', 'data-k="workout"') + '</div>' +
@@ -320,10 +314,9 @@ VIEWS.settings = () => {
       '<button class="btn ghost wide" data-act="askNotif">Consenti le notifiche</button>' +
     '</div>' +
     '<h3 class="sec">Crediti</h3><div class="card small">' +
-      '<button class="list-item btnlike" data-act="openUrl" data-u="' + EK_URL + '"><div><b>Disegni degli esercizi</b><small>Everkinetic (Greg Priday) · licenza CC BY-SA 4.0</small></div>' + ic('back', 'flip') + '</button>' +
-      '<button class="list-item btnlike" data-act="openUrl" data-u="https://github.com/yuhonas/free-exercise-db"><div><b>Elenco esercizi</b><small>free-exercise-db · pubblico dominio (testi riscritti in italiano)</small></div>' + ic('back', 'flip') + '</button>' +
+      '<div class="list-item flat"><div><b>Esercizi</b><small>Catalogo di Hevy, nomi in italiano</small></div></div>' +
       '<button class="list-item btnlike" data-act="openUrl" data-u="https://world.openfoodfacts.org"><div><b>Prodotti alimentari</b><small>Open Food Facts · licenza ODbL</small></div>' + ic('back', 'flip') + '</button>' +
-      '<div class="list-item flat"><div><b>Figure e animazioni senza disegno</b><small>Create per GYM</small></div></div></div>' +
+      '</div>' +
     '<h3 class="sec">Coach AI (facoltativo)</h3><div class="card">' +
       '<p class="small muted">L\'app funziona al completo anche senza. Con una chiave puoi fare domande libere al coach. Gemini ha un piano gratuito.</p>' +
       '<div class="field"><span>Servizio</span><div class="chips">' + Object.keys(AI_PROVIDERS).map(k => chip(AI_PROVIDERS[k].n, ai.provider === k, 'aiProv', 'data-k="' + k + '"')).join('') + '</div></div>' +
@@ -346,7 +339,7 @@ VIEWS.settings = () => {
       '<label class="btn ghost wide filebtn">Importa backup<input type="file" accept="application/json,.json,*/*" data-in="importB" hidden></label>' +
       '<button class="btn danger ghost wide" data-act="resetAll">Azzera tutti i dati</button>' +
     '</div>' +
-    '<p class="muted small center">GYM · uso personale</p></div>';
+    '<p class="muted small center">Coach · uso personale</p></div>';
 };
 
 function updateBox() {
@@ -369,7 +362,7 @@ window.onUpdateInfo = (json) => {
     else UI.update = { state: 'latest', info: d, progress: 0 };
   } catch (e) { UI.update = { state: 'error', info: 'Risposta non valida', progress: 0 }; }
   if (UI.update.state === 'available' && UI.update.silent !== false && current().v !== 'settings') {
-    toast('Nuova versione di GYM disponibile: aggiorna dalle impostazioni');
+    toast('Nuova versione di Coach disponibile: aggiorna dalle impostazioni');
   }
   if (current().v === 'settings') render();
 };
@@ -382,7 +375,7 @@ VIEWS.onboarding = () => {
   const steps = 6, dots = '<div class="ob-dots">' + [...Array(steps)].map((_, i) => '<i class="' + (i <= o.step ? 'on' : '') + '"></i>').join('') + '</div>';
   const nav = (next, label) => '<div class="ob-nav">' + (o.step ? '<button class="btn ghost" data-act="obPrev">Indietro</button>' : '<span></span>') + '<button class="btn" data-act="' + (next || 'obNext') + '">' + (label || 'Avanti') + '</button></div>';
   let body = '';
-  if (o.step === 0) body = '<div class="ob-hero">' + ic('dumbbell', 'xl') + '<h1>Benvenuto in GYM</h1><p>Il tuo allenatore personale in tasca. Ti faccio qualche domanda per preparare le schede su misura per te.</p></div>' + nav(null, 'Iniziamo');
+  if (o.step === 0) body = '<div class="ob-hero">' + ic('dumbbell', 'xl') + '<h1>Benvenuto in Coach</h1><p>Il tuo allenatore personale in tasca. Ti faccio qualche domanda per preparare le schede su misura per te.</p></div>' + nav(null, 'Iniziamo');
   if (o.step === 1) body = '<h2>Quali sono i tuoi obiettivi?</h2><p class="muted">Puoi sceglierne più di uno: il trainer li combina.</p>' + Object.keys(GOALS).map(k => '<button class="opt check ' + (p.goals.includes(k) ? 'on' : '') + '" data-act="setGoal" data-k="' + k + '"><span><b>' + GOALS[k].n + '</b><small>' + GOALS[k].desc + '</small></span><i class="tick">' + ic('check') + '</i></button>').join('') + nav();
   if (o.step === 2) body = '<h2>Che livello hai?</h2>' + Object.keys(LEVELS).map(k => '<button class="opt ' + (p.level === k ? 'on' : '') + '" data-act="setLevel" data-k="' + k + '"><b>' + LEVELS[k].n + '</b><small>' + LEVELS[k].desc + '</small></button>').join('') + nav();
   if (o.step === 3) body = '<h2>In quali giorni ti alleni?</h2><p class="muted">Creo una scheda per ogni giorno.</p>' + daysChips(p.days, 'setDay') +

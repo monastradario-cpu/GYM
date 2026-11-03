@@ -36,7 +36,7 @@ errors = []
 SCREENS = [
     ("home", "go('home')"), ("coach", "go('coach')"), ("chest_press", "go('exercise',{id:'chest_press'})"),
     ("lat_machine", "go('exercise',{id:'lat_machine'})"), ("stacco", "go('exercise',{id:'stacco_bil'})"),
-    ("sissy", "go('exercise',{id:'sissy_squat_peso'})"), ("libreria", "go('library')"), ("progressi", "go('progress')"),
+    ("valutazioni", "go('progress')"), ("progressi", "go('progress')"),
     ("scienza", "go('science')"), ("cibo", "go('food')"), ("schede", "go('schede')"),
 ]
 with sync_playwright() as p:

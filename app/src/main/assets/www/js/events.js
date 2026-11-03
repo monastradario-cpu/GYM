@@ -10,7 +10,7 @@ function plainSheet(html) { return html; }
 
 const ACT = {
   tab: d => { if (d.v === 'coach' && !UI.coach.muscles.length) UI.coach.result = null; go(d.v); },
-  go: d => go(d.v),
+  go: d => go(d.v, d.id ? { id: d.id } : undefined),
   back: () => back(),
   closeSheet: () => closeSheet(),
   confirmOk: () => { const cb = confirmCb; confirmCb = null; closeSheet(); if (cb) cb(); },
@@ -281,7 +281,7 @@ const ACT = {
   recipeLog: () => { const R = UI.recipe, r = RECIPES.find(x => x.id === R.id), m = recipeFor(r, foodPrefs(), R.kcal || 0); logIngredients(m.ing, R.meal || mealNow()); closeSheet(); toast('Ricetta aggiunta al diario'); render(); },
   recF: d => { UI.recF = d.k; render(); },
   shopChk: d => { S.shopChecked = S.shopChecked || {}; S.shopChecked[d.n] = !S.shopChecked[d.n]; save(); const v = $('#view'), y = v.scrollTop; render(); v.scrollTop = y; },
-  shopShare: () => { const by = shoppingList(); if (!by) return; const txt = 'Lista della spesa (GYM)\n' + Object.keys(FOOD_CATS).filter(c => by[c]).map(c => '\n' + FOOD_CAT_N[c] + ':\n' + by[c].map(([n, g]) => '- ' + n.replace(/ \(.*\)/, '') + ' ' + shopQty(n, g)).join('\n')).join('\n') + ((S.shopMine || []).length ? '\n\nAltro:\n' + S.shopMine.map(n => '- ' + n).join('\n') : ''); copyText(txt); toast('Lista copiata: incollala dove vuoi'); },
+  shopShare: () => { const by = shoppingList(); if (!by) return; const txt = 'Lista della spesa (Coach)\n' + Object.keys(FOOD_CATS).filter(c => by[c]).map(c => '\n' + FOOD_CAT_N[c] + ':\n' + by[c].map(([n, g]) => '- ' + n.replace(/ \(.*\)/, '') + ' ' + shopQty(n, g)).join('\n')).join('\n') + ((S.shopMine || []).length ? '\n\nAltro:\n' + S.shopMine.map(n => '- ' + n).join('\n') : ''); copyText(txt); toast('Lista copiata: incollala dove vuoi'); },
   foodAdd: d => { UI.fadd = { meal: d.m || mealNow(), q: '' }; openSheet(foodAddSheet); },
   foodScan: () => {
     UI.fadd = UI.fadd || { meal: mealNow() };

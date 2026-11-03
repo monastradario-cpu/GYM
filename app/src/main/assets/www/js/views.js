@@ -217,57 +217,32 @@ function libList() {
   }).join('')).join('') || '<div class="empty">Nessun esercizio trovato</div>';
 }
 
-const EX_TABS = [['esecuzione', 'Esecuzione'], ['muscoli', 'Muscoli'], ['errori', 'Errori'], ['dati', 'I miei dati']];
-/* fotogramma fermo di una posa dell'animazione */
-function keyFrame(id, k) { const d = animDef(id); return '<svg viewBox="40 -10 240 216"' + (mqStyle() === 'realistico' ? ' class="real"' : '') + '>' + frameSvg(d, EX[id], k, k, 0) + '</svg>'; }
+/* scheda di un esercizio: come si fa lo vedi in Hevy (video); qui muscoli, i tuoi dati e il consiglio del trainer */
 VIEWS.exercise = p => {
-  const e = EX[p.id]; if (!e) return VIEWS.library();
-  const md = mediaMode(), showAnim = md === 'omino' || (md === 'mappa_anim' && UI.showAnim);
-  let tab = UI.exTab || 'esecuzione'; if (tab === 'muscoli') tab = 'esecuzione';
-  const d = animDef(e.id), presc = prescribe(e.id);
-  const yt = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(e.n + ' esecuzione corretta');
-  const keys = d.seq ? d.keys.map((_, i) => i).slice(0, 4) : [0, 1];
-  const keyLbl = i => d.seq ? (i + 1) + ' · ' + d.cues[i] : i === 0 ? '1 · Inizio' : '2 · ' + (d.order === 1 ? 'Contrazione' : 'Fine movimento');
-  let body = '';
-  if (tab === 'esecuzione') {
-    body = (ekImgs(e.id) ? '<div class="kf-grid">' + ekImgs(e.id).map((u, i) => '<div class="kf"><img src="' + u + '" alt=""><span>' + (i ? '2 · Fine movimento' : '1 · Inizio') + '</span></div>').join('') + '</div>' : '') +
-      (showAnim && !ekImgs(e.id) ? '<div class="kf-grid' + (keys.length > 2 ? ' four' : '') + '">' + keys.map(k => '<div class="kf">' + keyFrame(e.id, k) + '<span>' + esc(keyLbl(k)) + '</span></div>').join('') + '</div>' : '') +
-      '<div class="card"><ol class="steps num">' + e.steps.map(x => '<li>' + esc(x) + '</li>').join('') + '</ol>' +
-      '<p class="small muted">' + (e.type === 'time' ? 'Mantieni la posizione respirando con calma.' : d.seq ? 'Movimento continuo e controllato.' : 'Ritmo: fase di sforzo in circa 2 secondi, ritorno lento in 3. Espira durante lo sforzo.') + '</p></div>' +
-      '<div class="card"><p class="small"><b>Per i tuoi obiettivi:</b> ' + prescText(presc) + '</p><p class="small muted">' + esc(trainerNote(presc)) + '</p></div>';
-  } else if (tab === 'muscoli') {
-    body = '<div class="card body-card">' + exerciseBody(e) + '<div class="legend"><span><i class="lg main"></i>Principale: ' + muscleName(e.m) + '</span>' + (e.s.length ? '<span><i class="lg sec"></i>Secondari: ' + e.s.map(muscleName).join(', ') + '</span>' : '') + '</div></div>';
-  } else if (tab === 'errori') {
-    body = '<div class="card warn"><h3>Errori da evitare</h3><ul class="tips">' + e.err.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>' +
-      '<div class="card"><h3>' + ic('sparkle', 'inline') + 'Consiglio</h3><p>' + esc(e.tip) + '</p></div>';
-  } else {
-    const r = records(e.id), hist = exerciseHistory(e.id);
-    const pts = hist.slice().reverse().map(h => ({ x: h.date, y: Math.max(...h.sets.map(x => e1rm(num(x.kg), num(x.reps)))) })).filter(x => x.y > 0);
-    const pg = progression(e.id, presc.rmin, presc.rmax);
-    body = (r.kg ? '<div class="card"><div class="stats3"><div><b>' + fmtKg(r.kg) + ' kg</b><small>carico max × ' + r.reps + '</small></div><div><b>' + Math.round(r.e1rm) + ' kg</b><small>massimale stimato</small></div><div><b>' + hist.length + '</b><small>volte</small></div></div>' +
-      lineChart(pts) + '<div class="tip ' + pg.kind + '">' + esc(pg.text) + '</div><button class="btn sm ghost" data-act="maxOpen" data-id="' + e.id + '">' + ic('chart', 'inline') + 'Massimale e tabella %</button><div class="hist">' + hist.slice(0, 6).map(h => '<div class="list-item flat"><div><b>' + fmtDate(h.date) + '</b><small>' + h.sets.map(x => fmtKg(num(x.kg)) + '×' + num(x.reps)).join('  ') + '</small></div></div>').join('') + '</div></div>'
-      : '<div class="card"><p class="muted">Non hai ancora fatto questo esercizio. Quando lo segni in un allenamento qui trovi record, grafico e consigli di progressione.</p><div class="tip info">' + esc(pg.text) + '</div></div>');
-  }
+  const e = EX[canon(p.id)]; if (!e) return VIEWS.home();
+  const presc = prescribe(e.id), r = records(e.id), hist = exerciseHistory(e.id);
+  const pts = hist.slice().reverse().map(h => ({ x: h.date, y: Math.max(...h.sets.map(x => e1rm(num(x.kg), num(x.reps)))) })).filter(x => x.y > 0);
+  const pg = e.type === 'time' ? null : progression(e.id, presc.rmin, presc.rmax);
   return header(esc(e.n), { back: true, sub: muscleName(e.m) + ' · ' + (EQUIP[e.eq] || '') }) + '<div class="pad">' +
-    (md !== 'omino' ? '<div class="card ex-map">' + exerciseBody(e) + '<div class="mchips center"><span class="on">' + muscleName(e.m) + '</span>' + e.s.map(m => '<span>' + muscleName(m) + '</span>').join('') + '</div>' +
-      (md === 'mappa_anim' ? '<button class="btn ghost wide" data-act="toggleAnim">' + ic(showAnim ? 'close' : 'play') + (showAnim ? 'Nascondi l\'animazione' : 'Guarda l\'animazione') + '</button>' : '') + '</div>' : '') +
-    (showAnim ? (ekImgs(e.id) && !UI.forceMq ? '<div class="card demo-card ex-demo ek-card">' + ekPlayer(e.id) + '</div>' : '<div class="card demo-card ex-demo"><div id="demo" data-ex="' + e.id + '"></div></div>') : '') +
-    (md === 'omino' ? '<div class="card ex-muscles">' + exerciseBody(e) + '<div class="mchips center"><span class="on">' + muscleName(e.m) + '</span>' + e.s.map(m => '<span>' + muscleName(m) + '</span>').join('') + '</div></div>' : '') +
-    '<div class="seg ex-tabs">' + EX_TABS.filter(t => t[0] !== 'muscoli').map(t => chip(t[1], tab === t[0], 'exTab', 'data-t="' + t[0] + '"')).join('') + '</div>' + body +
+    '<div class="card ex-muscles">' + exerciseBody(e) + '<div class="mchips center"><span class="on">' + muscleName(e.m) + '</span>' + e.s.map(m => '<span>' + muscleName(m) + '</span>').join('') + '</div></div>' +
+    '<div class="card"><p class="small">' + (e.hvT ? 'In Hevy: <b>' + esc(e.hvT) + '</b>. Apri l\'esercizio in Hevy per il video e la spiegazione.' : 'In Hevy è un esercizio personalizzato con lo stesso nome.') + '</p>' +
+      '<p class="small"><b>Per i tuoi obiettivi:</b> ' + prescText(presc) + '</p><p class="small muted">' + esc(trainerNote(presc)) + '</p></div>' +
+    (r.kg || pts.length ? '<div class="card"><h3>I tuoi dati</h3><div class="stats3"><div><b>' + fmtKg(r.kg) + ' kg</b><small>carico max × ' + r.reps + '</small></div><div><b>' + Math.round(r.e1rm) + ' kg</b><small>massimale stimato</small></div><div><b>' + hist.length + '</b><small>sedute</small></div></div>' +
+      lineChart(pts) + (pg ? '<div class="tip ' + pg.kind + '">' + esc(pg.text) + '</div>' : '') + '</div>'
+      : '<div class="card"><p class="muted small">Non l\'hai ancora fatto. Quando lo registri in Hevy qui trovi record, grafico e progressione.</p>' + (pg ? '<div class="tip info">' + esc(pg.text) + '</div>' : '') + '</div>') +
     '<div class="card"><h3>Alternative</h3>' + alternatives(e.id).slice(0, 5).map(x => '<button class="list-item btnlike" data-act="exInfo" data-id="' + x.id + '"><div><b>' + esc(x.n) + '</b><small>' + (EQUIP[x.eq] || '') + '</small></div>' + ic('back', 'flip') + '</button>').join('') + '</div>' +
-    '<button class="btn ghost wide" data-act="openUrl" data-u="' + yt + '">' + ic('video') + 'Cerca anche un video su YouTube</button>' +
-    (S.active && !S.active.circ ? '<button class="btn wide" data-act="addToActive" data-id="' + e.id + '">' + ic('plus') + 'Aggiungi all\'allenamento in corso</button>' : '') +
     '</div>';
 };
 
 /* =================== PROGRESSI =================== */
-const PROG_TABS = [['andamento', 'Andamento'], ['esercizi', 'Grafici'], ['calendario', 'Calendario'], ['settimana', 'Settimana'], ['muscoli', 'Muscoli'], ['peso', 'Peso'], ['misure', 'Misure'], ['massimali', 'Massimali'], ['statistiche', 'Statistiche'], ['foto', 'Foto'], ['cardio', 'Cardio'], ['storico', 'Storico']];
+const PROG_TABS = [['valutazioni', 'Valutazioni'], ['andamento', 'Andamento'], ['esercizi', 'Grafici'], ['calendario', 'Calendario'], ['settimana', 'Settimana'], ['muscoli', 'Muscoli'], ['peso', 'Peso'], ['misure', 'Misure'], ['massimali', 'Massimali'], ['statistiche', 'Statistiche'], ['foto', 'Foto'], ['cardio', 'Cardio'], ['storico', 'Storico']];
 
 VIEWS.progress = () => {
   const P = UI.prog;
   return header('Progressi') + '<div class="chips scroll tabs">' + PROG_TABS.map(t => chip(t[1], P.tab === t[0], 'progTab', 'data-t="' + t[0] + '"')).join('') + '</div><div class="pad">' + (PROG[P.tab] || PROG.esercizi)() + '</div>';
 };
 const PROG = {};
+PROG.valutazioni = () => valTrendCard() || '<div class="empty">Dopo il primo allenamento in Hevy qui trovi il voto di ogni seduta e come cambia nel tempo.</div>';
 
 PROG.esercizi = () => {
   const P = UI.prog, recs = allRecords();

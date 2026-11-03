@@ -106,7 +106,7 @@ async function aiAsk(messages) {
 function aiContext() {
   const p = S.profile;
   const lines = [];
-  lines.push('Sei il coach personale dell\'app GYM. Rispondi in italiano, in modo chiaro, pratico e motivante, con frasi brevi. Non dare consigli medici: per dolori o problemi di salute suggerisci di consultare un medico.');
+  lines.push('Sei il coach personale dell\'app Coach (collegata a Hevy, dove l\'utente registra gli allenamenti). Rispondi in italiano, in modo chiaro, pratico e motivante, con frasi brevi. Non dare consigli medici: per dolori o problemi di salute suggerisci di consultare un medico.');
   lines.push('Profilo: obiettivi ' + goalLabel(p) + (p.sex ? ', sesso ' + (p.sex === 'm' ? 'uomo' : 'donna') : '') + (p.age ? ', ' + p.age + ' anni' : '') + (p.height ? ', ' + p.height + ' cm' : '') + ', livello ' + (LEVELS[p.level] || {}).n + ', si allena ' + p.days.length + ' giorni a settimana (' + p.days.map(d => WEEKDAYS[d]).join(', ') + ').');
   const w = S.weights[S.weights.length - 1]; if (w) lines.push('Peso corporeo: ' + fmtKg(w.kg) + ' kg (' + fmtDate(w.d) + ').');
   const recent = S.history.slice(-6).reverse();
