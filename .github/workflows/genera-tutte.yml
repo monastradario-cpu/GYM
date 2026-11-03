@@ -3,10 +3,8 @@ name: Genera figure esercizi
 # Manuale: disegna con VideoDB le figure di tutti gli esercizi e le salva nel repo.
 # Riprende da dove si era fermato. Non pubblica l'app.
 on:
-  # ogni notte alle 2:07 ora italiana (due orari UTC per coprire ora legale e solare: parte solo quello delle 2)
-  schedule:
-    - cron: "7 0 * * *"
-    - cron: "7 1 * * *"
+  # Generazione notturna automatica DISATTIVATA su richiesta (3 novembre 2026):
+  # la quota gratuita di Cloudflare ora resta a Mythos. Si può ancora avviare a mano da GitHub (Actions → Run workflow).
   workflow_dispatch:
     inputs:
       quanti:
