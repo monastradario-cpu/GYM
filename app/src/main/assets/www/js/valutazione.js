@@ -20,8 +20,9 @@ const clamp01 = v => Math.max(0, Math.min(1, v));
 function rirRange(rir) { const p = String(rir || '1–2').split(/[–-]/).map(Number); return [p[0], p.length > 1 ? p[1] : p[0]]; }
 
 function evaluateWorkout(h) {
-  const plan = h.routine && typeof hvPlanAt === 'function' ? hvPlanAt(h.routine, h.start) : null;
-  const usePlan = plan && plan.at > h.start - 21 * 864e5 ? plan : null;
+  // la versione della routine valida quando hai iniziato la seduta, anche se è vecchia: se non è cambiata
+  // (nessun progresso, una pausa lunga) in Hevy c'era ancora quella, quindi il confronto è giusto
+  const usePlan = h.routine && typeof hvPlanAt === 'function' ? hvPlanAt(h.routine, h.start) : null;
   const items = [], good = [], fix = [];
   let planned = 0, doneSets = 0, perfSum = 0, perfN = 0, intSum = 0, intN = 0, inRange = 0, rangeN = 0, rpeSeen = 0;
   const skipped = usePlan ? usePlan.items.filter(p => !h.items.some(it => canon(it.ex) === p.ex)).map(p => p.ex) : [];

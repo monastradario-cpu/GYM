@@ -203,6 +203,10 @@ with sync_playwright() as p:
     voti = pg.evaluate("S.history.filter(h => h.val && h.routine).map(h => ({ n: h.name, v: h.val.score, l: h.val.label, fix: h.val.fix.length, plan: h.val.planned }))")
     if len(voti) < 3 or not (voti[-2]["v"] and voti[-2]["v"] >= 8.5) or not (voti[-1]["v"] and voti[-1]["v"] < voti[-2]["v"] - 2) or not voti[-1]["fix"]:
         errors.append(f"valutazione delle sedute: {voti}")
+    # routine rimasta uguale per settimane (pausa lunga o nessun progresso): la seduta si confronta lo stesso con la routine
+    vecchia = pg.evaluate("(() => { const h = S.history.filter(x => x.routine).slice(-1)[0]; const v = evaluateWorkout(Object.assign({}, h, { start: h.start + 30 * 864e5, end: h.end + 30 * 864e5 })); return { planned: v.planned, comp: v.parts[0].v }; })()")
+    if not vecchia["planned"] or vecchia["comp"] is None:
+        errors.append(f"routine non cambiata da 30 giorni: la seduta risulta libera {vecchia}")
     vista = pg.evaluate("current().v")
     if vista != "valutazione":
         errors.append(f"dopo un allenamento nuovo si apre la valutazione, invece: {vista}")
