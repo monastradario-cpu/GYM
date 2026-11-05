@@ -35,7 +35,7 @@ function evaluateWorkout(h) {
     const prev = prevSessions(it.ex, h.start), e1 = bestE1(ws), pe1 = prev[0] ? bestE1(prev[0].sets) : 0;
     const best = Math.max(0, ...prev.map(s => bestE1(s.sets)));
     const ti = (S.templates.find(t => t.id === h.tplId) || { items: [] }).items.find(x => canon(x.ex) === canon(it.ex)) || prescribe(it.ex);
-    const r = { ex: it.ex, rmin: p ? p.rmin : ti.rmin, rmax: p ? p.rmax : ti.rmax, sets: ws.map(s => timed ? s.reps + ' s' : (s.kg ? fmtKg(s.kg) + '×' : '') + s.reps + (s.rpe ? ' @' + fmtKg(s.rpe) : '')).join('  '), kind: 'first', txt: '' };
+    const r = { ex: it.ex, rmin: p ? p.rmin : ti.rmin, rmax: p ? p.rmax : ti.rmax, sets: ws.map(s => timed ? s.reps + ' s' : (s.kg ? fmtKg(s.kg) + '×' : '') + s.reps + (s.ast ? ' (aiuto ' + fmtKg(s.ast) + ' kg)' : '') + (s.rpe ? ' @' + fmtKg(s.rpe) : '')).join('  '), kind: 'first', txt: '' };
     // prestazione
     let perf = null;
     if (timed) {
@@ -54,6 +54,20 @@ function evaluateWorkout(h) {
       const hit = perf >= 0.97;
       r.kind = e1 > pe1 * 1.01 && pe1 ? 'up' : hit ? 'same' : 'down';
       r.txt = hit ? 'Obiettivo centrato (' + fmtKg(p.kg) + ' kg × ' + p.reps.filter(Boolean).join('-') + ')' : 'Obiettivo ' + fmtKg(p.kg) + ' kg × ' + p.reps.filter(Boolean).join('-') + ': ' + Math.round(perf * 100) + '% fatto';
+    } else if (p && !(p.kg > 0) && p.reps && p.reps.some(x => x > 0)) {
+      // corpo libero o assistito: obiettivo di ripetizioni (e di aiuto, se c'è: usarne di più vale meno)
+      let sum = 0;
+      for (let i = 0; i < p.sets; i++) {
+        const s = ws[i], tr = p.reps[i] || p.reps[p.reps.length - 1] || p.rmin;
+        if (!s) continue;
+        const aid = p.ast > 0 && num(s.ast) > p.ast ? p.ast / num(s.ast) : 1;
+        sum += Math.min(1, num(s.reps) / tr) * aid;
+      }
+      perf = clamp01(sum / p.sets);
+      const hit = perf >= 0.97, aidTxt = p.ast > 0 ? ' con ' + fmtKg(p.ast) + ' kg di aiuto' : '';
+      const tot = x => x.reduce((a, s) => a + num(s.reps), 0), pa = prev[0] ? Math.max(0, ...prev[0].sets.map(s => num(s.ast))) : 0, ca = Math.max(0, ...ws.map(s => num(s.ast)));
+      r.kind = prev[0] && (tot(ws) > tot(prev[0].sets) && ca <= pa || ca < pa && tot(ws) >= tot(prev[0].sets) * 0.9) ? 'up' : hit ? 'same' : 'down';
+      r.txt = (hit ? 'Obiettivo centrato (' : 'Obiettivo ') + p.reps.filter(Boolean).join('-') + ' ripetizioni' + aidTxt + (hit ? ')' : ': ' + Math.round(perf * 100) + '% fatto');
     } else if (pe1) {
       const d = (e1 - pe1) / pe1;
       perf = d >= 0.01 ? 1 : d >= -0.02 ? 0.8 : d >= -0.05 ? 0.55 : 0.3;

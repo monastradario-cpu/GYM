@@ -17,6 +17,15 @@ function hvEqOf(h) {
   return { barbell: 'bilanciere', dumbbell: 'manubri', kettlebell: 'kettlebell', resistance_band: 'elastici', none: 'corpo' }[eq] || (eq === 'machine' ? (/cable/i.test(en) ? 'cavi' : 'macchinari') : 'altro');
 }
 const hvIsCardio = h => HV[h] && /distance_duration|floors_duration|steps_duration/.test(HV[h][3]);
+/* esercizi "assistiti" di Hevy (macchina o elastico): il peso segnato è l'aiuto, quindi più kg = più facile.
+   Coach lo tiene a parte (ast) e li tratta come esercizi a corpo libero: progredisci con le ripetizioni e togliendo aiuto. */
+function hvAssisted(exId) { const e = EX[canon(exId)]; return !!(e && e.hv && HV[e.hv] && HV[e.hv][3] === 'bodyweight_assisted'); }
+function hvFixAssisted() {
+  let n = 0;
+  (S.history || []).forEach(h => (h.items || []).forEach(it => { if (hvAssisted(it.ex)) (it.sets || []).forEach(s => { if (num(s.kg) > 0 && s.ast == null) { s.ast = num(s.kg); s.kg = 0; n++; } }); }));
+  if (n) S.history.forEach(h => { if (h.val && h.items.some(it => hvAssisted(it.ex))) delete h.val; });
+  return n;
+}
 (function () {
   if (typeof HV === 'undefined') return;
   Object.keys(HV_NAME).forEach(id => { if (EX[id]) EX[id].n = HV_NAME[id]; });
@@ -167,6 +176,7 @@ async function hvRoutineBody(t) {
       if (timed) return { type: 'normal', duration_seconds: num(s.pr) || src.secs || 40 };
       const o = { type: 'normal', rep_range: { start: it.rmin, end: it.rmax } };
       if (num(s.pk) > 0) o.weight_kg = num(s.pk);
+      else if (num(s.pa) > 0) o.weight_kg = num(s.pa); // assistito: in Hevy il peso è l'aiuto
       if (num(s.pr) > 0) o.reps = num(s.pr);
       return o;
     });
@@ -176,7 +186,7 @@ async function hvRoutineBody(t) {
     const notes = [timed ? 'Tieni la posizione con forma perfetta.' : (it.role === 'main' ? 'Principale' : ROLE_N[it.role] || '') + ': ' + it.rmin + (it.rmax !== it.rmin ? '–' + it.rmax : '') + ' rip, ' + rir + ' rip di scorta (RPE ' + rpeOf(rir) + ').',
       prog && prog.text ? prog.text : '', deloadActive() ? 'Settimana di scarico: lontano dal cedimento.' : ''].filter(Boolean).join(' ');
     exs.push({ exercise_template_id: tid, superset_id: src.ss != null && src.ss !== '' ? hvSuperset(src.ss) : null, rest_seconds: it.rest || null, notes: notes.slice(0, 500), sets: wu.concat(sets) });
-    plan.push({ ex: src.ex, role: it.role, sets: sets.length, rmin: it.rmin, rmax: it.rmax, rir, kg: wk, reps: it.sets.map(s => num(s.pr)), secs: timed ? (num(it.sets[0] && it.sets[0].pr) || src.secs || 40) : 0 });
+    plan.push({ ex: src.ex, role: it.role, sets: sets.length, rmin: it.rmin, rmax: it.rmax, rir, kg: wk, reps: it.sets.map(s => num(s.pr)), ast: Math.max(0, ...it.sets.map(s => num(s.pa))), secs: timed ? (num(it.sets[0] && it.sets[0].pr) || src.secs || 40) : 0 });
   }
   const notes = [t.focus, t.note, typeof cycleInfo === 'function' && cycleInfo().on ? cycleLine() : ''].filter(Boolean).join(' · ').slice(0, 900);
   return { body: { title: hvTitle(t), notes, exercises: exs }, plan };
@@ -265,7 +275,8 @@ function hvToHistory(w) {
       return;
     }
     const ex = exFromHv(h, x.title), timed = (EX[ex] || {}).type === 'time';
-    const sets = (x.sets || []).map(s => ({ kg: num(s.weight_kg), reps: timed || (!num(s.reps) && num(s.duration_seconds)) ? num(s.duration_seconds) : num(s.reps), done: true, wu: s.type === 'warmup', fail: s.type === 'failure', drop: s.type === 'dropset', rpe: s.rpe != null ? num(s.rpe) : null }))
+    const ast = hvAssisted(ex);
+    const sets = (x.sets || []).map(s => ({ kg: ast ? 0 : num(s.weight_kg), ast: ast ? num(s.weight_kg) : undefined, reps: timed || (!num(s.reps) && num(s.duration_seconds)) ? num(s.duration_seconds) : num(s.reps), done: true, wu: s.type === 'warmup', fail: s.type === 'failure', drop: s.type === 'dropset', rpe: s.rpe != null ? num(s.rpe) : null }))
       .filter(s => s.reps > 0 || s.kg > 0);
     if (sets.length) items.push({ ex, sets, note: x.notes || '' });
   });
@@ -288,6 +299,7 @@ async function hvSync(opts) {
   if (_hvSyncing) return _hvSyncing;
   _hvSyncing = (async () => {
     const H = hvState(), nuovi = [];
+    if (hvFixAssisted()) save(true); // storico importato prima: l'aiuto era finito nel carico
     if (!H.first) {
       // primo collegamento: lo storico di Coach riparte da quello di Hevy (scelta dell'utente)
       S.history = []; S.active = null; H.since = '1970-01-01T00:00:00Z'; H.first = Date.now();

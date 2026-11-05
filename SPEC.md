@@ -109,6 +109,7 @@ App Android personale per allenarsi in palestra. Uso di una sola persona, dati s
 ## Storico progressioni (Progressi → Andamento)
 - Per ogni esercizio: sedute recenti con miglior serie, variazione (+kg, +rip) e massimale stimato; stato complessivo (in progressione, stabile, in calo).
 - Consiglio "Prossima volta" con doppia progressione: +1 ripetizione per serie fino al massimo del range, poi aumento di carico (2 kg manubri, 2,5–5 kg bilanciere, 5–10 kg macchine); range dell'obiettivo diverso da quello usato → carico adattato; stallo da 3 sedute → cambio di stimolo; forza in calo per due sedute → settimana di scarico (−10%).
+- Esercizi assistiti di Hevy (trazioni, chin-up e dip assistiti, trazioni con elastico): il peso segnato è l'aiuto, quindi non conta come carico (niente falsi record né massimali). Si progredisce con +1 ripetizione per serie e, arrivati al massimo del range, togliendo 5 kg di aiuto; la routine in Hevy riceve l'aiuto da usare. Nella valutazione l'obiettivo di ripetizioni vale anche per corpo libero e assistiti (usare più aiuto del previsto vale meno).
 - Gli obiettivi serie per serie vengono precompilati nell'allenamento.
 
 ## Piano dimagrimento (basato sugli studi)

@@ -232,10 +232,28 @@ with sync_playwright() as p:
     pg.evaluate("hvSync()"); pg.wait_for_timeout(2500)
     if pg.evaluate("S.history.length") != n_prima - 1:
         errors.append("allenamento cancellato in Hevy ancora in Coach")
+    # esercizi assistiti di Hevy: il peso è l'aiuto (più kg = più facile), non un carico da aumentare
+    assistito = pg.evaluate("""(() => {
+      const keep = S.history, now = Date.now(), ex = exFromHv('2C37EC5E', 'Pull Up (Assisted)');
+      const w = (id, d, kg, reps) => hvToHistory({ id, title: 'Prova', start_time: new Date(now - d * 864e5).toISOString(), end_time: new Date(now - d * 864e5 + 3e6).toISOString(),
+        exercises: [{ exercise_template_id: '2C37EC5E', sets: reps.map(r => ({ type: 'normal', weight_kg: kg, reps: r })) }] });
+      const a = w('a1', 6, 30, [8, 8, 7]), b = w('a2', 3, 30, [10, 10, 10]);
+      S.history = [a, b];
+      const p1 = progression(ex, 6, 10);
+      const old = w('a0', 9, 0, [6]); old.items[0].sets[0].kg = 35; delete old.items[0].sets[0].ast; S.history = [old];
+      const mig = hvFixAssisted(), migSet = S.history[0].items[0].sets[0];
+      S.history = keep;
+      return { ex, assistito: hvAssisted(ex), set: b.items[0].sets[0], prossima: p1, mig, migSet, rec: records(ex).e1rm };
+    })()""")
+    pa = assistito["prossima"]
+    if (not assistito["assistito"] or assistito["set"].get("kg") != 0 or assistito["set"].get("ast") != 30
+            or pa.get("kind") != "up" or not pa.get("targets") or pa["targets"][0].get("ast") != 25 or "aiuto" not in pa.get("text", "")
+            or assistito["mig"] != 1 or assistito["migSet"].get("ast") != 35 or assistito["migSet"].get("kg") != 0):
+        errors.append(f"esercizio assistito trattato come carico: {assistito}")
     # migrazione: chi aveva le schede pronte senza percorso le perde, tiene le sue
     pg.evaluate("localStorage.setItem('gym.v1', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('gym.v1')), { mig23: 0, profile: Object.assign(S.profile, { path: false }), templates: [{ id: 'a', kind: 'scheda', name: 'Full body A', preset: 'fullA', days: [1], items: [] }, { id: 'b', kind: 'scheda', name: 'Mia', days: [], items: [] }] })))")
     pg.reload(); pg.wait_for_timeout(700)
     mig = pg.evaluate("S.templates.map(t => t.name)")
     pg.evaluate("UI.schede = 'schede'; go('schede')"); pg.wait_for_timeout(300); shot("21_schede_senza_percorso")
     b.close()
-print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso, "peso_bar": peso_bar, "forza": forza, "macro": macro, "cardio_trainer": cardio, "giornata_no": giornata_no, "casa_dopo_checkin": casa_dolore, "vita": vita, "voti": voti, "adottata": adottata}, ensure_ascii=False, indent=1))
+print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso, "peso_bar": peso_bar, "forza": forza, "macro": macro, "cardio_trainer": cardio, "giornata_no": giornata_no, "casa_dopo_checkin": casa_dolore, "vita": vita, "voti": voti, "adottata": adottata, "assistito": assistito}, ensure_ascii=False, indent=1))

@@ -193,6 +193,7 @@ function progression(exId, rmin, rmax) {
     const last = hist[0], secs = last ? Math.max(...last.sets.map(s => num(s.reps))) : 0;
     return { kind: 'info', text: secs ? 'L\'ultima volta ' + secs + ' s: oggi prova ' + (secs + 5) + ' s mantenendo la forma perfetta.' : 'Tieni la posizione con forma perfetta, poi aggiungi 5 s alla volta.', targets: secs ? [{ kg: 0, reps: secs + 5 }] : null };
   }
+  if (!hist.length && typeof hvAssisted === 'function' && hvAssisted(exId)) return { kind: 'info', text: 'Seduta di taratura: scegli l\'aiuto (kg della macchina o elastico) con cui arrivi a ' + rmax + ' ripetizioni lasciandone 2–3 di scorta, e segnalo in Hevy. Poi si progredisce togliendo aiuto.' };
   if (!hist.length) return { kind: 'info', text: 'Seduta di taratura 1 di 2: scegli un carico con cui arrivi a ' + rmax + ' ripetizioni lasciandone 2–3 di scorta. Annota bene: sarà il tuo punto di partenza.' };
   if (hist.length === 1) {
     const l = hist[0].sets, k0 = Math.max(...l.map(s => num(s.kg))), r0 = Math.max(...l.map(s => num(s.reps))), st = stepFor(exId);
@@ -203,6 +204,17 @@ function progression(exId, rmin, rmax) {
   }
   const last = hist[0], step = stepFor(exId);
   const kg = Math.max(...last.sets.map(s => num(s.kg)));
+  // assistito (macchina o elastico): il peso è l'aiuto, si progredisce togliendone
+  const ast = Math.max(0, ...last.sets.map(s => num(s.ast)));
+  if (kg === 0 && ast > 0) {
+    const band = e.eq === 'elastici' || /elastic|band/i.test(e.n + ' ' + (e.hvT || '')), st = 5, rMin = Math.min(...last.sets.map(s => num(s.reps)));
+    if (rMin >= rmax) {
+      const na = Math.max(0, ast - st);
+      return { kind: 'up', text: 'Obiettivo raggiunto: ' + last.sets.length + '×' + rmax + '+ con ' + fmtKg(ast) + ' kg di aiuto. ' + (na ? 'Oggi togli ' + fmtKg(ast - na) + ' kg di aiuto (passa a ' + fmtKg(na) + ' kg' + (band ? ', un elastico più leggero' : '') + ') e riparti da ' + rmin + ' ripetizioni.' : 'Oggi prova senza aiuto: anche poche ripetizioni pulite vanno bene.'), targets: last.sets.map(() => ({ kg: 0, ast: na, reps: na ? rmin : Math.max(1, rmin - 4) })) };
+    }
+    const targets = last.sets.map(s => ({ kg: 0, ast, reps: Math.min(rmax, num(s.reps) + 1) }));
+    return { kind: 'keep', text: 'Resta con ' + fmtKg(ast) + ' kg di aiuto e aggiungi 1 ripetizione per serie (' + targets.map(t => t.reps).join('-') + '). Arrivato a ' + last.sets.length + '×' + rmax + ' togli ' + st + ' kg di aiuto.', targets };
+  }
   if (kg === 0) {
     const r = Math.max(...last.sets.map(s => num(s.reps)));
     return { kind: r >= rmax + 5 ? 'up' : 'keep', text: r >= rmax + 5 ? 'Arrivi a ' + r + ' ripetizioni: aggiungi un carico (zavorra o manubrio) o passa a una variante più difficile.' : 'Oggi prova a fare 1–2 ripetizioni in più per serie (l\'ultima volta max ' + r + ').', targets: last.sets.map(s => ({ kg: 0, reps: num(s.reps) + 1 })) };

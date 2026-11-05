@@ -19,11 +19,11 @@ function newItem(src, kind) {
   }
   // check-in con poco sonno o poca energia: una serie in meno (mai sotto 2), dopo le serie aggiunte dal ciclo
   if (src.less && kind !== 'circuito') n = Math.max(Math.min(2, n), n - src.less);
-  if (deloadActive() && last) tg = last.sets.map(s => ({ kg: num(s.kg), reps: it.rmin })); // scarico: stesso carico, meno serie, lontano dal cedimento
+  if (deloadActive() && last) tg = last.sets.map(s => ({ kg: num(s.kg), ast: s.ast ? num(s.ast) : 0, reps: it.rmin })); // scarico: stesso carico, meno serie, lontano dal cedimento
   for (let i = 0; i < n; i++) {
     const ls = last && (last.sets[i] || last.sets[last.sets.length - 1]);
     const t = tg && (tg[i] || tg[tg.length - 1]);
-    it.sets.push({ kg: '', reps: '', done: false, pk: t ? (t.kg || '') : ls ? num(ls.kg) : '', pr: t ? t.reps : ls ? num(ls.reps) : (e.type === 'time' ? (src.secs || 40) : (src.rmax || '')) });
+    it.sets.push({ kg: '', reps: '', done: false, pk: t ? (t.kg || '') : ls ? num(ls.kg) : '', pa: t ? (t.ast || '') : ls && ls.ast ? num(ls.ast) : '', pr: t ? t.reps : ls ? num(ls.reps) : (e.type === 'time' ? (src.secs || 40) : (src.rmax || '')) });
   }
   return it;
 }
