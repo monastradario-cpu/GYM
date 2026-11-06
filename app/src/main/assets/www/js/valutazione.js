@@ -87,13 +87,13 @@ function evaluateWorkout(h) {
         const [a, b] = rirRange(p ? p.rir : rirFor(defaultRole(it.ex))), lo = 10 - b, hi = 10 - a, avg = rpes.reduce((x, y) => x + y, 0) / rpes.length;
         const off = avg < lo ? lo - avg : avg > hi ? avg - hi : 0;
         intSum += off <= 0.5 ? 1 : off <= 1 ? 0.75 : off <= 2 ? 0.45 : 0.2; intN++;
-        if (avg < lo - 1) fix.push(e.n + ': RPE medio ' + fmtKg(Math.round(avg * 10) / 10) + ', troppo facile (obiettivo ' + lo + (hi !== lo ? '–' + hi : '') + '). Aumenta il carico.');
+        if (avg < lo - 1) fix.push(e.n + ': RPE medio ' + fmtKg(Math.round(avg * 10) / 10) + ', troppo facile (obiettivo ' + lo + (hi !== lo ? '–' + hi : '') + '). ' + (ws.some(s => num(s.kg) > 0) ? 'Aumenta il carico.' : ws.some(s => num(s.ast) > 0) ? 'Togli un po\' di aiuto.' : 'Rendilo più duro: più ripetizioni, una zavorra o una variante più difficile.'));
         if (avg > hi + 0.5 && a >= 1) fix.push(e.n + ': RPE medio ' + fmtKg(Math.round(avg * 10) / 10) + ', troppo vicino al cedimento per questa fase (obiettivo ' + lo + (hi !== lo ? '–' + hi : '') + ').');
       } else if (rmin) {
         const avgR = ws.reduce((x, s) => x + num(s.reps), 0) / ws.length;
         intSum += avgR > rmax + 2 ? 0.5 : avgR < rmin - 1 ? 0.5 : 1; intN++;
-        if (avgR > rmax + 2) fix.push(e.n + ': ' + Math.round(avgR) + ' ripetizioni di media, sopra il range ' + rmin + '–' + rmax + ': il carico è leggero.');
-        if (avgR < rmin - 1) fix.push(e.n + ': ' + Math.round(avgR) + ' ripetizioni di media, sotto il range ' + rmin + '–' + rmax + ': il carico è pesante.');
+        if (avgR > rmax + 2) fix.push(e.n + ': ' + Math.round(avgR) + ' ripetizioni di media, sopra il range ' + rmin + '–' + rmax + ': ' + (ws.some(s => num(s.kg) > 0) ? 'il carico è leggero.' : ws.some(s => num(s.ast) > 0) ? 'puoi togliere aiuto.' : 'passa a una variante più difficile o aggiungi una zavorra.'));
+        if (avgR < rmin - 1) fix.push(e.n + ': ' + Math.round(avgR) + ' ripetizioni di media, sotto il range ' + rmin + '–' + rmax + ': ' + (ws.some(s => num(s.kg) > 0) ? 'il carico è pesante.' : ws.some(s => num(s.ast) > 0) ? 'usa un po\' più di aiuto.' : 'normale all\'inizio: aggiungi 1 ripetizione alla volta (o usa una variante più facile).'));
       }
       if (rmin) ws.forEach(s => { rangeN++; if (num(s.reps) >= rmin - 1 && num(s.reps) <= rmax + 2) inRange++; });
       if (ws.some(s => s.fail) && p && rirRange(p.rir)[0] >= 2) fix.push(e.n + ': serie a cedimento, ma in questa fase ne servono ' + p.rir + ' di scorta. Il cedimento non serve e allunga il recupero.');

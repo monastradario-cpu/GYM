@@ -194,6 +194,7 @@ function progression(exId, rmin, rmax) {
     return { kind: 'info', text: secs ? 'L\'ultima volta ' + secs + ' s: oggi prova ' + (secs + 5) + ' s mantenendo la forma perfetta.' : 'Tieni la posizione con forma perfetta, poi aggiungi 5 s alla volta.', targets: secs ? [{ kg: 0, reps: secs + 5 }] : null };
   }
   if (!hist.length && typeof hvAssisted === 'function' && hvAssisted(exId)) return { kind: 'info', text: 'Seduta di taratura: scegli l\'aiuto (kg della macchina o elastico) con cui arrivi a ' + rmax + ' ripetizioni lasciandone 2–3 di scorta, e segnalo in Hevy. Poi si progredisce togliendo aiuto.' };
+  if (!hist.length && e.eq === 'corpo') return { kind: 'info', text: 'Prima volta: fai ' + rmin + '–' + rmax + ' ripetizioni pulite per serie lasciandone 2 di scorta (se non ci arrivi, fai quelle che riesci). Segnale in Hevy: saranno il punto di partenza, poi si aggiunge 1 ripetizione alla volta.' };
   if (!hist.length) return { kind: 'info', text: 'Seduta di taratura 1 di 2: scegli un carico con cui arrivi a ' + rmax + ' ripetizioni lasciandone 2–3 di scorta. Annota bene: sarà il tuo punto di partenza.' };
   if (hist.length === 1) {
     const l = hist[0].sets, k0 = Math.max(...l.map(s => num(s.kg))), r0 = Math.max(...l.map(s => num(s.reps))), st = stepFor(exId);
