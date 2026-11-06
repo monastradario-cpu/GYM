@@ -204,6 +204,7 @@ function weightLossGoal(g) {
   if (g.from) return g.kg < g.from;
   return (S.profile.goals || []).includes('dimagrimento') || (bmiOf() >= 25 && !['atletico', 'magro'].includes(S.profile.body));
 }
+const ppCost = c => c.perWeek + (c.perWeek === 1 ? ' allenamento' : ' allenamenti') + ' a settimana per ' + c.weeks + (c.weeks === 1 ? ' settimana' : ' settimane');
 function goalStatus() {
   const G = S.profile.mgoals || {}, out = [];
   if (G.peso && G.peso.on && G.peso.kg) {
@@ -253,7 +254,7 @@ function goalStatus() {
   if (G.costanza && G.costanza.on) {
     const start = (S.path && S.path.start) || Date.now(), wks = Math.max(1, Math.ceil((Date.now() - start) / (7 * 864e5)));
     let ok = 0; for (let i = 0; i < wks; i++) { const a = start + i * 7 * 864e5, b = a + 7 * 864e5; if (S.history.filter(h => h.start >= a && h.start < b).length >= G.costanza.perWeek) ok++; }
-    out.push({ k: 'costanza', t: 'Costanza: ' + G.costanza.perWeek + ' allenamenti a settimana per ' + G.costanza.weeks + ' settimane', pct: Math.min(1, ok / G.costanza.weeks), eta: ok >= G.costanza.weeks ? 'Raggiunto! ' + ok + ' settimane centrate.' : ok + ' settimane centrate su ' + G.costanza.weeks + '.' });
+    out.push({ k: 'costanza', t: 'Costanza: ' + ppCost(G.costanza), pct: Math.min(1, ok / G.costanza.weeks), eta: ok >= G.costanza.weeks ? 'Raggiunto! ' + ok + (ok === 1 ? ' settimana centrata.' : ' settimane centrate.') : ok + (ok === 1 ? ' settimana centrata' : ' settimane centrate') + ' su ' + G.costanza.weeks + '.' });
   }
   return out;
 }
@@ -312,7 +313,7 @@ VIEWS.onboarding = () => {
       '<div class="card"><div class="list-item flat"><div><b>Forza su un esercizio</b><small>Massimale stimato dalle tue serie</small></div>' + toggle(G.forza.on, 'ppG', 'data-k="forza"') + '</div>' +
       (G.forza.on ? '<div class="chips wrap">' + STRENGTH_EX.filter(id => okFor(id)).map(id => chip(EX[id].n, G.forza.ex === id, 'ppGEx', 'data-k="' + id + '"')).join('') + '</div>' + field('Massimale obiettivo (kg)', numIn(G.forza.kg || '', 'data-in="pg" data-g="forza" data-k="kg"', 'vuoto = +10% dopo le prime sedute')) : '') + '</div>' +
       '<div class="card"><div class="list-item flat"><div><b>Girovita</b><small>Sotto ' + (p.sex === 'f' ? '80' : '94') + ' cm il rischio per la salute è più basso (OMS)</small></div>' + toggle(G.vita.on, 'ppG', 'data-k="vita"') + '</div>' + (G.vita.on ? field('Girovita obiettivo (cm)', numIn(G.vita.cm, 'data-in="pg" data-g="vita" data-k="cm"')) : '') + '</div>' +
-      '<div class="card"><div class="list-item flat"><div><b>Costanza</b><small>' + G.costanza.perWeek + ' allenamenti a settimana per ' + G.costanza.weeks + ' settimane</small></div>' + toggle(G.costanza.on, 'ppG', 'data-k="costanza"') + '</div></div>' + ppNav(o);
+      '<div class="card"><div class="list-item flat"><div><b>Costanza</b><small>' + ppCost(G.costanza) + '</small></div>' + toggle(G.costanza.on, 'ppG', 'data-k="costanza"') + '</div></div>' + ppNav(o);
   }
   if (o.step === 9) body = ppSummary() + (o.redo ? '' : '<h3 class="small muted" style="margin:16px 2px 8px">Promemoria</h3>' +
     '<div class="list-item flat"><div><b>Allenamento</b><small>Nei tuoi giorni</small></div>' + toggle(r.workout.on, 'remOn', 'data-k="workout"') + '</div>' + (r.workout.on ? field('Ora', timeIn(r.workout.hour, r.workout.min, 'workout')) : '') +
