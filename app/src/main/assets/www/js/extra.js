@@ -184,13 +184,20 @@ function photoCard() {
 }
 
 /* ---------- 6. proteine distribuite nei pasti ----------
-   Circa 0,4 g per kg di peso a pasto in almeno 4 pasti (fino a 0,55 g/kg): Schoenfeld e Aragon 2018, doi:10.1186/s12970-018-0215-1 */
-function proteinPerMeal() { const w = curWeight(); return w ? Math.round(w * 0.4) : 0; }
+   Circa 0,4 g per kg di peso a pasto in almeno 4 pasti (fino a 0,55 g/kg): Schoenfeld e Aragon 2018, doi:10.1186/s12970-018-0215-1.
+   Il peso è lo stesso dell'obiettivo giornaliero (refWeight: con BMI sopra 25 il peso corretto), altrimenti con molti kg in più
+   4 pasti × 0,4 g/kg superavano le proteine dell'intera giornata; e mai più di un terzo dell'obiettivo del giorno. */
+function proteinRef() { const w = curWeight(); return w && typeof refWeight === 'function' ? refWeight(w, S.profile) : w; }
+function proteinPerMeal() {
+  const r = proteinRef(); if (!r) return 0;
+  const day = nutritionTargets().protein;
+  return Math.round(day ? Math.min(r * 0.4, day / 3) : r * 0.4);
+}
 function proteinMealsCard(list) {
   const t = proteinPerMeal(); if (!t) return '';
   const rows = MEALS_DAY.map(([mk, mn]) => { const p = foodTotals(list.filter(x => x.meal === mk)).p; return { mn, p, ok: p >= t * 0.85 }; });
   const any = rows.some(r => r.p > 0);
-  return '<div class="card"><h3>Proteine nei pasti</h3><p class="small muted">Per i muscoli conta anche come le distribuisci: circa <b>' + t + ' g a pasto</b> (0,4 g per kg) in almeno 4 pasti. Fonte: Schoenfeld e Aragon 2018.</p>' +
+  return '<div class="card"><h3>Proteine nei pasti</h3><p class="small muted">Per i muscoli conta anche come le distribuisci: circa <b>' + t + ' g a pasto</b> (0,4 g per kg' + (proteinRef() < curWeight() ? ' di peso corretto: il grasso in più non richiede proteine' : '') + ') in almeno 4 pasti. Fonte: Schoenfeld e Aragon 2018.</p>' +
     rows.map(r => '<div class="mac"><div class="mac-h"><span>' + r.mn + (r.ok ? ' ✓' : '') + '</span><b>' + Math.round(r.p) + ' / ' + t + ' g</b></div><div class="mac-bar"><i class="pro" style="width:' + Math.min(100, 100 * r.p / t) + '%"></i></div></div>').join('') +
     (any ? '' : '<p class="small muted">Segna i pasti nel diario per vedere come sono distribuite.</p>') + '</div>';
 }

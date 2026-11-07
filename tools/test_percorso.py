@@ -262,10 +262,22 @@ with sync_playwright() as p:
     })()""")
     if "carico" in corpo["prima"] or not any("più duro" in f for f in corpo["fix"]) or any("il carico è" in f or "Aumenta il carico" in f for f in corpo["fix"]):
         errors.append(f"corpo libero trattato come esercizio con carico: {corpo}")
+    # proteine a pasto: stesso peso dell'obiettivo giornaliero (corretto con BMI alto), 4 pasti non superano il totale
+    prot_pasto = pg.evaluate("""(() => {
+      const keepW = S.weights, keepH = S.profile.height, keepB = S.profile.body;
+      S.profile.height = 170; S.profile.body = 'obeso'; S.weights = keepW.concat([{ d: Date.now(), kg: 130 }]);
+      const r = { pasto: proteinPerMeal(), giorno: nutritionTargets().protein, ref: proteinRef() };
+      S.weights = keepW.concat([{ d: Date.now(), kg: 65 }]);
+      r.pasto65 = proteinPerMeal(); r.ref65 = proteinRef();
+      S.weights = keepW; S.profile.height = keepH; S.profile.body = keepB;
+      return r;
+    })()""")
+    if prot_pasto["pasto"] * 4 > prot_pasto["giorno"] * 1.05 or prot_pasto["ref"] >= 130 or prot_pasto["ref65"] != 65 or prot_pasto["pasto65"] != 26:
+        errors.append(f"proteine a pasto incoerenti con l'obiettivo del giorno: {prot_pasto}")
     # migrazione: chi aveva le schede pronte senza percorso le perde, tiene le sue
     pg.evaluate("localStorage.setItem('gym.v1', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('gym.v1')), { mig23: 0, profile: Object.assign(S.profile, { path: false }), templates: [{ id: 'a', kind: 'scheda', name: 'Full body A', preset: 'fullA', days: [1], items: [] }, { id: 'b', kind: 'scheda', name: 'Mia', days: [], items: [] }] })))")
     pg.reload(); pg.wait_for_timeout(700)
     mig = pg.evaluate("S.templates.map(t => t.name)")
     pg.evaluate("UI.schede = 'schede'; go('schede')"); pg.wait_for_timeout(300); shot("21_schede_senza_percorso")
     b.close()
-print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso, "peso_bar": peso_bar, "forza": forza, "macro": macro, "cardio_trainer": cardio, "giornata_no": giornata_no, "casa_dopo_checkin": casa_dolore, "vita": vita, "voti": voti, "adottata": adottata, "assistito": assistito, "corpo": corpo}, ensure_ascii=False, indent=1))
+print(json.dumps({"errori": errors, "stato": st, "schiena_nelle_schede": bad, "seduta": wo, "spalle_oggi": sp, "controllo": due, "funz_mob": fm, "salvato": salvato, "prima": prima, "dopo": dopo, "migrazione": mig, "casa_tutto": casa_tutto, "casa_corpo": casa_corpo, "casa_attivo": casa_att, "peso_superato": peso_superato, "peso_in_corso": peso_in_corso, "peso_bar": peso_bar, "forza": forza, "macro": macro, "cardio_trainer": cardio, "giornata_no": giornata_no, "casa_dopo_checkin": casa_dolore, "vita": vita, "voti": voti, "adottata": adottata, "assistito": assistito, "corpo": corpo, "proteine_pasto": prot_pasto}, ensure_ascii=False, indent=1))
